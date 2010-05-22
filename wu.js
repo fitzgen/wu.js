@@ -5,7 +5,7 @@
     objToString = Object.prototype.toString,
     /*arrConcat = Array.prototype.concat,*/
     wu = globals.wu = function wu(fn) {
-        return init(fn);
+        return augmentFunction(fn);
     };
 
     wu.noConflict = function noConflict() {
@@ -14,7 +14,9 @@
     };
 
     wu.toArray = function toArray(obj) {
-        return arrSlice.call(obj);
+        return obj instanceof wu.Iterator ?
+            obj.toArray() :
+            arrSlice.call(obj);
     };
 
     wu.toBool = function toBool(obj) {
@@ -28,25 +30,28 @@
     wu.StopIteration = function () {};
 
     var iteratorCreator = function iterHelper(obj) {
-        var pairs, prop, len, chr;
-                
+        var pairs, prop, len, chr, items;
+
         if (obj instanceof Array) {
+            // Copy obj to items so that .shift() won't have side effects on
+            // original.
+            items = toArray(obj);
             this.next = function () {
-                return obj.length > 0 ?
-                    obj.shift() :
+                return items.length > 0 ?
+                    items.shift() :
                     new wu.StopIteration;
             };
         }
-        
+
         else if (obj instanceof Object && (obj instanceof wu.Iterator !== true)) {
             pairs = [];
             for (prop in obj)
                 if (obj.hasOwnProperty(prop))
                     pairs.push([prop, obj[prop]]);
-            
+
             iteratorCreator.call(this, pairs);
         }
-        
+
         else if (objToString.call(obj) === "[object String]") {
             len = obj.length;
             this.next = function () {
@@ -74,14 +79,27 @@
     wu.Iterator = function Iterator(obj) {
         if (this instanceof wu.Iterator === false)
             return new wu.Iterator(obj);
-            
+
         if (obj !== undefined)
             iteratorCreator.call(this, obj);
+
+        this.toArray = this.toArray || function toArray() {
+            var item = this.next(),
+                res = [];
+            while ( !(item instanceof wu.StopIteration) ) {
+                res.push(item);
+                item = this.next();
+            }
+            return res;
+        };
+
+        // Attach more helper methods to iterators.
+
         return undefined;
     };
 
     /**
-     * Functions that are also methods for wu functions.
+     * Iterating helper functions.
      */
 
     wu.all = function all(iterable, fn, context) {
@@ -108,6 +126,38 @@
         return !wu.all(iterable, oppositeFn);
     };
 
+    var rangeHelper = function rangeHelper(start, stop, incr) {
+        var iterator = new wu.Iterator;
+
+        // Handle first case since we are doing +=
+        start = start - incr;
+
+        iterator.next = function () {
+            return start + incr >= stop ?
+                new wu.StopIteration :
+                start += incr;
+        };
+
+        return iterator;
+    };
+
+    wu.range = function range() {
+        switch (arguments.length) {
+            case 1:
+                return rangeHelper(0, arguments[0], 1);
+            case 2:
+                return rangeHelper(arguments[0], arguments[1], 1);
+            case 3:
+                return rangeHelper(arguments[0], arguments[1], arguments[2]);
+            default:
+                throw new TypeError("Wrong number of arguments passed to wu.range!");
+        }
+    };
+
+    /**
+     * Functions that are also methods (in some form) for wu functions.
+     */
+
     wu.bind = function bind(scope, fn /*, variadic number of arguments */) {
         var args = arrSlice(arguments, 2);
         return function () {
@@ -126,26 +176,30 @@
         };
     };
 
-    function init(fn) {
+    /**
+     * Augmentation of functions with wu methods.
+     */
+
+    function augmentFunction(fn) {
         fn.all = function all(iterable, context) {
             return wu.all(iterable, this, context);
         };
-        
+
         fn.any = function any(iterable, context) {
             return wu.any(iterable, this, context);
         };
-        
+
         fn.bind = function bind(scope) {
             return wu.bind.apply(
                 scope,
                 [this].concat(arrSlice.call(arguments, 1))
             );
         };
-        
+
         fn.compose = function compose() {
             return wu.compose.apply(this, [this].concat(arguments));
         };
-        
+
         return fn;
     }
 
