@@ -50,6 +50,62 @@
     };
 
     /**
+     * Equality testing.
+     */
+
+    var arrayEq = function arrayEq(a, b) {
+        return a.length === 0 ?
+            a.length === b.length :
+            wu.eq(a[0], b[0]) && wu.eq(a.slice(1),
+                                       b.slice(1));
+    };
+
+    var objectEq = function objectEq(a, b) {
+        var prop, propertiesSeen = [];
+        for (prop in a) {
+            propertiesSeen.push(prop);
+            if ( a.hasOwnProperty(prop) && !wu.eq(a[prop], b[prop]) )
+                return false;
+        }
+        for (prop in b) {
+            if ( b.hasOwnProperty &&
+                 wu.has(propertiesSeen, prop) &&
+                 !wu.eq(a[prop], b[prop]) )
+                return false;
+        }
+        return true;
+    };
+
+    var regExpEq = function regExpEq(a, b) {
+        return a.source === b.source &&
+            a.global === b.global &&
+            a.ignoreCase === b.ignoreCase &&
+            a.multiline === b.multiline;
+    };
+
+    var eq = wu.eq = function eq(a, b) {
+        var typeOfA = OBJ_TO_STRING.call(a);
+        if (typeOfA !== OBJ_TO_STRING.call(b)) {
+            return false;
+        }
+
+        else {
+            switch (typeOfA) {
+                case "[object Array]":
+                    return arrayEq(a, b);
+                case "[object Object]":
+                    return objectEq(a, b);
+                case "[object RegExp]":
+                    return regExpEq(a, b);
+                case "[object Date]":
+                    return a.valueOf() === b.valueOf();
+                default:
+                    return a === b;
+            }
+        }
+    };
+
+    /**
      * Iterators!
      */
 
@@ -153,6 +209,12 @@
                 return !fn.call(context, obj);
             };
         return !wu.all(iterable, oppositeFn);
+    };
+
+    wu.has = function has(iterable, item) {
+        return wu.any(iterable, function (obj) {
+            return wu.eq(obj, item);
+        });
     };
 
     var rangeHelper = function rangeHelper(start, stop, incr) {
