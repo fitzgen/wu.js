@@ -165,8 +165,10 @@
         if (isInstance(this, wu.Iterator) === false)
             return new wu.Iterator(obj);
 
-        if (obj !== UNDEF)
+
+        if (obj !== UNDEF) {
             addNextMethod.call(this, obj);
+        }
 
         this.toArray = this.toArray || function toArray() {
             var item = this.next(),
@@ -278,14 +280,14 @@
 
     wu.bind = function bind(scope, fn /*, variadic number of arguments */) {
         var args = ARR_SLICE(arguments, 2);
-        return function () {
+        return function bound() {
             return fn.apply(scope, args.concat(arguments));
         };
     };
 
     wu.compose = function compose(/* variadic number of functions */) {
         var fns = wu.toArray(arguments);
-        return function () {
+        return function composed() {
             var returnValue = fns.pop().apply(this, arguments);
             while (fns.length) {
                 returnValue = fns.pop()(returnValue);
