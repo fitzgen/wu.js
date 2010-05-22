@@ -35,7 +35,7 @@
         if (obj instanceof Array) {
             // Copy obj to items so that .shift() won't have side effects on
             // original.
-            items = toArray(obj);
+            items = wu.toArray(obj);
             this.next = function () {
                 return items.length > 0 ?
                     items.shift() :
