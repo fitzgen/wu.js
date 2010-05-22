@@ -178,13 +178,21 @@
             return res;
         };
 
-        // Attach more helper methods to iterators.
+        this.map = this.map || wu.curry(wu.map, this);
+
+        // TODO: filter, reduce, has, zip, chain, etc...
 
         return UNDEF;
     };
 
     // Maintain prototype chain for Iterators.
     wu.Iterator.prototype = wu.prototype;
+
+    var iteratorFromNextFn = function iteratorFromNextFn(nextFn) {
+        var iterator = new wu.Iterator;
+        iterator.next = nextFn;
+        return iterator;
+    };
 
     /**
      * Iterating helper functions.
@@ -214,9 +222,25 @@
         return !wu.all(iterable, oppositeFn);
     };
 
+    // wu.chain
+
     wu.has = function has(iterable, item) {
         return wu.any(iterable, function (obj) {
             return wu.eq(obj, item);
+        });
+    };
+
+    wu.map = function map(iterable, fn, context) {
+        iterable = toIterator(iterable);
+        context = context || this;
+
+        var results = [],
+            item = iterable.next();
+
+        return iteratorFromNextFn(function () {
+            return isInstance(item, StopIteration) ?
+                item :
+                fn.apply(context, ARR_CONCAT.call([], item));
         });
     };
 
