@@ -110,6 +110,9 @@
      */
 
     var StopIteration = wu.StopIteration = function () {};
+    StopIteration.prototype.toString = function () {
+        return "[object StopIteration]";
+    };
 
     var addNextMethod = function iterHelper(obj) {
         var pairs, prop, len, chr, items;
