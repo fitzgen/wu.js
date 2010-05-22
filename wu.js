@@ -68,8 +68,8 @@
                 return false;
         }
         for (prop in b) {
-            if ( b.hasOwnProperty &&
-                 wu.has(propertiesSeen, prop) &&
+            if ( b.hasOwnProperty(prop) &&
+                 !wu.has(propertiesSeen, prop) &&
                  !wu.eq(a[prop], b[prop]) )
                 return false;
         }
