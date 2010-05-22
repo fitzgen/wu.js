@@ -1,9 +1,19 @@
 (function (globals) {
 
-    var oldWu = globals.wu,
-    arrSlice = Array.prototype.slice,
-    objToString = Object.prototype.toString,
+    /**
+     * Maintain local copies of frequently used functions and constants.
+     */
+
+    var OLD_WU = globals.wu,
+    ARR_SLICE = Array.prototype.slice,
+    OBJ_TO_STRING = Object.prototype.toString,
+    UNDEF = undefined,
     /*arrConcat = Array.prototype.concat,*/
+
+    /**
+     * Define publicly exposed wu function.
+     */
+
     wu = globals.wu = function wu(fn) {
         return fn instanceof Function ?
             augmentFunction(fn) :
@@ -11,14 +21,22 @@
     };
 
     wu.noConflict = function noConflict() {
-        globals.wu = oldWu;
+        globals.wu = OLD_WU;
         return wu;
     };
 
+    /**
+     * General helpers.
+     */
+
+    var isInstance = function isInstance(obj, Type)  {
+        return obj instanceof Type;
+    };
+
     var toArray = wu.toArray = function toArray(obj) {
-        return obj instanceof wu.Iterator ?
+        return isInstance(obj, wu.Iterator) ?
             obj.toArray() :
-            arrSlice.call(obj);
+            ARR_SLICE.call(obj);
     };
 
     var toBool = wu.toBool = function toBool(obj) {
@@ -34,7 +52,7 @@
     var addNextMethod = function iterHelper(obj) {
         var pairs, prop, len, chr, items;
 
-        if (obj instanceof Array) {
+        if (isInstance(obj, Array)) {
             // Copy obj to items so that .shift() won't have side effects on
             // original.
             items = wu.toArray(obj);
@@ -45,7 +63,7 @@
             };
         }
 
-        else if (obj instanceof Object && (obj instanceof wu.Iterator !== true)) {
+        else if (isInstance(obj, Object) && (isInstance(obj, wu.Iterator) !== true)) {
             pairs = [];
             for (prop in obj)
                 if (obj.hasOwnProperty(prop))
@@ -54,7 +72,7 @@
             addNextMethod.call(this, pairs);
         }
 
-        else if (objToString.call(obj) === "[object String]") {
+        else if (OBJ_TO_STRING.call(obj) === "[object String]") {
             len = obj.length;
             this.next = function () {
                 if (len > 0) {
@@ -69,7 +87,7 @@
             };
         }
 
-        else if (obj instanceof wu.Iterator) {
+        else if (isInstance(obj, wu.Iterator)) {
             // Pass
         }
 
@@ -79,16 +97,16 @@
     };
 
     wu.Iterator = function Iterator(obj) {
-        if (this instanceof wu.Iterator === false)
+        if (isInstance(this, wu.Iterator) === false)
             return new wu.Iterator(obj);
 
-        if (obj !== undefined)
+        if (obj !== UNDEF)
             addNextMethod.call(this, obj);
 
         this.toArray = this.toArray || function toArray() {
             var item = this.next(),
                 res = [];
-            while ( !(item instanceof wu.StopIteration) ) {
+            while ( !isInstance(item, wu.StopIteration) ) {
                 res.push(item);
                 item = this.next();
             }
@@ -97,7 +115,7 @@
 
         // Attach more helper methods to iterators.
 
-        return undefined;
+        return UNDEF;
     };
 
     // Maintain prototype chain for Iterators.
@@ -114,7 +132,7 @@
 
         var item = iterable.next();
 
-        while ( !(item instanceof wu.StopIteration) ) {
+        while ( !isInstance(item, wu.StopIteration) ) {
             if ( !fn.call(context, item) )
                 return false;
             item = iterable.next();
@@ -123,7 +141,7 @@
     };
 
     wu.any = function any(iterable, fn, context) {
-        var oppositeFn = fn === undefined ?
+        var oppositeFn = fn === UNDEF ?
             function (obj) { return !toBool(obj); } :
             function (obj) {
                 return !fn.call(context, obj);
@@ -164,7 +182,7 @@
      */
 
     wu.bind = function bind(scope, fn /*, variadic number of arguments */) {
-        var args = arrSlice(arguments, 2);
+        var args = ARR_SLICE(arguments, 2);
         return function () {
             return fn.apply(scope, args.concat(arguments));
         };
@@ -197,7 +215,7 @@
         fn.bind = function bind(scope) {
             return wu.bind.apply(
                 scope,
-                [this].concat(arrSlice.call(arguments, 1))
+                [this].concat(ARR_SLICE.call(arguments, 1))
             );
         };
 
