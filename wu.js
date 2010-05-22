@@ -5,7 +5,9 @@
     objToString = Object.prototype.toString,
     /*arrConcat = Array.prototype.concat,*/
     wu = globals.wu = function wu(fn) {
-        return augmentFunction(fn);
+        return fn instanceof Function ?
+            augmentFunction(fn) :
+            wu.Iterator(fn);
     };
 
     wu.noConflict = function noConflict() {
@@ -97,6 +99,9 @@
 
         return undefined;
     };
+
+    // Maintain prototype chain for Iterators.
+    wu.Iterator.prototype = wu.prototype;
 
     /**
      * Iterating helper functions.
