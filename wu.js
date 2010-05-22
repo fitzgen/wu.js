@@ -13,13 +13,13 @@
         return wu;
     };
 
-    wu.toArray = function toArray(obj) {
+    var toArray = wu.toArray = function toArray(obj) {
         return obj instanceof wu.Iterator ?
             obj.toArray() :
             arrSlice.call(obj);
     };
 
-    wu.toBool = function toBool(obj) {
+    var toBool = wu.toBool = function toBool(obj) {
         return !!obj;
     };
 
@@ -27,7 +27,7 @@
      * Iterators!
      */
 
-    wu.StopIteration = function () {};
+    var StopIteration = wu.StopIteration = function () {};
 
     var addNextMethod = function iterHelper(obj) {
         var pairs, prop, len, chr, items;
