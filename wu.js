@@ -29,7 +29,7 @@
 
     wu.StopIteration = function () {};
 
-    var iteratorCreator = function iterHelper(obj) {
+    var addNextMethod = function iterHelper(obj) {
         var pairs, prop, len, chr, items;
 
         if (obj instanceof Array) {
@@ -49,7 +49,7 @@
                 if (obj.hasOwnProperty(prop))
                     pairs.push([prop, obj[prop]]);
 
-            iteratorCreator.call(this, pairs);
+            addNextMethod.call(this, pairs);
         }
 
         else if (objToString.call(obj) === "[object String]") {
@@ -81,7 +81,7 @@
             return new wu.Iterator(obj);
 
         if (obj !== undefined)
-            iteratorCreator.call(this, obj);
+            addNextMethod.call(this, obj);
 
         this.toArray = this.toArray || function toArray() {
             var item = this.next(),
