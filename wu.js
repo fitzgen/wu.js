@@ -39,6 +39,12 @@
             ARR_SLICE.call(obj);
     };
 
+    var toIterator = function (obj) {
+        return isInstance(obj, wu.Iterator) ?
+            obj :
+            new wu.Iterator(obj);
+    };
+
     var toBool = wu.toBool = function toBool(obj) {
         return !!obj;
     };
@@ -126,7 +132,7 @@
      */
 
     wu.all = function all(iterable, fn, context) {
-        iterable = wu.Iterator(iterable);
+        iterable = toIterator(iterable);
         fn = fn || wu.toBool;
         context = context || this;
 
