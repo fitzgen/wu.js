@@ -108,7 +108,46 @@ test("wu.eq",
          ok( !wu.eq(/regex/, new Date), "Regexes and dates are not equal.");
      });
 
-// TODO: all, any, bind, compose
+test("wu.all",
+     function () {
+         ok(wu.all([0,2,4,6,8], function (x) { return x % 2 === 0; }),
+            "wu.all([0,2,4,6,8], even?)");
+         ok( !wu.all([0,2,4,6,8,9], function (x) { return x % 2 === 0; }),
+            "wu.all([0,2,4,6,8,9], even?) is false");
+     });
+
+test("wu.any",
+     function () {
+         ok(wu.any([1,2,3,4], function (x) { return x % 2 === 0; }),
+            "wu.any([1,2,3,4], even?)");
+         ok( !wu.any([1,3,5], function (x) { return x % 2 === 0; }),
+            "wu.all([1,3,5], even?) is false");
+     });
+
+test("wu.bind",
+     function () {
+         var obj = {};
+         ok(wu.bind(obj, function () { return this === obj; })(),
+            "this === obj");
+         ok(wu.bind(obj,
+                    function (uno) {
+                        return this === obj && uno === 1;
+                    },
+                    1)(),
+            "this === obj && uno === 1");
+     });
+
+test("wu.compose",
+     function () {
+         var plusOne = function (x) {
+             return x + 1;
+         },
+         timesTwo = function (x) {
+             return x * 2;
+         };
+
+         ok(wu.compose(timesTwo, plusOne)(3) === 8, "timesTwo(plusOne(3)) === 8");
+     });
 
 test("wu.curry",
      function () {
