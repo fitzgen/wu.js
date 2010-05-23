@@ -8,7 +8,9 @@ test("Maintains prototype chain",
          ok(wu(function () {}) instanceof wu, "wu(function) instanceof wu; This might not be possible...");
      });
 
-test("Iteration API for Objects",
+module("Iteration API");
+
+test("Objects",
      function () {
          var next,
              iterator = wu({ foo: 1, bar: 2 });
@@ -26,7 +28,7 @@ test("Iteration API for Objects",
          ok(wu.eq(wu({ foo: 1 }).toArray(), [["foo", 1]]), "wu({foo:1}).toArray() -> [['foo', 1]]");
      });
 
-test("Iteration API for Arrays",
+test("Arrays",
      function () {
          var iterator = wu([1,2]);
          ok(iterator.next() === 1);
@@ -36,7 +38,7 @@ test("Iteration API for Arrays",
          ok(wu.eq(wu([1,2,3]).toArray(), [1,2,3]), "wu([1,2,3]).toArray() -> [1,2,3]");
      });
 
-test("Iteration API for Strings",
+test("Strings",
      function () {
          var iterator = wu("Hi!");
          ok(iterator.next() === "H");
@@ -47,7 +49,7 @@ test("Iteration API for Strings",
          ok(wu.eq(wu("Hi!").toArray(), ["H", "i", "!"]), "wu('Hi!').toArray() -> ['H', 'i', '!']");
      });
 
-test("Iteration API for Numbers",
+test("Numbers",
      function () {
          var iterator = wu(3);
          ok(iterator.next() === 2);
@@ -106,6 +108,8 @@ test("wu.eq",
          ok( !wu.eq(/regex/, new Date), "Regexes and dates are not equal.");
      });
 
+// TODO: all, any, bind, compose
+
 test("wu.curry",
      function () {
          var add = function (a, b) {
@@ -140,5 +144,14 @@ test("wu.zip",
 
 module("Augmented function methods");
 
+// TODO: all, any, bind, compose
+
 module("Iterator methods");
+
+test("wu.Iterator.map",
+     function () {
+         ok(wu.eq(wu(4).map(function (x) { return x + 1; }).toArray(),
+                  [4,3,2,1]),
+           "wu(4).map(function (x) { return x + 1; }).toArray() -> [4,3,2,1]");
+     });
 
