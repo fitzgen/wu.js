@@ -80,20 +80,23 @@
                 break;
             case "[object Object]":
                 if (isInstance(obj, wu.Iterator)) {
-                    if (typeof obj.next !== "function")
+                    if (typeof obj.next !== "function") {
                         throw new Error("Iterator without a next method!");
-                    else
+                    }
+                    else {
                         NULL;
+                    }
                 }
                 else if (obj.toString() === "[object Arguments]") {
                     attachNextForArrayLikeObjs.call(this, obj);
                 }
                 else {
                     pairs = [];
-                    for (prop in obj)
-                        if (obj.hasOwnProperty(prop))
+                    for (prop in obj) {
+                        if (obj.hasOwnProperty(prop)) {
                             pairs.push([prop, obj[prop]]);
-
+                        }
+                    }
                     addNextMethod.call(this, pairs);
                 }
                 break;
@@ -124,8 +127,9 @@
     };
 
     wu.Iterator = function Iterator(objOrFn) {
-        if (isInstance(this, wu.Iterator) === false)
+        if (isInstance(this, wu.Iterator) === false) {
             return new wu.Iterator(objOrFn);
+        }
 
 
         // If the user passed in a function to use as the next method, use that
@@ -182,8 +186,9 @@
         var item = iterable.next();
 
         while ( !isInstance(item, wu.StopIteration) ) {
-            if ( !fn.call(context, item) )
+            if ( !fn.call(context, item) ) {
                 return false;
+            }
             item = iterable.next();
         }
         return true;
@@ -208,8 +213,9 @@
     wu.chain = function chain(/* variadic iterables */) {
         var i, index = 0, iterables = toArray(arguments);
 
-        for (i = 0; i < iterables.length; i++)
+        for (i = 0; i < iterables.length; i++) {
             iterables[i] = toIterator(iterables[i]);
+        }
 
         return wu.Iterator(function next() {
             var res = iterables[index].next();
@@ -259,14 +265,16 @@
         var prop, propertiesSeen = [];
         for (prop in a) {
             propertiesSeen.push(prop);
-            if ( a.hasOwnProperty(prop) && !wu.eq(a[prop], b[prop]) )
+            if ( a.hasOwnProperty(prop) && !wu.eq(a[prop], b[prop]) ) {
                 return false;
+            }
         }
         for (prop in b) {
             if ( b.hasOwnProperty(prop) &&
                  !wu.has(propertiesSeen, prop) &&
-                 !wu.eq(a[prop], b[prop]) )
+                 !wu.eq(a[prop], b[prop]) ) {
                 return false;
+            }
         }
         return true;
     };
@@ -278,7 +286,7 @@
             a.multiline === b.multiline;
     };
 
-    var eq = wu.eq = function eq(a, b) {
+    wu.eq = function eq(a, b) {
         var typeOfA = toObjProtoString(a);
         if (typeOfA !== toObjProtoString(b)) {
             return false;
