@@ -106,6 +106,14 @@ test("wu.eq",
          ok( !wu.eq(/regex/, new Date), "Regexes and dates are not equal.");
      });
 
+test("wu.curry",
+     function () {
+         var add = function (a, b) {
+             return a + b;
+         };
+         ok(wu.curry(add, 5)(2) === 7, "wu.curry(add, 5)(2) === 7");
+     });
+
 test("wu.map",
      function () {
          ok(wu.eq(wu.map(wu.range(4), function (x) { return x+1; }).toArray(),
