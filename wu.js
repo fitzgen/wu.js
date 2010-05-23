@@ -193,7 +193,7 @@
             addNextMethod.call(this, objOrFn);
         }
 
-        this.toArray = this.toArray || function toArray() {
+        this.force = this.toArray = this.toArray || function toArray() {
             var item = this.next(),
                 res = [];
             while ( !isInstance(item, wu.StopIteration) ) {
