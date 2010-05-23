@@ -242,9 +242,11 @@
             item = iterable.next();
 
         return wu.Iterator(function () {
-            return isInstance(item, StopIteration) ?
+            var result = isInstance(item, StopIteration) ?
                 item :
-                fn.apply(context, item);
+                fn.call(context, item);
+            item = iterable.next();
+            return result;
         });
     };
 
