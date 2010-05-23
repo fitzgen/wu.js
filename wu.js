@@ -313,9 +313,9 @@
      */
 
     wu.bind = function bind(scope, fn /*, variadic number of arguments */) {
-        var args = ARR_SLICE(arguments, 2);
+        var args = ARR_SLICE.call(arguments, 2);
         return function bound() {
-            return fn.apply(scope, args.concat(arguments));
+            return fn.apply(scope, args.concat(wu.toArray(arguments)));
         };
     };
 
