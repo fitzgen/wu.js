@@ -162,6 +162,15 @@
 
     /**
      * Methods attached to wu directly.
+     *
+     * TODO: filter, reduce, until, takeWhile, dropWhile, cycle, mapply (ie,
+     * mapply(Math.pow, [[2,2], [3,3], [10,3]]) -> [4, 27, 1000]), each
+     *
+     * zip should take default element, instead of just using NULL all the time.
+     *
+     * map should handle multiple iterables (as should filter, reduce, each)
+     *
+     * MAYBE: lambda, partial, tee, sort
      */
 
     wu.all = function all(iterable, fn, context) {
