@@ -38,8 +38,11 @@ A few fun facts about wu.js:
 "I have no idea what you are talking about"
 -------------------------------------------
 
-Maybe this will make more sense to you: Wu.js is a javascript library for
-functional programming with iterators.
+Oh, sorry. Sometimes I have so much fun that I don't notice I'm the only one
+laughing. Maybe this will make more sense to you:
+
+*Wu.js is a javascript library for functional programming with lazily-evaluated
+iterators*.
 
 API
 ---
