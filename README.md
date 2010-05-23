@@ -1,5 +1,5 @@
-wu.js
-=====
+`wu.js`
+=======
 
        NNNNN=                        7NN
       NNNNNNNNNNN                .NNNNNNN
@@ -24,14 +24,14 @@ wu.js
                     ,MNNNN  NNNNN.
                             ZNN.
 
-A few fun facts about wu.js:
-----------------------------
+A few fun facts about `wu.js`:
+------------------------------
 
-  * Wu.js ain't nuthin' ta fuck wit.
+  * `Wu.js` ain't nuthin' ta fuck wit.
 
-  * Can it be all so simple? With wu.js, it can be.
+  * Can it be all so simple? With `wu.js`, it can be.
 
-  * Wu.js will Protect Ya Neck.
+  * `Wu.js` will Protect Ya Neck.
 
   * Real Javascript Ninjas hail from Shaolin.
 
@@ -41,8 +41,8 @@ A few fun facts about wu.js:
 Oh, sorry. Sometimes I have so much fun that I don't notice I'm the only one
 laughing. Maybe this will make more sense to you:
 
-*Wu.js is a javascript library for functional programming with lazily-evaluated
-iterators*.
+**`Wu.js` is a javascript library for functional programming with lazily-evaluated
+iterators.**
 
 API
 ---
