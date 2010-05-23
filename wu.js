@@ -312,6 +312,13 @@
         };
     };
 
+    wu.curry = function curry(fn /* variadic number of args */) {
+        var args = ARR_SLICE.call(arguments, 1);
+        return function curried() {
+            fn.apply(this, args.concat(arguments));
+        };
+    };
+
     /**
      * Augmentation of functions with wu methods.
      */
