@@ -32,11 +32,6 @@
     var isInstance = function isInstance(obj, Type)  {
         return obj instanceof Type;
     },
-    toArray = wu.toArray = function toArray(obj) {
-        return isInstance(obj, wu.Iterator) ?
-            obj.toArray() :
-            ARR_SLICE.call(obj);
-    },
     toObjProtoString = function toObjProtoString(obj) {
         return Object.prototype.toString.call(obj);
     },
@@ -44,6 +39,11 @@
         return isInstance(obj, wu.Iterator) ?
             obj :
             new wu.Iterator(obj);
+    },
+    toArray = wu.toArray = function toArray(obj) {
+        return isInstance(obj, wu.Iterator) ?
+            obj.toArray() :
+            ARR_SLICE.call(obj);
     },
     toBool = wu.toBool = function toBool(obj) {
         return !!obj;
@@ -115,9 +115,8 @@
     };
 
     var addNextMethod = function iterHelper(obj) {
-        var pairs, prop, len, chr, items;
-
-        if (isInstance(obj, Array)) {
+        var pairs, prop, len, chr, items,
+        attachNextForArrayLikeObjs = function attachNextForArrayLikeObjs(obj) {
             // Copy obj to items so that .shift() won't have side effects on
             // original.
             items = wu.toArray(obj);
@@ -126,49 +125,57 @@
                     items.shift() :
                     new wu.StopIteration;
             };
-        }
+        };
 
-        else if (isInstance(obj, Object) && (isInstance(obj, wu.Iterator) !== true)) {
-            pairs = [];
-            for (prop in obj)
-                if (obj.hasOwnProperty(prop))
-                    pairs.push([prop, obj[prop]]);
-
-            addNextMethod.call(this, pairs);
-        }
-
-        else if (toObjProtoString(obj) === "[object String]") {
-            len = obj.length;
-            this.next = function next() {
-                if (len > 0) {
-                    chr = obj.charAt(0);
-                    obj = obj.slice(1);
-                    len--;
-                    return chr;
+        switch (toObjProtoString(obj)) {
+            case "[object Array]":
+                attachNextForArrayLikeObjs.call(this, obj);
+                break;
+            case "[object NodeList]":
+                attachNextForArrayLikeObjs.call(this, obj);
+                break;
+            case "[object Object]":
+                if (isInstance(obj, wu.Iterator)) {
+                    if (typeof obj.next !== "function")
+                        throw new Error("Iterator without a next method!");
+                    else
+                        NULL;
+                }
+                else if (obj.toString() === "[object Arguments]") {
+                    attachNextForArrayLikeObjs.call(this, obj);
                 }
                 else {
-                    return new wu.StopIteration;
+                    pairs = [];
+                    for (prop in obj)
+                        if (obj.hasOwnProperty(prop))
+                            pairs.push([prop, obj[prop]]);
+
+                    addNextMethod.call(this, pairs);
                 }
-            };
-        }
-
-        else if (toObjProtoString(obj) === "[object Number]") {
-            this.next = function next() {
-                return obj-- === 0 ?
-                    new StopIteration :
-                    obj;
-            };
-        }
-
-        else if (isInstance(obj, wu.Iterator)) {
-            if (typeof obj.next !== "function")
-                throw new Error("Iterator without a next method!");
-            else
-                NULL;
-        }
-
-        else {
-            throw new TypeError("Object is not iterable: " + obj);
+                break;
+            case "[object String]":
+                len = obj.length;
+                this.next = function next() {
+                    if (len > 0) {
+                        chr = obj.charAt(0);
+                        obj = obj.slice(1);
+                        len--;
+                        return chr;
+                    }
+                    else {
+                        return new wu.StopIteration;
+                    }
+                };
+                break;
+            case "[object Number]":
+                this.next = function next() {
+                    return obj-- === 0 ?
+                        new StopIteration :
+                        obj;
+                };
+                break;
+            default:
+                throw new TypeError("Object is not iterable: " + obj);
         }
     };
 
