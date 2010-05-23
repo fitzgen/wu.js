@@ -1,6 +1,29 @@
 wu.js
 =====
 
+       NNNNN=                        7NN
+      NNNNNNNNNNN                .NNNNNNN
+     MNNNNNNNNNNNNNN         .NNNNNNNNNNNN
+    .NNNNNNNNNNNNNN.       MNNNNNNNNNNNNNNI
+    NNNNNNNNNNNNNNZ         NNNNNNNNNNNNNNN
+    NNNNNNNNNNNNNN      NN  ?NNNNNNNNNNNNNN.
+    NNNNNNNNNNNNNN=  ?NNNNN NNNNNNNNNNNNNNN.
+    NNNNNNNNNNNNNNN..~NNNNN NNNNNNNNNNNNNNNZ
+    NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+    NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+    NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN.
+    NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN.
+     NNNNNNNNNNNNNNNNNNNN?NNNNNNNNNNNNNNNNN
+     ,NNNNNNNNNNNNNNNNNNM .NNNNNNNNNNNNNNN.
+      NNNNNNNNNNNNNNNNNNN  NNNNNNNNNNNNNNN
+       NNNNNNNNNNNNNNNNNN  MNNNNNNNNNNNNN
+        =NNNNNNNNNNNNNNNN  .NNNNNNNNNNNN
+          NNNNNNNNNNNNNNN   NNNNNNNNNN:
+            MNNNNNNNNNNNN.  NNNNNNNNN
+               DNNNNNNNNNN  NNNNNNN.
+                    ,MNNNN  NNNNN.
+                            ZNN.
+
 A few fun facts about wu.js:
 ----------------------------
 
@@ -12,8 +35,8 @@ A few fun facts about wu.js:
 
   * Real Javascript Ninjas hail from Shaolin.
 
-I have no idea what you are talking about
------------------------------------------
+"I have no idea what you are talking about"
+-------------------------------------------
 
 Maybe this will make more sense to you: Wu.js is a javascript library for
 functional programming with iterators.
