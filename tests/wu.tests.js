@@ -185,6 +185,46 @@ module("Augmented function methods");
 
 // TODO: all, any, bind, compose
 
+test("wu(fn).all",
+     function () {
+         ok(wu(function (x) { return x % 2 === 0; }).all([0,2,4,6,8]),
+            "wu(even?).all([0,2,4,6,8])");
+         ok( !wu(function (x) { return x % 2 === 0; }).all([0,2,4,6,8,9]),
+            "wu(even?).all([0,2,4,6,8,9]) is false");
+     });
+
+test("wu(fn).any",
+     function () {
+         ok(wu(function (x) { return x % 2 === 0; }).any([1,2,3,4]),
+            "wu(even?).any([1,2,3,4])");
+         ok( !wu(function (x) { return x % 2 === 0; }).any([1,3,5]),
+            "wu(even?).any([1,3,5]) is false");
+     });
+
+test("wu(fn).bind",
+     function () {
+         var obj = {};
+         ok(wu(function () { return this === obj; }).bind(obj)(),
+            "this === obj");
+         ok(wu(function (uno) {
+                   return this === obj && uno === 1;
+               }).bind(obj, 1)(),
+            "this === obj && uno === 1");
+     });
+
+test("wu(fn).compose",
+     function () {
+         var plusOne = function (x) {
+             return x + 1;
+         },
+         timesTwo = function (x) {
+             return x * 2;
+         };
+
+         ok(wu(timesTwo).compose(plusOne)(3) === 8, "timesTwo(plusOne(3)) === 8");
+     });
+
+
 module("Iterator methods");
 
 test("wu.Iterator.map",
