@@ -347,6 +347,75 @@
         });
     };
 
+    var isMatch = function isMatch(pattern, form) {
+        var typeOfForm = toObjProtoString(form),
+        typeOfPattern = toObjProtoString(pattern),
+        prop;
+
+        if (pattern === wu.match.___) {
+            return true;
+        }
+        if ( typeOfPattern === "[object Function]" ) {
+            // Special case for matching instances to their constructors, ie
+            // isMatch(Array, [1,2,3]) should return true.
+            if (isInstance(form, pattern)) {
+                return true;
+            }
+            // But we have to check String and Number directly since 5
+            // instanceof Number and "foo" instanceof String both return false.
+            if (pattern === String && typeOfForm === "[object String]") {
+                return true;
+            }
+            if (pattern === Number && typeOfForm === "[object Number]") {
+                return true;
+            }
+            else {
+                return form === pattern;
+            }
+        }
+        else {
+            if ( typeOfPattern !== typeOfForm ) {
+                return false;
+            }
+            else if ( typeOfPattern === "[object Array]" ) {
+                return pattern.length === 0 ?
+                    form.length === 0 :
+                    isMatch(pattern[0], form[0]) &&
+                        isMatch(pattern.slice(1), form.slice(1));
+            }
+            else if ( typeOfPattern === "[object Object]" ) {
+                for (prop in pattern) {
+                    if (pattern.hasOwnProperty(prop) &&
+                        !isMatch(pattern[prop], form[prop])){
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else {
+                return wu.eq(pattern, form);
+            }
+        }
+    };
+
+    wu.match = function match(/* pat1, then1, pat2, then2, ... patN, thenN */) {
+        var args = toArray(arguments);
+        return function matchFn(form) {
+            // i += 2 to iterator over only the patterns.
+            for (var i = 0; i < args.length; i += 2) {
+                if ( isMatch(args[i], form) ) {
+                    return toObjProtoString(args[i+1]) === "[object Function]" ?
+                        args[i+1].apply(this, [].concat(form)) :
+                        args[i+1];
+                }
+            }
+            throw new TypeError("The form did not match any given pattern.");
+        };
+    };
+
+    // Unique singleton object that will always succeed in matching a form.
+    wu.match.___ = {};
+
     var rangeHelper = function rangeHelper(start, stop, incr) {
         // Handle first case since we are doing +=
         start = start - incr;
