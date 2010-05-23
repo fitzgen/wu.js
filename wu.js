@@ -40,69 +40,13 @@
             obj :
             new wu.Iterator(obj);
     },
-    toArray = wu.toArray = function toArray(obj) {
+    toArray = function toArray(obj) {
         return isInstance(obj, wu.Iterator) ?
             obj.toArray() :
             ARR_SLICE.call(obj);
     },
-    toBool = wu.toBool = function toBool(obj) {
+    toBool = function toBool(obj) {
         return !!obj;
-    };
-
-    /**
-     * Equality testing.
-     */
-
-    var arrayEq = function arrayEq(a, b) {
-        return a.length === 0 ?
-            a.length === b.length :
-            wu.eq(a[0], b[0]) && wu.eq(a.slice(1),
-                                       b.slice(1));
-    };
-
-    var objectEq = function objectEq(a, b) {
-        var prop, propertiesSeen = [];
-        for (prop in a) {
-            propertiesSeen.push(prop);
-            if ( a.hasOwnProperty(prop) && !wu.eq(a[prop], b[prop]) )
-                return false;
-        }
-        for (prop in b) {
-            if ( b.hasOwnProperty(prop) &&
-                 !wu.has(propertiesSeen, prop) &&
-                 !wu.eq(a[prop], b[prop]) )
-                return false;
-        }
-        return true;
-    };
-
-    var regExpEq = function regExpEq(a, b) {
-        return a.source === b.source &&
-            a.global === b.global &&
-            a.ignoreCase === b.ignoreCase &&
-            a.multiline === b.multiline;
-    };
-
-    var eq = wu.eq = function eq(a, b) {
-        var typeOfA = toObjProtoString(a);
-        if (typeOfA !== toObjProtoString(b)) {
-            return false;
-        }
-
-        else {
-            switch (typeOfA) {
-                case "[object Array]":
-                    return arrayEq(a, b);
-                case "[object Object]":
-                    return objectEq(a, b);
-                case "[object RegExp]":
-                    return regExpEq(a, b);
-                case "[object Date]":
-                    return a.valueOf() === b.valueOf();
-                default:
-                    return a === b;
-            }
-        }
     };
 
     /**
@@ -210,8 +154,6 @@
         this.map   = this.map     || wu.curry(wu.map, this);
         this.zip   = this.zip     || wu.curry(wu.zip, this);
 
-        // TODO: filter, reduce, etc...
-
         return UNDEF;
     };
 
@@ -219,7 +161,7 @@
     wu.Iterator.prototype = wu.prototype;
 
     /**
-     * Iterating helper functions.
+     * Methods attached to wu directly.
      */
 
     wu.all = function all(iterable, fn, context) {
@@ -246,6 +188,13 @@
         return !wu.all(iterable, oppositeFn);
     };
 
+    wu.bind = function bind(scope, fn /*, variadic number of arguments */) {
+        var args = ARR_SLICE.call(arguments, 2);
+        return function bound() {
+            return fn.apply(scope, args.concat(wu.toArray(arguments)));
+        };
+    };
+
     wu.chain = function chain(/* variadic iterables */) {
         var i, index = 0, iterables = toArray(arguments);
 
@@ -267,6 +216,78 @@
                 return res;
             }
         });
+    };
+
+    wu.compose = function compose(/* variadic number of functions */) {
+        var fns = wu.toArray(arguments);
+        return function composed() {
+            var returnValue = fns.pop().apply(this, arguments);
+            while (fns.length) {
+                returnValue = fns.pop()(returnValue);
+            }
+            return returnValue;
+        };
+    };
+
+    wu.curry = function curry(fn /* variadic number of args */) {
+        var args = ARR_SLICE.call(arguments, 1);
+        return function curried() {
+            return fn.apply(this, args.concat(wu.toArray(arguments)));
+        };
+    };
+
+    // Equality testing.
+
+    var arrayEq = function arrayEq(a, b) {
+        return a.length === 0 ?
+            a.length === b.length :
+            wu.eq(a[0], b[0]) && wu.eq(a.slice(1),
+                                       b.slice(1));
+    };
+
+    var objectEq = function objectEq(a, b) {
+        var prop, propertiesSeen = [];
+        for (prop in a) {
+            propertiesSeen.push(prop);
+            if ( a.hasOwnProperty(prop) && !wu.eq(a[prop], b[prop]) )
+                return false;
+        }
+        for (prop in b) {
+            if ( b.hasOwnProperty(prop) &&
+                 !wu.has(propertiesSeen, prop) &&
+                 !wu.eq(a[prop], b[prop]) )
+                return false;
+        }
+        return true;
+    };
+
+    var regExpEq = function regExpEq(a, b) {
+        return a.source === b.source &&
+            a.global === b.global &&
+            a.ignoreCase === b.ignoreCase &&
+            a.multiline === b.multiline;
+    };
+
+    var eq = wu.eq = function eq(a, b) {
+        var typeOfA = toObjProtoString(a);
+        if (typeOfA !== toObjProtoString(b)) {
+            return false;
+        }
+
+        else {
+            switch (typeOfA) {
+                case "[object Array]":
+                    return arrayEq(a, b);
+                case "[object Object]":
+                    return objectEq(a, b);
+                case "[object RegExp]":
+                    return regExpEq(a, b);
+                case "[object Date]":
+                    return a.valueOf() === b.valueOf();
+                default:
+                    return a === b;
+            }
+        }
     };
 
     wu.has = function has(iterable, item) {
@@ -313,6 +334,8 @@
         }
     };
 
+    wu.toArray = toArray;
+
     wu.zip = function zip(iterA, iterB) {
         iterA = toIterator(iterA);
         iterB = toIterator(iterB);
@@ -335,36 +358,7 @@
     };
 
     /**
-     * Functions that are also methods (in some form) for wu functions.
-     */
-
-    wu.bind = function bind(scope, fn /*, variadic number of arguments */) {
-        var args = ARR_SLICE.call(arguments, 2);
-        return function bound() {
-            return fn.apply(scope, args.concat(wu.toArray(arguments)));
-        };
-    };
-
-    wu.compose = function compose(/* variadic number of functions */) {
-        var fns = wu.toArray(arguments);
-        return function composed() {
-            var returnValue = fns.pop().apply(this, arguments);
-            while (fns.length) {
-                returnValue = fns.pop()(returnValue);
-            }
-            return returnValue;
-        };
-    };
-
-    wu.curry = function curry(fn /* variadic number of args */) {
-        var args = ARR_SLICE.call(arguments, 1);
-        return function curried() {
-            return fn.apply(this, args.concat(wu.toArray(arguments)));
-        };
-    };
-
-    /**
-     * Augmentation of functions with wu methods.
+     * Augmenting functions with wu methods via wu(fn).
      */
 
     function augmentFunction(fn) {
