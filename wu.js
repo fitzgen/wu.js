@@ -147,12 +147,13 @@
             return res;
         };
 
-        this.all   = this.all     || wu.curry(wu.all, this);
-        this.any   = this.any     || wu.curry(wu.any, this);
-        this.chain = this.chain   || wu.curry(wu.chain, this);
-        this.has   = this.has     || wu.curry(wu.has, this);
-        this.map   = this.map     || wu.curry(wu.map, this);
-        this.zip   = this.zip     || wu.curry(wu.zip, this);
+        this.all    = this.all    || wu.curry(wu.all, this);
+        this.any    = this.any    || wu.curry(wu.any, this);
+        this.chain  = this.chain  || wu.curry(wu.chain, this);
+        this.filter = this.filter || wu.curry(wu.filter, this);
+        this.has    = this.has    || wu.curry(wu.has, this);
+        this.map    = this.map    || wu.curry(wu.map, this);
+        this.zip    = this.zip    || wu.curry(wu.zip, this);
 
         return UNDEF;
     };
@@ -299,6 +300,25 @@
         }
     };
 
+    wu.filter = function filter(iterable, fn, context) {
+        iterable = toIterator(iterable);
+        context = context || this;
+
+        return wu.Iterator(function next() {
+            var item;
+            while ( !isInstance(item, StopIteration) ) {
+                item = iterable.next();
+                if ( toBool(fn.call(context, item)) ) {
+                    return item;
+                }
+                else {
+                    continue;
+                }
+            }
+            return new StopIteration;
+        });
+    };
+
     wu.has = function has(iterable, item) {
         return wu.any(iterable, wu.curry(wu.eq, item));
     };
@@ -386,6 +406,14 @@
 
         fn.compose = function compose() {
             return wu.compose.apply(this, [this].concat(toArray(arguments)));
+        };
+
+        fn.filter = function (iterable, context) {
+            return wu.filter(iterable, this, context);
+        };
+
+        fn.map = function (iterable, context) {
+            return wu.map(iterable, this, context);
         };
 
         return fn;
