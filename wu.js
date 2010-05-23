@@ -152,6 +152,14 @@
             };
         }
 
+        else if (toObjProtoString(obj) === "[object Number]") {
+            this.next = function next() {
+                return obj-- === 0 ?
+                    new StopIteration :
+                    obj;
+            };
+        }
+
         else if (isInstance(obj, wu.Iterator)) {
             if (typeof obj.next !== "function")
                 throw new Error("Iterator without a next method!");
