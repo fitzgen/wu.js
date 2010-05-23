@@ -153,7 +153,10 @@
         }
 
         else if (isInstance(obj, wu.Iterator)) {
-            // Pass
+            if (typeof obj.next !== "function")
+                throw new Error("Iterator without a next method!");
+            else
+                null;
         }
 
         else {
