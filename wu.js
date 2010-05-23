@@ -246,7 +246,28 @@
         return !wu.all(iterable, oppositeFn);
     };
 
-    // wu.chain
+    wu.chain = function chain(/* variadic iterables */) {
+        var i, index = 0, iterables = toArray(arguments);
+
+        for (i = 0; i < iterables.length; i++)
+            iterables[i] = toIterator(iterables[i]);
+
+        return wu.Iterator(function next() {
+            var res = iterables[index].next();
+            if (isInstance(res, StopIteration)) {
+                if (iterables[index + 1] === UNDEF) {
+                    return new StopIteration;
+                }
+                else {
+                    index += 1;
+                    return arguments.callee();
+                }
+            }
+            else {
+                return res;
+            }
+        });
+    };
 
     wu.has = function has(iterable, item) {
         return wu.any(iterable, wu.curry(wu.eq, item));
