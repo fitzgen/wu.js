@@ -1,4 +1,4 @@
-module("Public API");
+module("Wu itself");
 
 test("Maintains prototype chain",
      function () {
@@ -56,6 +56,8 @@ test("Iteration API for Numbers",
          ok(iterator.next() instanceof wu.StopIteration);
      });
 
+module("Wu methods");
+
 test("wu.has",
      function () {
          ok(wu.has([1,2,3], 3), "[1,2,3] has 3");
@@ -103,3 +105,25 @@ test("wu.eq",
          ok( !wu.eq([], /regex/), "Arrays and regexes are not equal.");
          ok( !wu.eq(/regex/, new Date), "Regexes and dates are not equal.");
      });
+
+test("wu.range",
+     function () {
+         ok(wu.eq(wu.range(3).toArray(), [0,1,2]),
+            "wu.range(3).toArray() -> [0,1,2]");
+         ok(wu.eq(wu.range(3, 6).toArray(), [3,4,5]),
+            "wu.range(3, 6).toArray() -> [3,4,5]");
+         ok(wu.eq(wu.range(0, 10, 2).toArray(), [0,2,4,6,8]),
+            "wu.range(0, 10, 2).toArray() -> [0,2,4,6,8]");
+     });
+
+test("wu.zip",
+     function () {
+         ok(wu.eq(wu.zip([1,2,3], [4,5,6]).toArray(),
+                  [[1,4], [2,5], [3,6]]),
+            "wu.zip([1,2,3], [4,5,6]).toArray() -> [[1,4], [2,5], [3,6]]");
+     });
+
+module("Augmented function methods");
+
+module("Iterator methods");
+
