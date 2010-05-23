@@ -161,13 +161,18 @@
         }
     };
 
-    wu.Iterator = function Iterator(obj) {
+    wu.Iterator = function Iterator(objOrFn) {
         if (isInstance(this, wu.Iterator) === false)
-            return new wu.Iterator(obj);
+            return new wu.Iterator(objOrFn);
 
 
-        if (obj !== UNDEF) {
-            addNextMethod.call(this, obj);
+        // If the user passed in a function to use as the next method, use that
+        // instead of duck typing our own.
+        if (OBJ_TO_STRING.call(objOrFn) === "[object Function]") {
+            this.next = objOrFn;
+        }
+        else {
+            addNextMethod.call(this, objOrFn);
         }
 
         this.toArray = this.toArray || function toArray() {
@@ -189,12 +194,6 @@
 
     // Maintain prototype chain for Iterators.
     wu.Iterator.prototype = wu.prototype;
-
-    var iteratorFromNextFn = function iteratorFromNextFn(nextFn) {
-        var iterator = new wu.Iterator;
-        iterator.next = nextFn;
-        return iterator;
-    };
 
     /**
      * Iterating helper functions.
@@ -239,7 +238,7 @@
         var results = [],
             item = iterable.next();
 
-        return iteratorFromNextFn(function () {
+        return wu.Iterator(function () {
             return isInstance(item, StopIteration) ?
                 item :
                 fn.apply(context, ARR_CONCAT.call([], item));
@@ -247,18 +246,14 @@
     };
 
     var rangeHelper = function rangeHelper(start, stop, incr) {
-        var iterator = new wu.Iterator;
-
         // Handle first case since we are doing +=
         start = start - incr;
 
-        iterator.next = function () {
+        return wu.Iterator(function () {
             return start + incr >= stop ?
                 new wu.StopIteration :
                 start += incr;
-        };
-
-        return iterator;
+        });
     };
 
     wu.range = function range() {
