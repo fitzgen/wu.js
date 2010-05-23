@@ -351,14 +351,12 @@
         };
 
         fn.bind = function bind(scope) {
-            return wu.bind.apply(
-                scope,
-                [this].concat(ARR_SLICE.call(arguments, 1))
-            );
+            var args = [scope, this].concat(ARR_SLICE.call(arguments, 1));
+            return wu.bind.apply(this, args);
         };
 
         fn.compose = function compose() {
-            return wu.compose.apply(this, [this].concat(arguments));
+            return wu.compose.apply(this, [this].concat(toArray(arguments)));
         };
 
         return fn;
