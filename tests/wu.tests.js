@@ -163,6 +163,13 @@ test("wu.curry",
          ok(wu.curry(add, 5)(2) === 7, "wu.curry(add, 5)(2) === 7");
      });
 
+test("wu.filter",
+     function () {
+         ok(wu.eq(wu.filter([1,2,3,4], function (x) { return x % 2 === 0; }).toArray(),
+                  [2,4]),
+            "wu.filter([1,2,3,4], even?).toArray() -> [2,4]");
+     });
+
 test("wu.map",
      function () {
          ok(wu.eq(wu.map(wu.range(4), function (x) { return x+1; }).toArray(),
@@ -228,6 +235,19 @@ test("wu(fn).compose",
          ok(wu(timesTwo).compose(plusOne)(3) === 8, "timesTwo(plusOne(3)) === 8");
      });
 
+test("wu(fn).filter",
+     function () {
+         ok(wu.eq(wu(function (x) { return x % 2 === 0; }).filter([1,2,3,4]).toArray(),
+                  [2,4]),
+            "wu(even?).filter([1,2,3,4]).toArray() -> [2,4]");
+     });
+
+test("wu(fn).map",
+     function () {
+         ok(wu.eq(wu(function (x) { return x + 1; }).map([1,2,3,4]).toArray(),
+                  [2,3,4,5]),
+            "wu([+1).map([1,2,3,4]).toArray() -> [2,3,4,5]");
+     });
 
 module("Iterator methods");
 
@@ -251,6 +271,13 @@ test("wu.Iterator.chain",
      function () {
          ok(wu.eq(wu([1,2,3]).chain([4], [5], [6]).toArray(), [1,2,3,4,5,6]),
             "wu([1,2,3]).chain([4], [5], [6]).toArray() -> [1,2,3,4,5,6]");
+     });
+
+test("wu.Iterator.filter",
+     function () {
+         ok(wu.eq(wu([1,2,3,4]).filter(function (x) { return x % 2 === 0; }).toArray(),
+                  [2,4]),
+            "wu([1,2,3,4]).filter(even?).toArray() -> [2,4]");
      });
 
 test("wu.Iterator.has",
