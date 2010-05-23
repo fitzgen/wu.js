@@ -244,7 +244,7 @@
         return wu.Iterator(function () {
             return isInstance(item, StopIteration) ?
                 item :
-                fn.apply(context, ARR_CONCAT.call([], item));
+                fn.apply(context, item);
         });
     };
 
