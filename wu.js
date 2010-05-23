@@ -203,9 +203,14 @@
             return res;
         };
 
-        this.map = this.map || wu.curry(wu.map, this);
+        this.all   = this.all     || wu.curry(wu.all, this);
+        this.any   = this.any     || wu.curry(wu.any, this);
+        this.chain = this.chain   || wu.curry(wu.chain, this);
+        this.has   = this.has     || wu.curry(wu.has, this);
+        this.map   = this.map     || wu.curry(wu.map, this);
+        this.zip   = this.zip     || wu.curry(wu.zip, this);
 
-        // TODO: filter, reduce, has, zip, chain, etc...
+        // TODO: filter, reduce, etc...
 
         return UNDEF;
     };
