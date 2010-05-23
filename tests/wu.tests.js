@@ -137,6 +137,12 @@ test("wu.bind",
             "this === obj && uno === 1");
      });
 
+test("wu.chain",
+     function () {
+         ok(wu.eq(wu.chain([1], [2], [3], [4]).toArray(), [1,2,3,4]),
+            "wu.chain([1],[2],[3],[4]).toArray() -> [1,2,3,4]");
+     });
+
 test("wu.compose",
      function () {
          var plusOne = function (x) {
@@ -183,8 +189,6 @@ test("wu.zip",
 
 module("Augmented function methods");
 
-// TODO: all, any, bind, compose
-
 test("wu(fn).all",
      function () {
          ok(wu(function (x) { return x % 2 === 0; }).all([0,2,4,6,8]),
@@ -227,10 +231,45 @@ test("wu(fn).compose",
 
 module("Iterator methods");
 
+test("wu.Iterator.all",
+     function () {
+         ok(wu([0,2,4]).all(function (x) { return x % 2 === 0; }),
+            "wu([0,2,4]).all(even?)");
+         ok( !wu([0,2,4,5]).all(function (x) { return x % 2 === 0; }),
+            "wu([0,2,4,5]).all(even?) is false");
+     });
+
+test("wu.Iterator.any",
+     function () {
+         ok(wu([0,2,4,5]).any(function (x) { return x % 2 === 1; }),
+            "wu([0,2,4,5]).any(odd?)");
+         ok( !wu([0,2,4]).any(function (x) { return x % 2 === 1; }),
+            "wu([0,2,4]).any(odd?) is false");
+     });
+
+test("wu.Iterator.chain",
+     function () {
+         ok(wu.eq(wu([1,2,3]).chain([4], [5], [6]).toArray(), [1,2,3,4,5,6]),
+            "wu([1,2,3]).chain([4], [5], [6]).toArray() -> [1,2,3,4,5,6]");
+     });
+
+test("wu.Iterator.has",
+     function () {
+         ok(wu([0,1,2]).has(2), "wu([0,1,2]).has(2)");
+         ok( !wu([0,1,2]).has(3), "wu([0,1,2]).has(3) is false");
+     });
+
 test("wu.Iterator.map",
      function () {
          ok(wu.eq(wu(4).map(function (x) { return x + 1; }).toArray(),
                   [4,3,2,1]),
            "wu(4).map(function (x) { return x + 1; }).toArray() -> [4,3,2,1]");
+     });
+
+test("wu.Iterator.zip",
+     function () {
+         ok(wu.eq(wu([1,2,3]).zip([4,5,6]).toArray(),
+                  [[1,4], [2,5], [3,6]]),
+            "wu([1,2,3]).zip([4,5,6]) -> [[1,4], [2,5], [3,6]]");
      });
 
