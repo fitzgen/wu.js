@@ -408,11 +408,11 @@
             return wu.compose.apply(this, [this].concat(toArray(arguments)));
         };
 
-        fn.filter = function (iterable, context) {
+        fn.filter = function filter(iterable, context) {
             return wu.filter(iterable, this, context);
         };
 
-        fn.map = function (iterable, context) {
+        fn.map = function map(iterable, context) {
             return wu.map(iterable, this, context);
         };
 
