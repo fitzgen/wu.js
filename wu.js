@@ -8,7 +8,6 @@
     ARR_SLICE = Array.prototype.slice,
     OBJ_TO_STRING = Object.prototype.toString,
     UNDEF = undefined,
-    /*arrConcat = Array.prototype.concat,*/
 
     /**
      * Define publicly exposed wu function.
