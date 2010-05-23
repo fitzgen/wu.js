@@ -164,7 +164,7 @@
      * Methods attached to wu directly.
      *
      * TODO: filter, reduce, until, takeWhile, dropWhile, cycle, mapply (ie,
-     * mapply(Math.pow, [[2,2], [3,3], [10,3]]) -> [4, 27, 1000]), each
+     * mapply(Math.pow, [[2,2], [3,3], [10,3]]) -> [4, 27, 1000]), each, join
      *
      * zip should take default element, instead of just using NULL all the time.
      *
