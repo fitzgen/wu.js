@@ -177,6 +177,63 @@ test("wu.map",
             "wu.map(wu.range(4), function (x) { return x+1; }).toArray() -> [1,2,3,4]");
      });
 
+test("wu.match",
+     function () {
+         // Constructor matching
+         ok(wu.match(Object, true)({}), "Objects matches {}");
+         ok(wu.match(Array, true)([]), "Array matches []");
+         ok(wu.match(RegExp, true)(/regex/), "RegExp matches /regex/");
+         ok(wu.match(wu.Iterator, true)(wu([1,2])), "wu.Iterator matches wu([1,2])");
+         ok(wu.match(Number, true)(1), "Number matches 1");
+         ok(wu.match(String, true)("hello"), "String matches 'hello'");
+
+         // Nested constructor matching
+         ok(wu.match({ foo: Object }, true)({ foo: { bar: 1 } }), "wu.match w/ nested Object constructor");
+         ok(wu.match({ foo: Array }, true)({ foo: [1,2] }), "wu.match w/ nested Array constructor");
+         ok(wu.match({ foo: RegExp }, true)({ foo: /foo/ }), "wu.match w/ nested RegExp constructor");
+         ok(wu.match({ foo: Number }, true)({ foo: 2 }), "wu.match w/ nested Number constructor");
+         ok(wu.match({ foo: String }, true)({ foo: "foo" }), "wu.match w/ nested String constructor");
+         ok(wu.match([Object], true)([{ bar: 1 }]), "wu.match w/ Object constructor in array");
+         ok(wu.match([Array], true)([[1,2]]), "wu.match w/ Array constructor in array");
+         ok(wu.match([RegExp], true)([/foo/]), "wu.match w/ RegExp constructor in array");
+         ok(wu.match([Number], true)([2]), "wu.match w/ Number constructor in array");
+         ok(wu.match([String], true)(["string"]), "wu.match w/ String constructor in array");
+
+         // Objects
+         ok(wu.match({}, true)({}), "wu.match w/ empty objects");
+         ok(wu.match({ foo: 1, bar: 2 }, true)({ foo: 1, bar: 2 }), "wu.match w/ non-empty objects");
+         ok(wu.match({ foo: { bar: 1 } }, true)({ foo: { bar: 1 } }), "wu.match w/ nested objects");
+         try {
+             ok(wu.match({ bar: 1 }, false)({}), "This should never happen");
+         } catch (e) {
+             ok(e.message === "The form did not match any given pattern.",
+                "wu.match recognizes non-equal objects and throws error.");
+         }
+
+         // Arrays
+         ok(wu.match([], true)([]), "wu.eq w/ empty arrays");
+         ok(wu.match([1,2,3], true)([1,2,3]), "wu.eq w/ non-empty arrays");
+         ok(wu.match([1,2,[3,4]], true)([1,2,[3,4]]), "wu.eq w/ nested arrays");
+         try {
+             ok(wu.match([1,2], true)([1,2,3]), "This should never happen");
+         } catch (e) {
+             ok(e.message === "The form did not match any given pattern.",
+                "wu.match recognizes non-equal arrays and throws error.");
+         }
+
+         // wu.match.___
+         ok(wu.match(wu.match.___, true)({}), "wu.match.___ matches objects.");
+         ok(wu.match(wu.match.___, true)([]), "wu.match.___ matches arrays.");
+         ok(wu.match(wu.match.___, true)(new Date), "wu.match.___ matches dates.");
+         ok(wu.match(wu.match.___, true)(/regex/), "wu.match.___ matches regexes.");
+         ok(wu.match(wu.match.___, true)(1), "wu.match.___ matches numbers.");
+         ok(wu.match(wu.match.___, true)("foobar"), "wu.match.___ matches strings.");
+         ok(wu.match(wu.match.___, true)(true), "wu.match.___ matches true.");
+         ok(wu.match(wu.match.___, true)(false), "wu.match.___ matches false.");
+         ok(wu.match(wu.match.___, true)(null), "wu.match.___ matches null.");
+         ok(wu.match(wu.match.___, true)(undefined), "wu.match.___ matches undefined.");
+     });
+
 test("wu.range",
      function () {
          ok(wu.eq(wu.range(3).toArray(), [0,1,2]),
