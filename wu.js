@@ -269,6 +269,27 @@
         }
     };
 
+    wu.zip = function zip(iterA, iterB) {
+        iterA = toIterator(iterA);
+        iterB = toIterator(iterB);
+        return wu.Iterator(function () {
+            var a = iterA.next(),
+                b = iterB.next(),
+                aIsStop = isInstance(a, StopIteration),
+                bIsStop = isInstance(b, StopIteration),
+                res;
+            if (aIsStop && bIsStop) {
+                return new StopIteration;
+            }
+            else {
+                res = new Array;
+                res[0] = aIsStop ? null : a;
+                res[1] = bIsStop ? null : b;
+                return res;
+            }
+        });
+    };
+
     /**
      * Functions that are also methods (in some form) for wu functions.
      */
