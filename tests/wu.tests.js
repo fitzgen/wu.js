@@ -106,6 +106,13 @@ test("wu.eq",
          ok( !wu.eq(/regex/, new Date), "Regexes and dates are not equal.");
      });
 
+test("wu.map",
+     function () {
+         ok(wu.eq(wu.map(wu.range(4), function (x) { return x+1; }).toArray(),
+                  [1,2,3,4]),
+            "wu.map(wu.range(4), function (x) { return x+1; }).toArray() -> [1,2,3,4]");
+     });
+
 test("wu.range",
      function () {
          ok(wu.eq(wu.range(3).toArray(), [0,1,2]),
