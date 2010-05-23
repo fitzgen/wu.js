@@ -6,17 +6,18 @@
 
     var OLD_WU = globals.wu,
     ARR_SLICE = Array.prototype.slice,
-    OBJ_TO_STRING = Object.prototype.toString,
     UNDEF = undefined,
+    NULL = null,
 
     /**
      * Define publicly exposed wu function.
      */
 
-    wu = globals.wu = function wu(fn) {
-        return fn instanceof Function ?
-            augmentFunction(fn) :
-            wu.Iterator(fn);
+    wu = globals.wu = function wu(obj) {
+        // TODO: switch/case on typeof(obj)
+        return obj instanceof Function ?
+            augmentFunction(obj) :
+            wu.Iterator(obj);
     };
 
     wu.noConflict = function noConflict() {
@@ -30,21 +31,21 @@
 
     var isInstance = function isInstance(obj, Type)  {
         return obj instanceof Type;
-    };
-
-    var toArray = wu.toArray = function toArray(obj) {
+    },
+    toArray = wu.toArray = function toArray(obj) {
         return isInstance(obj, wu.Iterator) ?
             obj.toArray() :
             ARR_SLICE.call(obj);
-    };
-
-    var toIterator = function (obj) {
+    },
+    toObjProtoString = function toObjProtoString(obj) {
+        return Object.prototype.toString.call(obj);
+    },
+    toIterator = function toIterator(obj) {
         return isInstance(obj, wu.Iterator) ?
             obj :
             new wu.Iterator(obj);
-    };
-
-    var toBool = wu.toBool = function toBool(obj) {
+    },
+    toBool = wu.toBool = function toBool(obj) {
         return !!obj;
     };
 
@@ -83,8 +84,8 @@
     };
 
     var eq = wu.eq = function eq(a, b) {
-        var typeOfA = OBJ_TO_STRING.call(a);
-        if (typeOfA !== OBJ_TO_STRING.call(b)) {
+        var typeOfA = toObjProtoString(a);
+        if (typeOfA !== toObjProtoString(b)) {
             return false;
         }
 
@@ -108,8 +109,8 @@
      * Iterators!
      */
 
-    var StopIteration = wu.StopIteration = function () {};
-    StopIteration.prototype.toString = function () {
+    var StopIteration = wu.StopIteration = function StopIteration() {};
+    StopIteration.prototype.toString = function toString() {
         return "[object StopIteration]";
     };
 
@@ -120,7 +121,7 @@
             // Copy obj to items so that .shift() won't have side effects on
             // original.
             items = wu.toArray(obj);
-            this.next = function () {
+            this.next = function next() {
                 return items.length > 0 ?
                     items.shift() :
                     new wu.StopIteration;
@@ -136,9 +137,9 @@
             addNextMethod.call(this, pairs);
         }
 
-        else if (OBJ_TO_STRING.call(obj) === "[object String]") {
+        else if (toObjProtoString(obj) === "[object String]") {
             len = obj.length;
-            this.next = function () {
+            this.next = function next() {
                 if (len > 0) {
                     chr = obj.charAt(0);
                     obj = obj.slice(1);
@@ -155,7 +156,7 @@
             if (typeof obj.next !== "function")
                 throw new Error("Iterator without a next method!");
             else
-                null;
+                NULL;
         }
 
         else {
@@ -170,7 +171,7 @@
 
         // If the user passed in a function to use as the next method, use that
         // instead of duck typing our own.
-        if (OBJ_TO_STRING.call(objOrFn) === "[object Function]") {
+        if (toObjProtoString(objOrFn) === "[object Function]") {
             this.next = objOrFn;
         }
         else {
@@ -218,8 +219,8 @@
 
     wu.any = function any(iterable, fn, context) {
         var oppositeFn = fn === UNDEF ?
-            function (obj) { return !toBool(obj); } :
-            function (obj) {
+            function oppositeFn(obj) { return !toBool(obj); } :
+            function oppositeFn(obj) {
                 return !fn.call(context, obj);
             };
         return !wu.all(iterable, oppositeFn);
@@ -228,9 +229,7 @@
     // wu.chain
 
     wu.has = function has(iterable, item) {
-        return wu.any(iterable, function (obj) {
-            return wu.eq(obj, item);
-        });
+        return wu.any(iterable, wu.curry(wu.eq, item));
     };
 
     wu.map = function map(iterable, fn, context) {
@@ -240,7 +239,7 @@
         var results = [],
             item = iterable.next();
 
-        return wu.Iterator(function () {
+        return wu.Iterator(function next() {
             var result = isInstance(item, StopIteration) ?
                 item :
                 fn.call(context, item);
@@ -253,7 +252,7 @@
         // Handle first case since we are doing +=
         start = start - incr;
 
-        return wu.Iterator(function () {
+        return wu.Iterator(function next() {
             return start + incr >= stop ?
                 new wu.StopIteration :
                 start += incr;
@@ -276,7 +275,7 @@
     wu.zip = function zip(iterA, iterB) {
         iterA = toIterator(iterA);
         iterB = toIterator(iterB);
-        return wu.Iterator(function () {
+        return wu.Iterator(function next() {
             var a = iterA.next(),
                 b = iterB.next(),
                 aIsStop = isInstance(a, StopIteration),
@@ -287,8 +286,8 @@
             }
             else {
                 res = new Array;
-                res[0] = aIsStop ? null : a;
-                res[1] = bIsStop ? null : b;
+                res[0] = aIsStop ? NULL : a;
+                res[1] = bIsStop ? NULL : b;
                 return res;
             }
         });
@@ -319,7 +318,7 @@
     wu.curry = function curry(fn /* variadic number of args */) {
         var args = ARR_SLICE.call(arguments, 1);
         return function curried() {
-            fn.apply(this, args.concat(arguments));
+            return fn.apply(this, args.concat(wu.toArray(arguments)));
         };
     };
 
