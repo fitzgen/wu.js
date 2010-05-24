@@ -400,12 +400,13 @@
 
     wu.match = function match(/* pat1, then1, pat2, then2, ... patN, thenN */) {
         var args = toArray(arguments);
-        return function matchFn(form) {
+        return function matchFn() {
+            var form = toArray(arguments);
             // i += 2 to iterator over only the patterns.
             for (var i = 0; i < args.length; i += 2) {
                 if ( isMatch(args[i], form) ) {
                     return toObjProtoString(args[i+1]) === "[object Function]" ?
-                        args[i+1].apply(this, [].concat(form)) :
+                        args[i+1].apply(this, form) :
                         args[i+1];
                 }
             }
