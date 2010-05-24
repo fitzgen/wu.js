@@ -341,7 +341,7 @@
         return wu.Iterator(function next() {
             var result = isInstance(item, StopIteration) ?
                 item :
-                fn.call(context, item);
+                fn.apply(context, [].concat(item));
             item = iterable.next();
             return result;
         });
