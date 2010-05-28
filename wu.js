@@ -512,16 +512,12 @@
             var a = iterA.next(),
                 b = iterB.next(),
                 aIsStop = isInstance(a, StopIteration),
-                bIsStop = isInstance(b, StopIteration),
-                res;
-            if (aIsStop && bIsStop) {
+                bIsStop = isInstance(b, StopIteration);
+            if (aIsStop || bIsStop) {
                 return new StopIteration;
             }
             else {
-                res = new Array;
-                res[0] = aIsStop ? NULL : a;
-                res[1] = bIsStop ? NULL : b;
-                return res;
+                return [a, b];
             }
         });
     };
