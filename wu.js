@@ -263,6 +263,14 @@
         };
     };
 
+    wu.cycle = function cycle(iterable) {
+        var items = toArray(iterable), len = items.length, index = 0;
+
+        return wu.Iterator(function next() {
+            return items[(index++) % len];
+        });
+    };
+
     // Unlike other functions that operate on iterators, each forces evaluation.
     wu.each = function each(iterable, fn, context) {
         iterable = toIterator(iterable);
