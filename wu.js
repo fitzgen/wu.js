@@ -180,8 +180,7 @@
     /**
      * Methods attached to wu directly.
      *
-     * TODO: filter, reduce, until, dropWhile, cycle, mapply (ie,
-     * mapply(Math.pow, [[2,2], [3,3], [10,3]]) -> [4, 27, 1000]), each, join
+     * TODO: reduce, until, dropWhile, cycle, join
      *
      * zip should take default element, instead of just using NULL all the time.
      *
@@ -262,6 +261,22 @@
         return function curried() {
             return fn.apply(this, args.concat(wu.toArray(arguments)));
         };
+    };
+
+    // Unlike other functions that operate on iterators, each forces evaluation.
+    wu.each = function each(iterable, fn, context) {
+        iterable = toIterator(iterable);
+        context = context || this;
+        var item = iterable.next(),
+            results = [];
+
+        while ( !isInstance(item, StopIteration) ) {
+            results.push(item);
+            fn.call(context, item);
+            item = iterable.next();
+        }
+
+        return results;
     };
 
     // Equality testing.
