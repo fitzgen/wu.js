@@ -141,23 +141,14 @@
             addNextMethod.call(this, objOrFn);
         }
 
-        this.force = this.toArray = this.toArray || function toArray() {
-            var item = this.next(),
-                res = [];
-            while ( !isInstance(item, wu.StopIteration) ) {
-                res.push(item);
-                item = this.next();
-            }
-            return res;
-        };
-
-        this.all    = wu.curry(wu.all, this);
-        this.any    = wu.curry(wu.any, this);
-        this.chain  = wu.curry(wu.chain, this);
-        this.filter = wu.curry(wu.filter, this);
-        this.has    = wu.curry(wu.has, this);
-        this.map    = wu.curry(wu.map, this);
-        this.zip    = wu.curry(wu.zip, this);
+        this.all       = wu.curry(wu.all, this);
+        this.any       = wu.curry(wu.any, this);
+        this.chain     = wu.curry(wu.chain, this);
+        this.filter    = wu.curry(wu.filter, this);
+        this.has       = wu.curry(wu.has, this);
+        this.map       = wu.curry(wu.map, this);
+        this.takeWhile = wu.curry(wu.takeWhile, this);
+        this.zip       = wu.curry(wu.zip, this);
 
         return UNDEF;
     };
@@ -165,10 +156,20 @@
     // Maintain prototype chain for Iterators.
     wu.Iterator.prototype = wu.prototype;
 
+    wu.Iterator.prototype.force = wu.Iterator.prototype.toArray = function toArray() {
+        var item = this.next(),
+            res = [];
+        while ( !isInstance(item, wu.StopIteration) ) {
+            res.push(item);
+            item = this.next();
+        }
+        return res;
+    };
+
     /**
      * Methods attached to wu directly.
      *
-     * TODO: filter, reduce, until, takeWhile, dropWhile, cycle, mapply (ie,
+     * TODO: filter, reduce, until, dropWhile, cycle, mapply (ie,
      * mapply(Math.pow, [[2,2], [3,3], [10,3]]) -> [4, 27, 1000]), each, join
      *
      * zip should take default element, instead of just using NULL all the time.
@@ -441,6 +442,25 @@
         }
     };
 
+    wu.takeWhile = function takeWhile(iterable, fn, context) {
+        var keepIterating = true;
+        context = context || this;
+        iterable = toIterator(iterable);
+        return wu.Iterator(function next() {
+            var result;
+            if (keepIterating) {
+                result = iterable.next();
+                if ( toBool(fn.call(context, result)) ) {
+                    return result;
+                }
+                else {
+                    keepIterating = false;
+                }
+            }
+            return new StopIteration;
+        });
+    };
+
     wu.toArray = toArray;
 
     wu.zip = function zip(iterA, iterB) {
@@ -492,6 +512,10 @@
 
         fn.map = function map(iterable, context) {
             return wu.map(iterable, this, context);
+        };
+
+        fn.takeWhile = function takeWhile(iterable, context) {
+            return wu.takeWhile(iterable, this, context);
         };
 
         return fn;
