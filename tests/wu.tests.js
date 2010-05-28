@@ -175,9 +175,8 @@ test("wu.map",
          ok(wu.eq(wu.map(wu.range(4), function (x) { return x+1; }).toArray(),
                   [1,2,3,4]),
             "wu.map(wu.range(4), function (x) { return x+1; }).toArray() -> [1,2,3,4]");
-         wu.map({foo:1}, function (k, v) {
-             ok(k === "foo");
-             ok(v === 1);
+         wu.map([[1,2,3]], function (arr) {
+             ok(wu.eq(arr, [1,2,3]), "Regression test for mapping over arrays of arrays");
          }).force();
      });
 
