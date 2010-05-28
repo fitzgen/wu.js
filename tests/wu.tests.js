@@ -248,6 +248,13 @@ test("wu.range",
             "wu.range(0, 10, 2).toArray() -> [0,2,4,6,8]");
      });
 
+test("wu.takeWhile",
+     function () {
+         ok(wu.eq(wu.takeWhile([1,2,3,4,5,6], function (n) { return n < 4; }).toArray(),
+                  [1,2,3]),
+            "wu.takeWhile([1,2,3,4,5,6], function (n) { return n < 4; }).toArray() -> [1,2,3]");
+     });
+
 test("wu.zip",
      function () {
          ok(wu.eq(wu.zip([1,2,3], [4,5,6]).toArray(),
@@ -310,6 +317,13 @@ test("wu(fn).map",
             "wu([+1).map([1,2,3,4]).toArray() -> [2,3,4,5]");
      });
 
+test("wu(fn).takeWhile",
+     function () {
+         ok(wu.eq(wu(function (n) { return n < 4; }).takeWhile([1,2,3,4,5]).toArray(),
+                  [1,2,3]),
+            "wu.eq(wu(function (n) { return n < 4; }).takeWhile([1,2,3,4,5]).toArray() -> [1,2,3]");
+     });
+
 module("Iterator methods");
 
 test("wu.Iterator.all",
@@ -352,6 +366,13 @@ test("wu.Iterator.map",
          ok(wu.eq(wu(4).map(function (x) { return x + 1; }).toArray(),
                   [4,3,2,1]),
            "wu(4).map(function (x) { return x + 1; }).toArray() -> [4,3,2,1]");
+     });
+
+test("wu.Iterator.takeWhile",
+     function () {
+         ok(wu.eq(wu([1,2,3,4,5,6]).takeWhile(function (n) { return n < 4; }).toArray(),
+                  [1,2,3]),
+            "wu([1,2,3,4,5,6]).takeWhile(function (n) { return n < 4; }).toArray() -> [1,2,3]");
      });
 
 test("wu.Iterator.zip",
