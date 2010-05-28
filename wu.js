@@ -9,6 +9,16 @@
     UNDEF = undefined,
     NULL = null,
 
+    OBJECT_FUNCTION_STR  = "[object Function]",
+    OBJECT_ARRAY_STR     = "[object Array]",
+    OBJECT_OBJECT_STR    = "[object Object]",
+    OBJECT_NODELIST_STR  = "[object NodeList]",
+    OBJECT_ARGUMENTS_STR = "[object Arguments]",
+    OBJECT_STRING_STR    = "[object String]",
+    OBJECT_NUMBER_STR    = "[object Number]",
+    OBJECT_REGEXP_STR    = "[object RegExp]",
+    OBJECT_DATE_STR      = "[object Date]",
+
     /**
      * Define publicly exposed wu function.
      */
@@ -72,13 +82,13 @@
         };
 
         switch (toObjProtoString(obj)) {
-            case "[object Array]":
+            case OBJECT_ARRAY_STR:
                 attachNextForArrayLikeObjs.call(this, obj);
                 break;
-            case "[object NodeList]":
+            case OBJECT_NODELIST_STR:
                 attachNextForArrayLikeObjs.call(this, obj);
                 break;
-            case "[object Object]":
+            case OBJECT_OBJECT_STR:
                 if (isInstance(obj, wu.Iterator)) {
                     if (typeof obj.next !== "function") {
                         throw new Error("Iterator without a next method!");
@@ -87,7 +97,7 @@
                         NULL;
                     }
                 }
-                else if (obj.toString() === "[object Arguments]") {
+                else if (obj.toString() === OBJECT_ARGUMENTS_STR) {
                     attachNextForArrayLikeObjs.call(this, obj);
                 }
                 else {
@@ -100,7 +110,7 @@
                     addNextMethod.call(this, pairs);
                 }
                 break;
-            case "[object String]":
+            case OBJECT_STRING_STR:
                 len = obj.length;
                 this.next = function next() {
                     if (len > 0) {
@@ -114,7 +124,7 @@
                     }
                 };
                 break;
-            case "[object Number]":
+            case OBJECT_NUMBER_STR:
                 this.next = function next() {
                     return obj-- === 0 ?
                         new StopIteration :
@@ -134,7 +144,7 @@
 
         // If the user passed in a function to use as the next method, use that
         // instead of duck typing our own.
-        if (toObjProtoString(objOrFn) === "[object Function]") {
+        if (toObjProtoString(objOrFn) === OBJECT_FUNCTION_STR) {
             this.next = objOrFn;
         }
         else {
@@ -296,13 +306,13 @@
 
         else {
             switch (typeOfA) {
-                case "[object Array]":
+                case OBJECT_ARRAY_STR:
                     return arrayEq(a, b);
-                case "[object Object]":
+                case OBJECT_OBJECT_STR:
                     return objectEq(a, b);
-                case "[object RegExp]":
+                case OBJECT_REGEXP_STR:
                     return regExpEq(a, b);
-                case "[object Date]":
+                case OBJECT_DATE_STR:
                     return a.valueOf() === b.valueOf();
                 default:
                     return a === b;
@@ -365,7 +375,7 @@
         if (pattern === wu.match.___) {
             return true;
         }
-        if ( typeOfPattern === "[object Function]" ) {
+        if ( typeOfPattern === OBJECT_FUNCTION_STR ) {
             // Special case for matching instances to their constructors, ie
             // isMatch(Array, [1,2,3]) should return true.
             if (isInstance(form, pattern)) {
@@ -373,10 +383,10 @@
             }
             // But we have to check String and Number directly since 5
             // instanceof Number and "foo" instanceof String both return false.
-            if (pattern === String && typeOfForm === "[object String]") {
+            if (pattern === String && typeOfForm === OBJECT_STRING_STR) {
                 return true;
             }
-            if (pattern === Number && typeOfForm === "[object Number]") {
+            if (pattern === Number && typeOfForm === OBJECT_NUMBER_STR) {
                 return true;
             }
             else {
@@ -387,13 +397,13 @@
             if ( typeOfPattern !== typeOfForm ) {
                 return false;
             }
-            else if ( typeOfPattern === "[object Array]" ) {
+            else if ( typeOfPattern === OBJECT_ARRAY_STR ) {
                 return pattern.length === 0 ?
                     form.length === 0 :
                     isMatch(pattern[0], form[0]) &&
                         isMatch(pattern.slice(1), form.slice(1));
             }
-            else if ( typeOfPattern === "[object Object]" ) {
+            else if ( typeOfPattern === OBJECT_OBJECT_STR ) {
                 for (prop in pattern) {
                     if (pattern.hasOwnProperty(prop) &&
                         !isMatch(pattern[prop], form[prop])){
@@ -415,7 +425,7 @@
             // i += 2 to iterator over only the patterns.
             for (var i = 0; i < args.length; i += 2) {
                 if ( isMatch(args[i], form) ) {
-                    return toObjProtoString(args[i+1]) === "[object Function]" ?
+                    return toObjProtoString(args[i+1]) === OBJECT_FUNCTION_STR ?
                         args[i+1].apply(this, form) :
                         args[i+1];
                 }
