@@ -151,13 +151,13 @@
             return res;
         };
 
-        this.all    = this.all    || wu.curry(wu.all, this);
-        this.any    = this.any    || wu.curry(wu.any, this);
-        this.chain  = this.chain  || wu.curry(wu.chain, this);
-        this.filter = this.filter || wu.curry(wu.filter, this);
-        this.has    = this.has    || wu.curry(wu.has, this);
-        this.map    = this.map    || wu.curry(wu.map, this);
-        this.zip    = this.zip    || wu.curry(wu.zip, this);
+        this.all    = wu.curry(wu.all, this);
+        this.any    = wu.curry(wu.any, this);
+        this.chain  = wu.curry(wu.chain, this);
+        this.filter = wu.curry(wu.filter, this);
+        this.has    = wu.curry(wu.has, this);
+        this.map    = wu.curry(wu.map, this);
+        this.zip    = wu.curry(wu.zip, this);
 
         return UNDEF;
     };
