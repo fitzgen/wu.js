@@ -180,6 +180,13 @@ test("wu.map",
          }).force();
      });
 
+test("wu.mapply",
+     function () {
+         ok(wu.eq(wu.mapply([[1,2], [2,2], [3,2]], Math.pow).toArray(),
+                  [1,4,9]),
+            "wu.mapply([[1,2], [2,2], [3,2]], Math.pow).toArray() -> [1,4,9]");
+     });
+
 test("wu.match",
      function () {
          // Constructor matching
@@ -316,6 +323,13 @@ test("wu(fn).map",
             "wu([+1).map([1,2,3,4]).toArray() -> [2,3,4,5]");
      });
 
+test("wu(fn).mapply",
+     function () {
+         ok(wu.eq(wu(Math.pow).mapply([[1,2], [2,2], [3,2]]).toArray(),
+                  [1,4,9]),
+            "wu(Math.pow).mapply([[1,2], [2,2], [3,2]]).toArray() -> [1,4,9]");
+     });
+
 test("wu(fn).takeWhile",
      function () {
          ok(wu.eq(wu(function (n) { return n < 4; }).takeWhile([1,2,3,4,5]).toArray(),
@@ -365,6 +379,13 @@ test("wu.Iterator.map",
          ok(wu.eq(wu(4).map(function (x) { return x + 1; }).toArray(),
                   [4,3,2,1]),
            "wu(4).map(function (x) { return x + 1; }).toArray() -> [4,3,2,1]");
+     });
+
+test("wu.Iterator.mapply",
+     function () {
+         ok(wu.eq(wu([[1,2], [2,2], [3,2]]).mapply(Math.pow).toArray(),
+                  [1,4,9]),
+            "wu([[1,2], [2,2], [3,2]]).mapply(Math.pow).toArray() -> [1,4,9]");
      });
 
 test("wu.Iterator.takeWhile",

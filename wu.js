@@ -147,6 +147,7 @@
         this.filter    = wu.curry(wu.filter, this);
         this.has       = wu.curry(wu.has, this);
         this.map       = wu.curry(wu.map, this);
+        this.mapply    = wu.curry(wu.mapply, this);
         this.takeWhile = wu.curry(wu.takeWhile, this);
         this.zip       = wu.curry(wu.zip, this);
 
@@ -336,15 +337,23 @@
         iterable = toIterator(iterable);
         context = context || this;
 
-        var results = [],
-            item = iterable.next();
+        return wu.Iterator(function next() {
+            var next = iterable.next();
+            return isInstance(next, StopIteration) ?
+                next :
+                fn.call(context, next);
+        });
+    };
+
+    wu.mapply = function mapply(iterable, fn, context) {
+        iterable = toIterator(iterable);
+        context = context || this;
 
         return wu.Iterator(function next() {
-            var result = isInstance(item, StopIteration) ?
-                item :
-                fn.call(context, item);
-            item = iterable.next();
-            return result;
+            var next = iterable.next();
+            return isInstance(next, StopIteration) ?
+                next :
+                fn.apply(context, next);
         });
     };
 
@@ -512,6 +521,10 @@
 
         fn.map = function map(iterable, context) {
             return wu.map(iterable, this, context);
+        };
+
+        fn.mapply = function mapply(iterable, context) {
+            return wu.mapply(iterable, this, context);
         };
 
         fn.takeWhile = function takeWhile(iterable, context) {
