@@ -163,6 +163,14 @@ test("wu.curry",
          ok(wu.curry(add, 5)(2) === 7, "wu.curry(add, 5)(2) === 7");
      });
 
+test("wu.dot",
+     function () {
+         ok(wu.eq(wu.dot([{foo:1},{foo:2},{foo:3}], "foo").toArray(), [1,2,3]),
+            "wu.dot([{foo:1},{foo:2},{foo:3}], 'foo').toArray() -> [1,2,3]");
+         ok(wu.eq(wu.dot([[1], [2,3], [4,5,6]], 'slice', 1).toArray(), [[], [3], [5,6]]),
+            "wu.dot([[1], [2,3], [4,5,6]], 'slice', 1).toArray() -> [[], [3], [5,6]]");
+     });
+
 test("wu.filter",
      function () {
          ok(wu.eq(wu.filter([1,2,3,4], function (x) { return x % 2 === 0; }).toArray(),
@@ -359,6 +367,14 @@ test("wu.Iterator.chain",
      function () {
          ok(wu.eq(wu([1,2,3]).chain([4], [5], [6]).toArray(), [1,2,3,4,5,6]),
             "wu([1,2,3]).chain([4], [5], [6]).toArray() -> [1,2,3,4,5,6]");
+     });
+
+test("wu.Iterator.dot",
+     function () {
+         ok(wu.eq(wu([{foo:1},{foo:2},{foo:3}]).dot("foo").toArray(), [1,2,3]),
+            "wu([{foo:1},{foo:2},{foo:3}]).dot('foo').toArray() -> [1,2,3]");
+         ok(wu.eq(wu([[1], [2,3], [4,5,6]]).dot('slice', 1).toArray(), [[], [3], [5,6]]),
+            "wu([[1], [2,3], [4,5,6]]).dot('slice', 1).toArray() -> [[], [3], [5,6]]");
      });
 
 test("wu.Iterator.filter",

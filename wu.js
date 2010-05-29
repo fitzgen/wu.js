@@ -154,6 +154,7 @@
         this.all       = wu.curry(wu.all, this);
         this.any       = wu.curry(wu.any, this);
         this.chain     = wu.curry(wu.chain, this);
+        this.dot       = wu.curry(wu.dot, this);
         this.filter    = wu.curry(wu.filter, this);
         this.has       = wu.curry(wu.has, this);
         this.map       = wu.curry(wu.map, this);
@@ -268,6 +269,25 @@
 
         return wu.Iterator(function next() {
             return items[(index++) % len];
+        });
+    };
+
+    // Access a method or property of each object in the iterable. For example,
+    // wu.dot([[1], [2,3], [4,5,6]], "slice", 1).toArray() -> [[], [3], [5,6]]
+    wu.dot = function dot(iterable, slot /*, and variadic args */) {
+        var args = ARR_SLICE.call(arguments, 2);
+        iterable = toIterator(iterable);
+
+        return wu.Iterator(function next() {
+            var item = iterable.next();
+            if (isInstance(item, StopIteration)) {
+                return item;
+            }
+            else {
+                return toObjProtoString(item[slot]) === OBJECT_FUNCTION_STR ?
+                    item[slot].apply(item, args) :
+                    item[slot];
+            }
         });
     };
 
