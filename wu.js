@@ -182,7 +182,7 @@
     /**
      * Methods attached to wu directly.
      *
-     * TODO: reduce, until, dropWhile, cycle
+     * TODO: reduce, until, dropWhile
      *
      * zip should take default element, instead of just using NULL all the time.
      *
