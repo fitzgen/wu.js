@@ -68,6 +68,8 @@
         return "[object StopIteration]";
     };
 
+    // Given an object obj, return a .next() function that will give items from
+    // obj one at a time.
     var addNextMethod = function iterHelper(obj) {
         var pairs, prop, len, chr, items,
         attachNextForArrayLikeObjs = function attachNextForArrayLikeObjs(obj) {
@@ -151,17 +153,6 @@
             addNextMethod.call(this, objOrFn);
         }
 
-        this.all       = wu.curry(wu.all, this);
-        this.any       = wu.curry(wu.any, this);
-        this.chain     = wu.curry(wu.chain, this);
-        this.dot       = wu.curry(wu.dot, this);
-        this.filter    = wu.curry(wu.filter, this);
-        this.has       = wu.curry(wu.has, this);
-        this.map       = wu.curry(wu.map, this);
-        this.mapply    = wu.curry(wu.mapply, this);
-        this.takeWhile = wu.curry(wu.takeWhile, this);
-        this.zip       = wu.curry(wu.zip, this);
-
         return UNDEF;
     };
 
@@ -169,52 +160,176 @@
     // for extensibility (following jQuery's lead on that one).
     wu.fn = wu.Iterator.prototype = wu.prototype;
 
-    wu.Iterator.prototype.force = wu.Iterator.prototype.toArray = function toArray() {
-        var item = this.next(),
-            res = [];
-        while ( !isInstance(item, wu.StopIteration) ) {
-            res.push(item);
-            item = this.next();
-        }
-        return res;
-    };
-
-    /**
-     * Methods attached to wu directly.
+    /*
+     * Iterator methods.
      *
      * TODO: reduce, until, dropWhile
-     *
-     * zip should take default element, instead of just using NULL all the time.
-     *
-     * map should handle multiple iterables (as should filter, reduce, each)
-     *
-     * MAYBE: lambda, partial, tee, sort
      */
 
-    wu.all = function all(iterable, fn, context) {
-        iterable = toIterator(iterable);
+    // Return true if fn.call(context, item) is "truthy" for *all* items in this
+    // iterator. If fn is not passed, default it to coercion to boolean. Context
+    // defaults to this.
+    wu.fn.all = function all(fn, context) {
         fn = fn || wu.toBool;
         context = context || this;
 
-        var item = iterable.next();
+        var item = this.next();
 
         while ( !isInstance(item, wu.StopIteration) ) {
             if ( !fn.call(context, item) ) {
                 return false;
             }
-            item = iterable.next();
+            item = this.next();
         }
         return true;
     };
 
-    wu.any = function any(iterable, fn, context) {
+    // Return true if fn.call(context, item) is "truthy" for *any* item in this iterator. If fn
+    // is not passed, default it to coercion to boolean. Context defaults to this.
+    wu.fn.any = function any(fn, context) {
         var oppositeFn = fn === UNDEF ?
             function oppositeFn(obj) { return !toBool(obj); } :
             function oppositeFn(obj) {
                 return !fn.call(context, obj);
             };
-        return !wu.all(iterable, oppositeFn);
+        return !this.all(oppositeFn);
     };
+
+    // Access a method or property of each object in this iterable. For example,
+    // wu([[1], [2,3], [4,5,6]]).dot("slice", 1).toArray() -> [[], [3], [5,6]]
+    wu.fn.dot = function dot(slot /*, and variadic args */) {
+        var args = ARR_SLICE.call(arguments, 1),
+        that = this;
+
+        return wu.Iterator(function next() {
+            console.log("hello");
+            var item = that.next();
+            if (isInstance(item, StopIteration)) {
+                return item;
+            }
+            else {
+                return toObjProtoString(item[slot]) === OBJECT_FUNCTION_STR ?
+                    item[slot].apply(item, args) :
+                    item[slot];
+            }
+        });
+    };
+
+    // Unlike other iterator methods, each forces evaluation. Runs
+    // fn.call(context, item) until all items from the iterator are
+    // exhausted. Context defaults to this.
+    wu.fn.each = function each(fn, context) {
+        context = context || this;
+        var item = this.next(),
+            results = [];
+
+        while ( !isInstance(item, StopIteration) ) {
+            results.push(item);
+            fn.call(context, item);
+            item = this.next();
+        }
+
+        return results;
+    };
+
+    // Return an iterator that only returns items from this iterator where
+    // fn.call(context, item) returns "truthy". Context defaults to "this".
+    wu.fn.filter = function filter(fn, context) {
+        var that = this;
+        context = context || this;
+
+        return wu.Iterator(function next() {
+            var item;
+            while ( !isInstance(item, StopIteration) ) {
+                item = that.next();
+                if ( toBool(fn.call(context, item)) ) {
+                    return item;
+                }
+                else {
+                    continue;
+                }
+            }
+            return new StopIteration;
+        });
+    };
+
+    // Force evaluation of this iterator and return it's results as an array.
+    wu.fn.force = wu.fn.toArray = function toArray() {
+        var item = this.next(), res = [];
+        if ( isInstance(item, StopIteration) ) {
+            return res;
+        }
+        else {
+            while ( !isInstance(item, StopIteration) ) {
+                res.push(item);
+                item = this.next();
+            }
+            return res;
+        }
+    };
+
+    // Return true if item is inside this iterable.
+    wu.fn.has = function has(item) {
+        return this.any(wu.curry(wu.eq, item));
+    };
+
+    // Return a new iterator where it returns the result of fn.call(context,
+    // item) for each item in this iterator. Context defaults to this.
+    wu.fn.map = function map(fn, context) {
+        var that = this;
+        context = context || this;
+
+        return wu.Iterator(function next() {
+            var next = that.next();
+            return isInstance(next, StopIteration) ?
+                next :
+                fn.call(context, next);
+        });
+    };
+
+    // Same as wu.fn.map except that the items in this iterable are assumed to
+    // be arrays and the resulting iterator calls fn.apply(context, item) rather
+    // than fn.call(context, item). Context defaults to this.
+    wu.fn.mapply = function mapply(fn, context) {
+        var that = this;
+        context = context || this;
+
+        return wu.Iterator(function next() {
+            var next = that.next();
+            return isInstance(next, StopIteration) ?
+                next :
+                fn.apply(context, next);
+        });
+    };
+
+    // Continue iterating items while fn.call(context, item) is "truthy". As
+    // soon as it isn't truthy, stop iterating altogether. Context defaults to
+    // this.
+    wu.fn.takeWhile = function takeWhile(fn, context) {
+        var keepIterating = true,
+        that = this;
+        context = context || this;
+
+        return wu.Iterator(function next() {
+            var result;
+            if (keepIterating) {
+                result = that.next();
+                if ( toBool(fn.call(context, result)) ) {
+                    return result;
+                }
+                else {
+                    keepIterating = false;
+                }
+            }
+            return new StopIteration;
+        });
+    };
+
+    /**
+     * Functions attached to wu directly.
+     *
+     * MAYBE: lambda, partial, tee, sort
+     */
 
     wu.bind = function bind(scope, fn /*, variadic number of arguments */) {
         var args = ARR_SLICE.call(arguments, 2);
@@ -223,8 +338,12 @@
         };
     };
 
+    // Chain this iterable with the iterable arguments. For example,
+    // wu.chain([1,2,3], [4,5]) is essentially the same as wu([1,2,3,4,5]).
     wu.chain = function chain(/* variadic iterables */) {
-        var i, index = 0, iterables = toArray(arguments);
+        var i,
+        index = 0,
+        iterables = toArray(arguments);
 
         for (i = 0; i < iterables.length; i++) {
             iterables[i] = toIterator(iterables[i]);
@@ -273,41 +392,6 @@
         });
     };
 
-    // Access a method or property of each object in the iterable. For example,
-    // wu.dot([[1], [2,3], [4,5,6]], "slice", 1).toArray() -> [[], [3], [5,6]]
-    wu.dot = function dot(iterable, slot /*, and variadic args */) {
-        var args = ARR_SLICE.call(arguments, 2);
-        iterable = toIterator(iterable);
-
-        return wu.Iterator(function next() {
-            var item = iterable.next();
-            if (isInstance(item, StopIteration)) {
-                return item;
-            }
-            else {
-                return toObjProtoString(item[slot]) === OBJECT_FUNCTION_STR ?
-                    item[slot].apply(item, args) :
-                    item[slot];
-            }
-        });
-    };
-
-    // Unlike other functions that operate on iterators, each forces evaluation.
-    wu.each = function each(iterable, fn, context) {
-        iterable = toIterator(iterable);
-        context = context || this;
-        var item = iterable.next(),
-            results = [];
-
-        while ( !isInstance(item, StopIteration) ) {
-            results.push(item);
-            fn.call(context, item);
-            item = iterable.next();
-        }
-
-        return results;
-    };
-
     // Equality testing.
 
     var arrayEq = function arrayEq(a, b) {
@@ -327,7 +411,7 @@
         }
         for (prop in b) {
             if ( b.hasOwnProperty(prop) &&
-                 !wu.has(propertiesSeen, prop) &&
+                 !wu(propertiesSeen).has(prop) &&
                  !wu.eq(a[prop], b[prop]) ) {
                 return false;
             }
@@ -362,53 +446,6 @@
                     return a === b;
             }
         }
-    };
-
-    wu.filter = function filter(iterable, fn, context) {
-        iterable = toIterator(iterable);
-        context = context || this;
-
-        return wu.Iterator(function next() {
-            var item;
-            while ( !isInstance(item, StopIteration) ) {
-                item = iterable.next();
-                if ( toBool(fn.call(context, item)) ) {
-                    return item;
-                }
-                else {
-                    continue;
-                }
-            }
-            return new StopIteration;
-        });
-    };
-
-    wu.has = function has(iterable, item) {
-        return wu.any(iterable, wu.curry(wu.eq, item));
-    };
-
-    wu.map = function map(iterable, fn, context) {
-        iterable = toIterator(iterable);
-        context = context || this;
-
-        return wu.Iterator(function next() {
-            var next = iterable.next();
-            return isInstance(next, StopIteration) ?
-                next :
-                fn.call(context, next);
-        });
-    };
-
-    wu.mapply = function mapply(iterable, fn, context) {
-        iterable = toIterator(iterable);
-        context = context || this;
-
-        return wu.Iterator(function next() {
-            var next = iterable.next();
-            return isInstance(next, StopIteration) ?
-                next :
-                fn.apply(context, next);
-        });
     };
 
     var isMatch = function isMatch(pattern, form) {
@@ -505,25 +542,7 @@
         }
     };
 
-    wu.takeWhile = function takeWhile(iterable, fn, context) {
-        var keepIterating = true;
-        context = context || this;
-        iterable = toIterator(iterable);
-        return wu.Iterator(function next() {
-            var result;
-            if (keepIterating) {
-                result = iterable.next();
-                if ( toBool(fn.call(context, result)) ) {
-                    return result;
-                }
-                else {
-                    keepIterating = false;
-                }
-            }
-            return new StopIteration;
-        });
-    };
-
+    wu.toBool = toBool;
     wu.toArray = toArray;
 
     wu.zip = function zip(iterA, iterB) {
@@ -548,14 +567,6 @@
      */
 
     function augmentFunction(fn) {
-        fn.all = function all(iterable, context) {
-            return wu.all(iterable, this, context);
-        };
-
-        fn.any = function any(iterable, context) {
-            return wu.any(iterable, this, context);
-        };
-
         fn.bind = function bind(scope) {
             var args = [scope, this].concat(ARR_SLICE.call(arguments, 1));
             return wu.bind.apply(this, args);
@@ -565,20 +576,8 @@
             return wu.compose.apply(this, [this].concat(toArray(arguments)));
         };
 
-        fn.filter = function filter(iterable, context) {
-            return wu.filter(iterable, this, context);
-        };
-
-        fn.map = function map(iterable, context) {
-            return wu.map(iterable, this, context);
-        };
-
-        fn.mapply = function mapply(iterable, context) {
-            return wu.mapply(iterable, this, context);
-        };
-
-        fn.takeWhile = function takeWhile(iterable, context) {
-            return wu.takeWhile(iterable, this, context);
+        fn.curry = function curry() {
+            return wu.curry.apply(this, [this].concat(toArray(arguments)));
         };
 
         return fn;

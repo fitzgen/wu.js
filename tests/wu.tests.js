@@ -60,14 +60,6 @@ test("Numbers",
 
 module("Wu methods");
 
-test("wu.has",
-     function () {
-         ok(wu.has([1,2,3], 3), "[1,2,3] has 3");
-         ok( !wu.has([1,2,3], 4), "[1,2,3] does not have 4");
-         ok(wu.has([1,{ foo: 2 },3], { foo: 2 }), "[1,{foo:2},3] has {foo:2}");
-         ok( !wu.has([1,{ foo: 2 },3], { foo: 4 }), "[1,{foo:2},3] doesn't have {foo:4}");
-     });
-
 test("wu.eq",
      function () {
          // Objects
@@ -108,22 +100,6 @@ test("wu.eq",
          ok( !wu.eq(/regex/, new Date), "Regexes and dates are not equal.");
      });
 
-test("wu.all",
-     function () {
-         ok(wu.all([0,2,4,6,8], function (x) { return x % 2 === 0; }),
-            "wu.all([0,2,4,6,8], even?)");
-         ok( !wu.all([0,2,4,6,8,9], function (x) { return x % 2 === 0; }),
-            "wu.all([0,2,4,6,8,9], even?) is false");
-     });
-
-test("wu.any",
-     function () {
-         ok(wu.any([1,2,3,4], function (x) { return x % 2 === 0; }),
-            "wu.any([1,2,3,4], even?)");
-         ok( !wu.any([1,3,5], function (x) { return x % 2 === 0; }),
-            "wu.all([1,3,5], even?) is false");
-     });
-
 test("wu.bind",
      function () {
          var obj = {};
@@ -161,38 +137,6 @@ test("wu.curry",
              return a + b;
          };
          ok(wu.curry(add, 5)(2) === 7, "wu.curry(add, 5)(2) === 7");
-     });
-
-test("wu.dot",
-     function () {
-         ok(wu.eq(wu.dot([{foo:1},{foo:2},{foo:3}], "foo").toArray(), [1,2,3]),
-            "wu.dot([{foo:1},{foo:2},{foo:3}], 'foo').toArray() -> [1,2,3]");
-         ok(wu.eq(wu.dot([[1], [2,3], [4,5,6]], 'slice', 1).toArray(), [[], [3], [5,6]]),
-            "wu.dot([[1], [2,3], [4,5,6]], 'slice', 1).toArray() -> [[], [3], [5,6]]");
-     });
-
-test("wu.filter",
-     function () {
-         ok(wu.eq(wu.filter([1,2,3,4], function (x) { return x % 2 === 0; }).toArray(),
-                  [2,4]),
-            "wu.filter([1,2,3,4], even?).toArray() -> [2,4]");
-     });
-
-test("wu.map",
-     function () {
-         ok(wu.eq(wu.map(wu.range(4), function (x) { return x+1; }).toArray(),
-                  [1,2,3,4]),
-            "wu.map(wu.range(4), function (x) { return x+1; }).toArray() -> [1,2,3,4]");
-         wu.map([[1,2,3]], function (arr) {
-             ok(wu.eq(arr, [1,2,3]), "Regression test for mapping over arrays of arrays");
-         }).force();
-     });
-
-test("wu.mapply",
-     function () {
-         ok(wu.eq(wu.mapply([[1,2], [2,2], [3,2]], Math.pow).toArray(),
-                  [1,4,9]),
-            "wu.mapply([[1,2], [2,2], [3,2]], Math.pow).toArray() -> [1,4,9]");
      });
 
 test("wu.match",
@@ -262,13 +206,6 @@ test("wu.range",
             "wu.range(0, 10, 2).toArray() -> [0,2,4,6,8]");
      });
 
-test("wu.takeWhile",
-     function () {
-         ok(wu.eq(wu.takeWhile([1,2,3,4,5,6], function (n) { return n < 4; }).toArray(),
-                  [1,2,3]),
-            "wu.takeWhile([1,2,3,4,5,6], function (n) { return n < 4; }).toArray() -> [1,2,3]");
-     });
-
 test("wu.zip",
      function () {
          ok(wu.eq(wu.zip([1,2,3], [4,5,6]).toArray(),
@@ -277,22 +214,6 @@ test("wu.zip",
      });
 
 module("Augmented function methods");
-
-test("wu(fn).all",
-     function () {
-         ok(wu(function (x) { return x % 2 === 0; }).all([0,2,4,6,8]),
-            "wu(even?).all([0,2,4,6,8])");
-         ok( !wu(function (x) { return x % 2 === 0; }).all([0,2,4,6,8,9]),
-            "wu(even?).all([0,2,4,6,8,9]) is false");
-     });
-
-test("wu(fn).any",
-     function () {
-         ok(wu(function (x) { return x % 2 === 0; }).any([1,2,3,4]),
-            "wu(even?).any([1,2,3,4])");
-         ok( !wu(function (x) { return x % 2 === 0; }).any([1,3,5]),
-            "wu(even?).any([1,3,5]) is false");
-     });
 
 test("wu(fn).bind",
      function () {
@@ -317,34 +238,6 @@ test("wu(fn).compose",
          ok(wu(timesTwo).compose(plusOne)(3) === 8, "timesTwo(plusOne(3)) === 8");
      });
 
-test("wu(fn).filter",
-     function () {
-         ok(wu.eq(wu(function (x) { return x % 2 === 0; }).filter([1,2,3,4]).toArray(),
-                  [2,4]),
-            "wu(even?).filter([1,2,3,4]).toArray() -> [2,4]");
-     });
-
-test("wu(fn).map",
-     function () {
-         ok(wu.eq(wu(function (x) { return x + 1; }).map([1,2,3,4]).toArray(),
-                  [2,3,4,5]),
-            "wu([+1).map([1,2,3,4]).toArray() -> [2,3,4,5]");
-     });
-
-test("wu(fn).mapply",
-     function () {
-         ok(wu.eq(wu(Math.pow).mapply([[1,2], [2,2], [3,2]]).toArray(),
-                  [1,4,9]),
-            "wu(Math.pow).mapply([[1,2], [2,2], [3,2]]).toArray() -> [1,4,9]");
-     });
-
-test("wu(fn).takeWhile",
-     function () {
-         ok(wu.eq(wu(function (n) { return n < 4; }).takeWhile([1,2,3,4,5]).toArray(),
-                  [1,2,3]),
-            "wu.eq(wu(function (n) { return n < 4; }).takeWhile([1,2,3,4,5]).toArray() -> [1,2,3]");
-     });
-
 module("Iterator methods");
 
 test("wu.Iterator.all",
@@ -361,12 +254,6 @@ test("wu.Iterator.any",
             "wu([0,2,4,5]).any(odd?)");
          ok( !wu([0,2,4]).any(function (x) { return x % 2 === 1; }),
             "wu([0,2,4]).any(odd?) is false");
-     });
-
-test("wu.Iterator.chain",
-     function () {
-         ok(wu.eq(wu([1,2,3]).chain([4], [5], [6]).toArray(), [1,2,3,4,5,6]),
-            "wu([1,2,3]).chain([4], [5], [6]).toArray() -> [1,2,3,4,5,6]");
      });
 
 test("wu.Iterator.dot",
@@ -410,11 +297,3 @@ test("wu.Iterator.takeWhile",
                   [1,2,3]),
             "wu([1,2,3,4,5,6]).takeWhile(function (n) { return n < 4; }).toArray() -> [1,2,3]");
      });
-
-test("wu.Iterator.zip",
-     function () {
-         ok(wu.eq(wu([1,2,3]).zip([4,5,6]).toArray(),
-                  [[1,4], [2,5], [3,6]]),
-            "wu([1,2,3]).zip([4,5,6]) -> [[1,4], [2,5], [3,6]]");
-     });
-
