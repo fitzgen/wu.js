@@ -165,8 +165,9 @@
         return UNDEF;
     };
 
-    // Maintain prototype chain for Iterators.
-    wu.Iterator.prototype = wu.prototype;
+    // Maintain prototype chain for Iterators and exposing prototype as wu.fn
+    // for extensibility (following jQuery's lead on that one).
+    wu.fn = wu.Iterator.prototype = wu.prototype;
 
     wu.Iterator.prototype.force = wu.Iterator.prototype.toArray = function toArray() {
         var item = this.next(),
