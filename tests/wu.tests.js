@@ -168,7 +168,7 @@ test("wu.match",
          try {
              ok(wu.match([{ bar: 1 }], false)({}), "This should never happen");
          } catch (e) {
-             ok(e.message === "The form did not match any given pattern.",
+             ok(e.message === "wu.match: The form did not match any given pattern.",
                 "wu.match recognizes non-equal objects and throws error.");
          }
 
@@ -179,9 +179,12 @@ test("wu.match",
          try {
              ok(wu.match([[1,2]], true)([1,2,3]), "This should never happen");
          } catch (e) {
-             ok(e.message === "The form did not match any given pattern.",
+             ok(e.message === "wu.match: The form did not match any given pattern.",
                 "wu.match recognizes non-equal arrays and throws error.");
          }
+
+         // Regex -> string matching
+         ok(wu.match([ /hey/ ], true)("hey there"), "When all else fails, regex matching strings works");
 
          // wu.___
          ok(wu.match(wu.___, true)({}), "wu.___ matches objects.");

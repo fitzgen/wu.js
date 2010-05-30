@@ -466,7 +466,7 @@
         if (pattern === wu.___) {
             return true;
         }
-        if ( typeOfPattern === OBJECT_FUNCTION_STR ) {
+        else if ( typeOfPattern === OBJECT_FUNCTION_STR ) {
             // Special case for matching instances to their constructors, ie
             // isMatch(Array, [1,2,3]) should return true.
             if (isInstance(form, pattern)) {
@@ -486,6 +486,10 @@
         }
         else {
             if ( typeOfPattern !== typeOfForm ) {
+                if (typeOfPattern === OBJECT_REGEXP_STR &&
+                    typeOfForm === OBJECT_STRING_STR) {
+                    return pattern.test(form);
+                }
                 return false;
             }
             else if ( typeOfPattern === OBJECT_ARRAY_STR ) {
@@ -513,7 +517,7 @@
         var args = toArray(arguments);
         return function matchFn() {
             var form = toArray(arguments);
-            // i += 2 to iterator over only the patterns.
+            // i += 2 to iterate over only the patterns.
             for (var i = 0; i < args.length; i += 2) {
                 if ( isMatch(args[i], form) ) {
                     return toObjProtoString(args[i+1]) === OBJECT_FUNCTION_STR ?
@@ -521,7 +525,7 @@
                         args[i+1];
                 }
             }
-            throw new TypeError("The form did not match any given pattern.");
+            throw new TypeError("wu.match: The form did not match any given pattern.");
         };
     };
 
