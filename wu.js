@@ -152,7 +152,7 @@
     /*
      * Iterator methods.
      *
-     * TODO: reduce, until, dropWhile
+     * TODO: reduce
      */
 
     // Return true if fn.call(context, item) is "truthy" for *all* items in this
