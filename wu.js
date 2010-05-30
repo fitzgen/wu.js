@@ -70,13 +70,13 @@
 
     // Given an object obj, return a .next() function that will give items from
     // obj one at a time.
-    var addNextMethod = function iterHelper(obj) {
+    var createNextMethodFor = function iterHelper(obj) {
         var pairs, prop, len, chr, items,
         attachNextForArrayLikeObjs = function attachNextForArrayLikeObjs(obj) {
             // Copy obj to items so that .shift() won't have side effects on
             // original.
             items = wu.toArray(obj);
-            this.next = function next() {
+            return function next() {
                 return items.length > 0 ?
                     items.shift() :
                     new wu.StopIteration;
@@ -85,11 +85,9 @@
 
         switch (toObjProtoString(obj)) {
             case OBJECT_ARRAY_STR:
-                attachNextForArrayLikeObjs.call(this, obj);
-                break;
+                return attachNextForArrayLikeObjs.call(this, obj);
             case OBJECT_NODELIST_STR:
-                attachNextForArrayLikeObjs.call(this, obj);
-                break;
+                return attachNextForArrayLikeObjs.call(this, obj);
             case OBJECT_OBJECT_STR:
                 if (isInstance(obj, wu.Iterator)) {
                     if (typeof obj.next !== "function") {
@@ -109,12 +107,11 @@
                             pairs.push([prop, obj[prop]]);
                         }
                     }
-                    addNextMethod.call(this, pairs);
+                    return createNextMethodFor(pairs);
                 }
-                break;
             case OBJECT_STRING_STR:
                 len = obj.length;
-                this.next = function next() {
+                return function next() {
                     if (len > 0) {
                         chr = obj.charAt(0);
                         obj = obj.slice(1);
@@ -125,14 +122,12 @@
                         return new wu.StopIteration;
                     }
                 };
-                break;
             case OBJECT_NUMBER_STR:
-                this.next = function next() {
+                return function next() {
                     return obj-- === 0 ?
                         new StopIteration :
                         obj;
                 };
-                break;
             default:
                 throw new TypeError("Object is not iterable: " + obj);
         }
@@ -143,17 +138,11 @@
             return new wu.Iterator(objOrFn);
         }
 
-
         // If the user passed in a function to use as the next method, use that
         // instead of duck typing our own.
-        if (toObjProtoString(objOrFn) === OBJECT_FUNCTION_STR) {
-            this.next = objOrFn;
-        }
-        else {
-            addNextMethod.call(this, objOrFn);
-        }
-
-        return UNDEF;
+        this.next = toObjProtoString(objOrFn) === OBJECT_FUNCTION_STR ?
+            objOrFn :
+            createNextMethodFor(objOrFn);
     };
 
     // Maintain prototype chain for Iterators and exposing prototype as wu.fn
