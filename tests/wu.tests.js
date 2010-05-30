@@ -238,6 +238,12 @@ test("wu(fn).compose",
          ok(wu(timesTwo).compose(plusOne)(3) === 8, "timesTwo(plusOne(3)) === 8");
      });
 
+test("wu(fn).curry",
+     function () {
+         ok(wu(function (a, b) { return a + b; }).curry(5)(2) === 7,
+            "wu.curry(add, 5)(2) === 7");
+     });
+
 module("Iterator methods");
 
 test("wu.Iterator.all",
