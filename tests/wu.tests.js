@@ -183,17 +183,26 @@ test("wu.match",
                 "wu.match recognizes non-equal arrays and throws error.");
          }
 
-         // wu.match.___
-         ok(wu.match(wu.match.___, true)({}), "wu.match.___ matches objects.");
-         ok(wu.match(wu.match.___, true)([]), "wu.match.___ matches arrays.");
-         ok(wu.match(wu.match.___, true)(new Date), "wu.match.___ matches dates.");
-         ok(wu.match(wu.match.___, true)(/regex/), "wu.match.___ matches regexes.");
-         ok(wu.match(wu.match.___, true)(1), "wu.match.___ matches numbers.");
-         ok(wu.match(wu.match.___, true)("foobar"), "wu.match.___ matches strings.");
-         ok(wu.match(wu.match.___, true)(true), "wu.match.___ matches true.");
-         ok(wu.match(wu.match.___, true)(false), "wu.match.___ matches false.");
-         ok(wu.match(wu.match.___, true)(null), "wu.match.___ matches null.");
-         ok(wu.match(wu.match.___, true)(undefined), "wu.match.___ matches undefined.");
+         // wu.___
+         ok(wu.match(wu.___, true)({}), "wu.___ matches objects.");
+         ok(wu.match(wu.___, true)([]), "wu.___ matches arrays.");
+         ok(wu.match(wu.___, true)(new Date), "wu.___ matches dates.");
+         ok(wu.match(wu.___, true)(/regex/), "wu.___ matches regexes.");
+         ok(wu.match(wu.___, true)(1), "wu.___ matches numbers.");
+         ok(wu.match(wu.___, true)("foobar"), "wu.___ matches strings.");
+         ok(wu.match(wu.___, true)(true), "wu.___ matches true.");
+         ok(wu.match(wu.___, true)(false), "wu.___ matches false.");
+         ok(wu.match(wu.___, true)(null), "wu.___ matches null.");
+         ok(wu.match(wu.___, true)(undefined), "wu.___ matches undefined.");
+     });
+
+test("wu.partial",
+     function () {
+         var square = wu.partial(Math.pow, wu.___, 2),
+         twoToThe = wu.partial(Math.pow, 2);
+
+         ok(square(3) === 9, "wu.partial works with wu.___ placeholder");
+         ok(twoToThe(3) === 8, "wu.partial works like wu.curry when there is no wu.___");
      });
 
 test("wu.range",
@@ -242,6 +251,15 @@ test("wu(fn).curry",
      function () {
          ok(wu(function (a, b) { return a + b; }).curry(5)(2) === 7,
             "wu.curry(add, 5)(2) === 7");
+     });
+
+test("wu(fn).partial",
+     function () {
+         var square = wu(Math.pow).partial(wu.___, 2),
+         twoToThe = wu(Math.pow).partial(2);
+
+         ok(square(3) === 9, "wu(fn).partial works with wu.___ placeholder");
+         ok(twoToThe(3) === 8, "wu(fn).partial works like wu.curry when there is no wu.___");
      });
 
 module("Iterator methods");

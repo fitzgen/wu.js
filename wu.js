@@ -35,6 +35,10 @@
         return wu;
     };
 
+    // Unique singleton object that will always succeed in a call to wu.match() and
+    // serves as a placeholder for wu.partial().
+    wu.___ = {};
+
     /**
      * General helpers.
      */
@@ -459,7 +463,7 @@
         typeOfPattern = toObjProtoString(pattern),
         prop;
 
-        if (pattern === wu.match.___) {
+        if (pattern === wu.___) {
             return true;
         }
         if ( typeOfPattern === OBJECT_FUNCTION_STR ) {
@@ -521,8 +525,27 @@
         };
     };
 
-    // Unique singleton object that will always succeed in matching a form.
-    wu.match.___ = {};
+    wu.partial = function partial(fn /*, and variadic args */) {
+        var frozenArgs = ARR_SLICE.call(arguments, 1);
+        if (frozenArgs.length < 1) {
+            // No arguments to partially apply means we can return the normal
+            // function.
+            return fn;
+        }
+        else {
+            return function partialed() {
+                var i,
+                args = toArray(frozenArgs), // Make a copy
+                partialArgs = toArray(arguments);
+                for (i = 0; i < args.length; i++) {
+                    if (args[i] === wu.___) {
+                        args[i] = partialArgs.shift();
+                    }
+                }
+                return fn.apply(this, args.concat(partialArgs));
+            };
+        }
+    };
 
     var rangeHelper = function rangeHelper(start, stop, incr) {
         // Handle first case since we are doing +=
@@ -585,6 +608,8 @@
         fn.curry = function curry() {
             return wu.curry.apply(this, [this].concat(toArray(arguments)));
         };
+
+        fn.partial = wu.curry(wu.partial, fn);
 
         return fn;
     }
