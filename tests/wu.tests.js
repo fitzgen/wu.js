@@ -264,6 +264,13 @@ test("wu.Iterator.dot",
             "wu([[1], [2,3], [4,5,6]]).dot('slice', 1).toArray() -> [[], [3], [5,6]]");
      });
 
+test("wu.Iterator.dropWhile",
+     function () {
+         ok(wu.eq(wu([1,2,3,4,5]).dropWhile(function (n) { return n < 3; }).toArray(),
+                  [3,4,5]),
+            "wu.eq(wu([1,2,3,4,5]).dropWhile(n < 3).toArray() -> [3,4,5]");
+     });
+
 test("wu.Iterator.filter",
      function () {
          ok(wu.eq(wu([1,2,3,4]).filter(function (x) { return x % 2 === 0; }).toArray(),

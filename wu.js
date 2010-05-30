@@ -203,6 +203,24 @@
         });
     };
 
+    // While fn.call(context, item) is "truthy", do not return any items from
+    // this iterable.
+    wu.fn.dropWhile = function dropWhile(fn, context) {
+        var keepDropping = true, that = this;
+        context = context || this;
+        return wu.Iterator(function next() {
+            var item = that.next();
+            return isInstance(item, StopIteration) ?
+                item :
+                keepDropping && fn.call(context, item) ?
+                    next() :
+                    (function () {
+                        keepDropping = false;
+                        return item;
+                    }());
+        });
+    };
+
     // Unlike other iterator methods, each forces evaluation. Runs
     // fn.call(context, item) until all items from the iterator are
     // exhausted. Context defaults to this.
