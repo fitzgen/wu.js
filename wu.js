@@ -202,7 +202,6 @@
         that = this;
 
         return wu.Iterator(function next() {
-            console.log("hello");
             var item = that.next();
             if (isInstance(item, StopIteration)) {
                 return item;
