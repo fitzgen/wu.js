@@ -5,7 +5,6 @@ test("Maintains prototype chain",
          ok(wu([1,2,3,4]) instanceof wu, "wu(arr) instanceof wu");
          ok(wu({}) instanceof wu, "wu(obj) instanceof wu");
          ok(wu("Hi!") instanceof wu, "wu('Hi!') instanceof wu");
-         ok(wu(function () {}) instanceof wu, "wu(function) instanceof wu; This might not be possible...");
      });
 
 module("Iteration API");
