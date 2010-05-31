@@ -1,0 +1,18 @@
+{
+    "name": "wu.js",
+    "description": "Library for lazy Functional Programming in Javascript.",
+    "maintainers": [{
+        "name": "Nick Fitzgerald",
+        "email": "fitzgen@gmail.com",
+        "web": "http://fitzgeraldnick.com"
+    }],
+    "bugs": "http://github.com/fitzgen/wu.js/issues",
+    "licenses": [{
+        "type": "MIT",
+        "url": "http://www.opensource.org/licenses/mit-license.php "
+    }],
+    "repositories": [{
+        "type": "git",
+        "url": "http://github.com/fitzgen/wu.js"
+    }]
+}
