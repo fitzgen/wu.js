@@ -16,7 +16,7 @@
       <h1><code class="large">wu.js</code></h1>
 
       <hr />
-      <h2 class="alt">Lazy, functional Javascript that ain't nuthin' ta f*ck wit.</h2>
+      <h2 class="alt">A lazy, functional Javascript library that ain't nuthin' ta f*ck wit.</h2>
       <hr />
 
       <div class="span-7 colborder" id="nav">
@@ -27,24 +27,20 @@
             <ul>
               <li><a href="#what-is-wu-js">What is <code>wu.js</code>?</a></li>
               <li><a href="#why">Why?</a></li>
+              <li><a href="#how-to-read-this-document">How to read this document</a></li>
               <li><a href="#inspirations">Inspirations</a></li>
             </ul>
           </li>
           <li>
             <a href="#download">Download</a>
-            <ul>
-              <li>Zip</li>
-              <li>Tar</li>
-              <li>Git</li>
-            </ul>
           <li>
             <a href="#api">API</a>
             <ul>
               <li>
-                Iterators
+                <a href="#iterators">Iterators</a>
                 <ul>
                   <li>
-                    Lazy methods
+                    <a href="#lazy-methods">Lazy methods</a>
                     <ul>
                       <li><a href="#wu-chain"><code>wu.chain</code></a></li>
                       <li><a href="#wu-zip"><code>wu.zip</code></a></li>
@@ -60,26 +56,27 @@
                     </ul>
                   </li>
                   <li>
-                    Forcing evaluation
+                    <a href="#forcing-evaluation">Forcing evaluation</a>
                     <ul>
-                      <li><a href="#wu-"><code>wu.Iterator.each</code></a></li>
-                      <li><a href="#wu-"><code>wu.Iterator.force</code></a></li>
-                      <li><a href="#wu-"><code>wu.Iterator.reduce</code></a></li>
-                      <li><a href="#wu-"><code>wu.Iterator.reduceRight</code></a></li>
-                      <li><a href="#wu-"><code>wu.Iterator.toArray</code></a></li>
+                      <li><a href="#wu-each"><code>wu.Iterator.each</code></a></li>
+                      <li><a href="#wu-eachply"><code>TODO:wu.Iterator.eachply</code></a></li>
+                      <li><a href="#wu-force"><code>wu.Iterator.force</code></a></li>
+                      <li><a href="#wu-reduce"><code>wu.Iterator.reduce</code></a></li>
+                      <li><a href="#wu-reduceright"><code>wu.Iterator.reduceRight</code></a></li>
+                      <li><a href="#wu-toarray"><code>wu.Iterator.toArray</code></a></li>
                     </ul>
                   </li>
-                  <li><a href="#wu-fn">Extending iterators</a></li>
+                  <li><a href="#extending-iterators">Extending iterators</a></li>
                 </ul>
               </li>
               <li>
-                Pattern matching
+                <a href="#pattern-matching">Pattern matching</a>
                 <ul>
                   <li><a href="#wu-match"><code>wu.match</code></a></li>
                 </ul>
               </li>
               <li>
-                Lego functions
+                <a href="#lego-functions">Lego functions</a>
                 <ul>
                   <li><a href="#wu-bind"><code>wu.bind</code></a></li>
                   <li><a href="#wu-compose"><code>wu.compose</code></a></li>
@@ -88,7 +85,7 @@
                 </ul>
               </li>
               <li>
-                Utility functions
+                <a href="#utilities">Utilities</a>
                 <ul>
                   <li><a href="#wu-eq"><code>wu.eq</code></a></li>
                   <li><a href="#wu-toarray"><code>wu.toArray</code></a></li>
@@ -99,10 +96,6 @@
           </li>
           <li>
             <a href="#contributing">Contributing</a>
-            <ul>
-              <li>Github page</li>
-              <li>Issues</li>
-            </ul>
           </li>
           <li><a href="#tests">Tests</a></li>
         </ul>
@@ -110,23 +103,19 @@
 
       <div class="span-16 last" id="main">
 
-        <h2 id="introduction">Introduction</h2>
+        <h2 id="introduction"><a href="#introduction">Introduction</a></h2>
 
-        <h3 id="what-is-wu-js">What is <code>wu.js</code>?</h3>
+        <h3 id="what-is-wu-js"><a href="#what-is-wu-js">What is <code>wu.js</code>?</a></h3>
 
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
+          TODO
         </p>
 
-        <h3 id="why">Why?</h3>
+        <h3 id="why"><a href="#why">Why?</a></h3>
 
-        <h3 id="what-to-do-while-reading">How to read this document</h3>
+        <p>TODO</p>
+
+        <h3 id="how-to-read-this-document"><a href="#how-to-read-this-document">How to read this document</a></h3>
 
         <p>
           By following along of course! This page has <code>wu.js</code>
@@ -173,7 +162,39 @@
         <h3 id="iterators">Iterators</h3>
 
         <h4 id="lazy-methods">Lazy methods</h4>
+
+        <p>TODO:</p>
+        <h5 id="wu-chain"><a href="#wu-chain"><code>wu.chain</code></a></h5>
+        <h5 id="wu-zip"><a href="#wu-zip"><code>wu.zip</code></a></h5>
+        <h5 id="wu-all"><a href="#wu-all"><code>wu.Iterator.all</code></a></h5>
+        <h5 id="wu-any"><a href="#wu-any"><code>wu.Iterator.any</code></a></h5>
+        <h5 id="wu-dot"><a href="#wu-dot"><code>wu.Iterator.dot</code></a></h5>
+        <h5 id="wu-dropwhile"><a href="#wu-dropwhile"><code>wu.Iterator.dropWhile</code></a></h5>
+        <h5 id="wu-filter"><a href="#wu-filter"><code>wu.Iterator.filter</code></a></h5>
+        <h5 id="wu-has"><a href="#wu-has"><code>wu.Iterator.has</code></a></h5>
+        <h5 id="wu-map"><a href="#wu-map"><code>wu.Iterator.map</code></a></h5>
+        <h5 id="wu-mapply"><a href="#wu-mapply"><code>wu.Iterator.mapply</code></a></h5>
+        <h5 id="wu-takewhile"><a href="#wu-takewhile"><code>wu.Iterator.takeWhile</code></a></h5>
+
         <h4 id="forcing-evaluation">Forcing evaluation</h4>
+
+        <p>
+          All of the following methods will force the iterator to be
+          evaluated. Be warned: these methods will attempt to evaluate the whole
+          of infinite sequences which will send the code in to an infinite loop!
+        </p>
+
+        <p>TODO:</p>
+        <h5 id="wu-each"><a href="#wu-each"><code>wu.Iterator.each</code></a></h5>
+        <h5 id="wu-eachply"><a href="#wu-eachply"><code>TODO:wu.Iterator.eachply</code></a></h5>
+        <h5 id="wu-force"><a href="#wu-force"><code>wu.Iterator.force</code></a></h5>
+        <h5 id="wu-reduce"><a href="#wu-reduce"><code>wu.Iterator.reduce</code></a></h5>
+        <h5 id="wu-reduceright"><a href="#wu-reduceright"><code>wu.Iterator.reduceRight</code></a></h5>
+        <h5 id="wu-toarray"><a href="#wu-toarray"><code>wu.Iterator.toArray</code></a></h5>
+
+        <h4 id="extending-iterators">Extending iterators</h4>
+
+        <p>TODO: wu.fn.*, wu.Iterator(function next() {})</p>
 
         <h3 id="pattern-matching">Pattern matching</h3>
 
