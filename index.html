@@ -133,7 +133,7 @@
         <h3 id="how-to-read-this-document"><a href="#how-to-read-this-document">How to read this document</a></h3>
 
         <p>
-          By following along of course! This page has <code>wu.js</code>
+          By following along, of course! This page has <code>wu.js</code>
           included just so that you can open up your console, tweak every
           example, and play to your heart's content.
         </p>
@@ -348,9 +348,11 @@ true</pre>
 
         <p>
           All of the following methods will force the iterator to be
-          evaluated. Be warned: these methods will attempt to evaluate the whole
-          of infinite sequences which will send the code in to an infinite loop
-          and make the browser freeze!
+          evaluated. Beware: these methods will attempt to completely evaluate
+          infinite sequences which will send the code in to an infinite loop and
+          make the browser freeze! Use <code>wu.Iterator.asyncEach</code> on
+          infinite sequences or make them finite
+          via <code>wu.Iterator.takeWhile</code>.
         </p>
 
         <h5 id="wu-all"><a href="#wu-all"><code>wu.Iterator.all</code></a></h5>
@@ -385,20 +387,90 @@ false
 &gt;&gt;&gt; wu([1,2,3,4,5]).any(function (n) { return n % 2 === 0; })
 true</pre>
 
-        <pre class="box">&gt;&gt;&gt; </pre>
-
-        <pre class="box">&gt;&gt;&gt; </pre>
-
-        <pre class="box">&gt;&gt;&gt; </pre>
-
-        <p>TODO:</p>
         <h5 id="wu-asynceach"><a href="#wu-asynceach"><code>wu.Iterator.asyncEach</code></a></h5>
+        <pre class="spec">iterator.asyncEach(fn)</pre>
+        <pre class="spec">iterator.asyncEach(fn, then)</pre>
+        <pre class="spec">iterator.asyncEach(fn, then, context)</pre>
+        <p>
+          Asynchronously call <code>fn.call(context, item)</code> for every item
+          in this iterator. Order is maintained. Calls the <code>then</code>
+          callback once (and if) iteration is finished. <code>Context</code>
+          defaults to this iterator.
+        </p>
+        <p>
+          <strong>This is the only safe way to force evaluation of infinite
+          sequences without freezing the browser</strong>. Does this by yielding
+          control to the UI thread between every iteration via
+          <code>setTimeout</code>.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu.range(Infinity).asyncEach(wu.bind(console, console.log));
+undefined
+0
+1
+2
+3
+4
+5
+.
+.
+.</pre>
+
         <h5 id="wu-each"><a href="#wu-each"><code>wu.Iterator.each</code></a></h5>
+        <pre class="spec">iterator.each(fn)</pre>
+        <pre class="spec">iterator.each(fn, context)</pre>
+        <p>
+          Runs <code>fn.call(context, item)</code> until all items from the
+          iterator are exhausted. Returns the collection of all items from this
+          iterator as an array. <code>Context</code> defaults to this iterator.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu(document.querySelectorAll("h2")).each(function (el) {
+...     el.parentElement.removeChild(el);
+... });
+[&lt;h2&gt;, &lt;h2&gt;, &lt;h2&gt;, ...]</pre>
+
         <h5 id="wu-eachply"><a href="#wu-eachply"><code>wu.Iterator.eachply</code></a></h5>
+        <pre class="spec">iterator.eachply(fn)</pre>
+        <pre class="spec">iterator.eachply(fn, context)</pre>
+        <p>
+          Runs <code>fn.apply(context, item)</code> until all items from the
+          iterator are exhausted. Returns the collection of all items from this
+          iterator as an array. <code>Context</code> defaults to this iterator.
+        </p>
+        <p>
+          Useful for use with objects, since iterators yield <code>[key,
+          value]</code> pairs from objects. However, keep in mind that order is
+          not guarenteed when iterating over objects.
+        </p>
+        <pre class="box">&gt;&gt;&gt; var userRecord = {
+...     name:"Johnny Keyboard",
+...     username: "keyboaj",
+...     password:"nunya"
+... };
+&gt;&gt;&gt; wu(userRecord).eachply(function (k, v) {
+...     $("ul:last").append("&lt;li>" + k + ": " + v + "&lt;/li>");
+... });
+[["name", "Johnny Keyboard"], ["username", "keyboaj"], ["password", "nunya"]]</pre>
+
         <h5 id="wu-force"><a href="#wu-force"><code>wu.Iterator.force</code></a></h5>
+        <p>
+          A synonym for <a href="#wu-toarray"><code>wu.Iterator.toArray()</code></a>.
+        </p>
+
         <h5 id="wu-reduce"><a href="#wu-reduce"><code>wu.Iterator.reduce</code></a></h5>
+        <pre class="box">&gt;&gt;&gt; </pre>
+
         <h5 id="wu-reduceright"><a href="#wu-reduceright"><code>wu.Iterator.reduceRight</code></a></h5>
+        <pre class="box">&gt;&gt;&gt; </pre>
+
         <h5 id="wu-toarray"><a href="#wu-toarray"><code>wu.Iterator.toArray</code></a></h5>
+        <pre class="spec">iterator.toArray()</pre>
+        <p>
+          Force evaluation and return every item in this iterator as an array.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu.range(1, 5).map(Math.log).toArray();
+[0, 0.6931471805599453, 1.0986122886681098, 1.3862943611198906]
+&gt;&gt;&gt; wu({foo:1, bar:2}).toArray();
+[["foo",1], ["bar", 2]]</pre>
 
         <h4 id="extending-iterators"><a href="#extending-iterators">Extending iterators</a></h4>
 
@@ -406,9 +478,20 @@ true</pre>
 
         <h3 id="pattern-matching"><a href="#pattern-matching">Pattern matching</a></h3>
 
+        <h4 id="wu-match"><a href="#wu-match"><code>wu.match</code></a></h4>
+
         <h3 id="lego-functions"><a href="#lego-functions">Lego functions</a></h3>
 
+        <h4 id="wu-bind"><a href="#wu-bind"><code>wu.bind</code></a></h4>
+        <h4 id="wu-compose"><a href="#wu-compose"><code>wu.compose</code></a></h4>
+        <h4 id="wu-curry"><a href="#wu-curry"><code>wu.curry</code></a></h4>
+        <h4 id="wu-partial"><a href="#wu-partial"><code>wu.partial</code></a></h4>
+
         <h3 id="utilities"><a href="#utilities">Utilities</a></h3>
+
+        <h4 id="wu-eq"><a href="#wu-eq"><code>wu.eq</code></a></h4>
+        <h4 id="wu-toarray"><a href="#wu-toarray"><code>wu.toArray</code></a></h4>
+        <h4 id="wu-tobool"><a href="#wu-tobool"><code>wu.toBool</code></a></h4>
 
         <hr />
 
