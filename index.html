@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
@@ -104,7 +105,7 @@
                 <a href="#utilities">Utilities</a>
                 <ul>
                   <li><a href="#wu-eq"><code>wu.eq</code></a></li>
-                  <li><a href="#wu-toarray"><code>wu.toArray</code></a></li>
+                  <li><a href="#wu-toarray2"><code>wu.toArray</code></a></li>
                   <li><a href="#wu-tobool"><code>wu.toBool</code></a></li>
                 </ul>
               </li>
@@ -513,55 +514,107 @@ undefined
         <h3 id="lego-functions"><a href="#lego-functions">Lego functions</a></h3>
 
         <h4 id="wu-bind"><a href="#wu-bind"><code>wu.bind</code></a></h4>
-        <pre class="spec"></pre>
+        <pre class="spec">wu.bind(context, fn)</pre>
+        <pre class="spec">wu.bind(context, fn, arg1, arg2, ..., argN)</pre>
         <p>
-          TODO
+          Return a new function which returns the value of <code>fn</code> when
+          called with <code>context</code> as <code>this</code>. Optionally,
+          curry arguments as well.
         </p>
-        <pre class="box"></pre>
+        <pre class="box">&gt;&gt;&gt; var items = [1,2,3,4];
+&gt;&gt;&gt; var pop = items.pop;
+&gt;&gt;&gt; pop();
+undefined
+&gt;&gt;&gt; items;
+[1, 2, 3, 4]
+&gt;&gt;&gt; pop = wu.bind(items, items.pop);
+&gt;&gt;&gt; pop();
+4
+&gt;&gt;&gt; items;
+[1, 2, 3]</pre>
 
         <h4 id="wu-compose"><a href="#wu-compose"><code>wu.compose</code></a></h4>
-        <pre class="spec"></pre>
+        <pre class="spec">wu.compose(fn1, fn2, ..., fnN)</pre>
         <p>
-          TODO
+          Compose multiple functions to create a new function. For
+          example, <code>wu.compose(f, g, h)(x)</code> is equivalent
+          to <code>f(g(h(x)))</code>.
         </p>
-        <pre class="box"></pre>
+        <pre class="box">&gt;&gt;&gt; function square(x) { return x * x; }
+&gt;&gt;&gt; function add2(x) { return x + 2; }
+&gt;&gt;&gt; wu.compose(square, add2)(5);
+49
+&gt;&gt;&gt; wu.compose(add2, square)(5);
+27</pre>
 
         <h4 id="wu-curry"><a href="#wu-curry"><code>wu.curry</code></a></h4>
-        <pre class="spec"></pre>
+        <pre class="spec">wu.curry(fn, arg1, arg2, ..., argN)</pre>
         <p>
-          TODO
+          Return a new function that calls <code>fn</code> with the
+          first <code>n</code> arguments frozen.
         </p>
-        <pre class="box"></pre>
+        <pre class="box">&gt;&gt;&gt; function add(a, b) { return a + b; }
+&gt;&gt;&gt; var add3 = wu.curry(add, 3);
+&gt;&gt;&gt; add3(5);
+8</pre>
 
         <h4 id="wu-partial"><a href="#wu-partial"><code>wu.partial</code></a></h4>
-        <pre class="spec"></pre>
+        <pre class="spec">wu.partial(fn, arg1, arg2, ..., argN)</pre>
         <p>
-          TODO
+          Similar to currying, but instead of freezing the first <code>n</code>
+          arguments, you can select which ones to freeze and which to leave free
+          with <code>wu.___</code>.
         </p>
-        <pre class="box"></pre>
+        <pre class="box">&gt;&gt;&gt; function sub(a, b) { return a - b; }
+&gt;&gt;&gt; var sub3 = wu.partial(sub, wu.___, 3);
+&gt;&gt;&gt; sub3(5);
+2</pre>
 
         <h3 id="utilities"><a href="#utilities">Utilities</a></h3>
 
         <h4 id="wu-eq"><a href="#wu-eq"><code>wu.eq</code></a></h4>
-        <pre class="spec"></pre>
+        <pre class="spec">wu.eq(a, b)</pre>
         <p>
-          TODO
+          Returns true if the <code>a</code> and <code>b</code> are
+          equivalent. Performs an "as-deep-as-needed" comparison on complex
+          structures such as arrays and objects. With primitive objects, uses
+          the <code>===</code> operator.
         </p>
-        <pre class="box"></pre>
+        <pre class="box">&gt;&gt;&gt; wu.eq({}, { foo: 1 });
+false
+&gt;&gt;&gt; wu.eq({ foo: { bar: 1 } }, { foo: { bar: 1 } });
+true
+&gt;&gt;&gt; wu.eq([1, [2], {}], [1, [3], {}]);
+false
+&gt;&gt;&gt; wu.eq(null, false);
+false
+&gt;&gt;&gt; wu.eq([1, 2, [4, 5], { foo: {} }], [1, 2, [4, 5], { foo: {} }]);
+true</pre>
 
-        <h4 id="wu-toarray"><a href="#wu-toarray"><code>wu.toArray</code></a></h4>
-        <pre class="spec"></pre>
+        <h4 id="wu-toarray2"><a href="#wu-toarray2"><code>wu.toArray</code></a></h4>
+        <pre class="spec">wu.toArray(thing)</pre>
         <p>
-          TODO
+          If <code>thing</code> is an iterator,
+          return <code>thing.toArray()</code>. Otherwise,
+          return <code>Array.prototype.slice.call(thing)</code>. Useful for
+          converting a function's <code>arguments</code> object to a true array.
         </p>
-        <pre class="box"></pre>
+        <pre class="box">&gt;&gt;&gt; (function () { return wu.toArray(arguments); }(1, 2, 3, 4))
+[1, 2, 3, 4]</pre>
 
         <h4 id="wu-tobool"><a href="#wu-tobool"><code>wu.toBool</code></a></h4>
-        <pre class="spec"></pre>
+        <pre class="spec">wu.toBool(thing)</pre>
         <p>
-          TODO
+          Forced coercion to boolean.
         </p>
-        <pre class="box"></pre>
+        <pre class="box">&gt;&gt;&gt; wu.toBool(0)
+false
+&gt;&gt;&gt; wu.toBool(1)
+true
+&gt;&gt;&gt; wu.toBool(undefined)
+false
+&gt;&gt;&gt; wu.toBool(Infinity)
+true</pre>
 
         <hr />
 
