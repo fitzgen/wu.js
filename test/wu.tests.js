@@ -328,6 +328,23 @@ test("wu.Iterator.dropWhile",
             "wu.eq(wu([1,2,3,4,5]).dropWhile(n < 3).toArray() -> [3,4,5]");
      });
 
+test("wu.Iterator.each",
+     function () {
+         ok(wu.eq([1,2,3], wu([1,2,3]).each(Math.log)),
+            "Each returns the values from the original iterator, despite what the each function is.");
+         var items = [];
+         wu([1,2,3]).each(wu.bind(items, items.push));
+         ok(wu.eq([1,2,3], items), "wu(...).each() reuns for every item in the iterator in order.");
+     });
+
+test("wu.Iterator.eachply",
+     function () {
+         ok(wu.eq([["foo",1]], wu({ foo: 1 }).eachply(function (k, v) {
+                                                          ok(k === "foo" && v === 1, "eachply applies keys and values correctly.");
+                                                      })),
+            "eachply returns the values from the original iterator.");
+     });
+
 test("wu.Iterator.filter",
      function () {
          ok(wu.eq(wu([1,2,3,4]).filter(function (x) { return x % 2 === 0; }).toArray(),
