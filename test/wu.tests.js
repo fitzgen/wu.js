@@ -297,14 +297,19 @@ test("wu.Iterator.any",
             "wu([0,2,4]).any(odd?) is false");
      });
 
-asyncTest("wu.Iterator.asyncEach", function () {
+asyncTest("wu.Iterator.asyncEach",
+          2,
+          function () {
               var items = [];
-              wu([1,2,3]).asyncEach(function (n) {
+              wu([1,2,3]).asyncEach(function each(n) {
                   items.push(n);
                   if (items.length === 3) {
                       ok(wu.eq(items, [1,2,3]), "asyncEach runs through each item in the iterator in correct order.");
-                      start();
                   }
+              },
+              function then() {
+                  ok(items.length === 3, "And the 'then' callback is called after");
+                  start();
               });
           });
 
