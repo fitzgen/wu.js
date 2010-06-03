@@ -324,6 +324,19 @@ test("wu.Iterator.mapply",
             "wu([[1,2], [2,2], [3,2]]).mapply(Math.pow).toArray() -> [1,4,9]");
      });
 
+test("wu.Iterator.reduce",
+     function () {
+         ok(wu([1,2,3,4]).reduce(function (n, m) { return n + m; }) == 10,
+            "wu([1,2,3,4]).reduce(n + m) == 10");
+     });
+
+test("wu.Iterator.reduceRight",
+     function () {
+         ok(wu.eq(wu([[1,2,3], [4,5], [6,7,8]]).reduceRight(function (a, b) { return a.concat(b); }),
+                  [1,2,3,4,5,6,7,8]),
+            "wu([[1,2,3], [4,5], [6,7,8]]).reduceRight(a.concat(b)) -> [1,2,3,4,5,6,7,8]");
+     });
+
 test("wu.Iterator.takeWhile",
      function () {
          ok(wu.eq(wu([1,2,3,4,5,6]).takeWhile(function (n) { return n < 4; }).toArray(),
