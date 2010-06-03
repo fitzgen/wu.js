@@ -67,7 +67,7 @@
                     </ul>
                   </li>
                   <li>
-                    <a href="#forcing-evaluation">Forcing evaluation</a>
+                    <a href="#forceful">Forceful</a>
                     <ul>
                       <li><a href="#wu-all"><code>wu.Iterator.all</code></a></li>
                       <li><a href="#wu-any"><code>wu.Iterator.any</code></a></li>
@@ -177,6 +177,10 @@
 
         <h3 id="iterators"><a href="#iterators">Iterators</a></h3>
 
+        <p>
+          TODO: Paragraph about iterators, .next() and StopIteration, etc...
+        </p>
+
         <h4 id="lazy-methods"><a href="#lazy">Lazy</a></h4>
 
         <h5 id="wu-chain"><a href="#wu-chain"><code>wu.chain</code></a></h5>
@@ -267,8 +271,8 @@
           as <code>this</code> inside of the <code>testFn</code>. It defaults to
           the iterator.
         </p>
-        <pre class="box">&gt;&gt;&gt; wu([1,2,3,4,5]).dropWhile(function (n) { return n &lt; 3; }).toArray();
-[3,4,5]</pre>
+        <pre class="box">&gt;&gt;&gt; wu([1,2,3,2,1]).dropWhile(function (n) { return n &lt; 3; }).toArray();
+[3,2,1]</pre>
 
         <h5 id="wu-filter"><a href="#wu-filter"><code>wu.Iterator.filter</code></a></h5>
         <pre class="spec">iterator.filter(testFn)</pre>
@@ -281,14 +285,36 @@
         <pre class="box">&gt;&gt;&gt; wu([1,2,3,4]).filter(function (x) { return x % 2 === 0; }).toArray();
 [2, 4]</pre>
 
-        <p>TODO:</p>
         <h5 id="wu-has"><a href="#wu-has"><code>wu.Iterator.has</code></a></h5>
+        <pre class="spec">iterator.has(element)</pre>
+        <p>
+          Is <code>element</code> inside of this iterator? Equality is
+          calculated with <code>wu.eq</code>.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu([0,1,2]).has(3);
+false
+&gt;&gt;&gt; wu([{foo:1}, {bar:2}, {baz:3}]).has({bar:2});
+true</pre>
+
         <h5 id="wu-map"><a href="#wu-map"><code>wu.Iterator.map</code></a></h5>
+        <pre class="spec">iterator.map(fn)</pre>
+        <pre class="spec">iterator.map(fn, context)</pre>
+        <p>
+          Returns an iterator that yields <code>fn.call(context, item)</code>
+          for every item in this iterator. <code>Context</code> defaults to this
+          iterator.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu.range(5).map(function (n) { return n * n; }).toArray();
+[0, 1, 4, 9, 16]
+&gt;&gt;&gt; wu.range(10).map(Math.sqrt).map(Math.ceil).toArray();
+[0, 1, 2, 2, 2, 3, 3, 3, 3, 3]</pre>
+
+        <p>TODO:</p>
         <h5 id="wu-mappend"><a href="#wu-mappend"><code>wu.Iterator.mappend</code></a></h5>
         <h5 id="wu-mapply"><a href="#wu-mapply"><code>wu.Iterator.mapply</code></a></h5>
         <h5 id="wu-takewhile"><a href="#wu-takewhile"><code>wu.Iterator.takeWhile</code></a></h5>
 
-        <h4 id="forcing-evaluation"><a href="#forcing-evaluation">Forcing evaluation</a></h4>
+        <h4 id="forceful"><a href="#forceful">Forceful</a></h4>
 
         <p>
           All of the following methods will force the iterator to be
@@ -343,10 +369,10 @@
         <h2 id="tests"><a href="#tests">Tests</a></h2>
 
         <p>
-          See the results of the <a href="test/wu.tests.html"
-          target="_blank">tests</a> right in your browser. If any don't pass,
-          please file a ticket in the issue tracker detailing which test failed
-          and what browser you are running!
+          See the <a href="test/wu.tests.html" target="_blank">results of the
+          tests right in your browser</a>. If any don't pass, please file a
+          ticket in the issue tracker detailing which test failed and what
+          browser you are running!
         </p>
 
       </div>
