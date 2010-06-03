@@ -4,7 +4,6 @@ test("Maintains prototype chain",
      function () {
          ok(wu([1,2,3,4]) instanceof wu, "wu(arr) instanceof wu");
          ok(wu({}) instanceof wu, "wu(obj) instanceof wu");
-         ok(wu("Hi!") instanceof wu, "wu('Hi!') instanceof wu");
      });
 
 module("Iteration API");
@@ -22,7 +21,11 @@ test("Objects",
          ok((next[0] === "foo" && next[1] === 1) ||
             (next[0] === "bar" && next[1] === 2));
 
-         ok(iterator.next() instanceof wu.StopIteration);
+         try {
+             ok(!!iterator.next(), "This should never happen");
+         } catch (err) {
+             ok(err instanceof wu.StopIteration);
+         }
 
          ok(wu.eq(wu({ foo: 1 }).toArray(), [["foo", 1]]), "wu({foo:1}).toArray() -> [['foo', 1]]");
      });
@@ -32,7 +35,11 @@ test("Arrays",
          var iterator = wu([1,2]);
          ok(iterator.next() === 1);
          ok(iterator.next() === 2);
-         ok(iterator.next() instanceof wu.StopIteration);
+         try {
+             ok(!!iterator.next(), "This should never happen.");
+         } catch (err) {
+             ok(err instanceof wu.StopIteration);
+         }
 
          ok(wu.eq(wu([1,2,3]).toArray(), [1,2,3]), "wu([1,2,3]).toArray() -> [1,2,3]");
      });
@@ -43,7 +50,11 @@ test("Strings",
          ok(iterator.next() === "H");
          ok(iterator.next() === "i");
          ok(iterator.next() === "!");
-         ok(iterator.next() instanceof wu.StopIteration);
+         try {
+             ok(!!iterator.next(), "This should never happen.");
+         } catch (err) {
+             ok(err instanceof wu.StopIteration);
+         }
 
          ok(wu.eq(wu("Hi!").toArray(), ["H", "i", "!"]), "wu('Hi!').toArray() -> ['H', 'i', '!']");
      });
@@ -54,7 +65,11 @@ test("Numbers",
          ok(iterator.next() === 2);
          ok(iterator.next() === 1);
          ok(iterator.next() === 0);
-         ok(iterator.next() instanceof wu.StopIteration);
+         try {
+             ok(!!iterator.next(), "This should never happen.");
+         } catch (err) {
+             ok(err instanceof wu.StopIteration);
+         }
      });
 
 module("Wu methods");
