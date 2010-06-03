@@ -38,7 +38,7 @@
               <li>Git</li>
             </ul>
           <li>
-            API
+            <a href="#api">API</a>
             <ul>
               <li>
                 Iterators
@@ -46,28 +46,53 @@
                   <li>
                     Lazy methods
                     <ul>
+                      <li><a href="#wu-chain"><code>wu.chain</code></a></li>
+                      <li><a href="#wu-zip"><code>wu.zip</code></a></li>
+                      <li><a href="#wu-all"><code>wu.Iterator.all</code></a></li>
+                      <li><a href="#wu-any"><code>wu.Iterator.any</code></a></li>
+                      <li><a href="#wu-dot"><code>wu.Iterator.dot</code></a></li>
+                      <li><a href="#wu-dropwhile"><code>wu.Iterator.dropWhile</code></a></li>
+                      <li><a href="#wu-filter"><code>wu.Iterator.filter</code></a></li>
+                      <li><a href="#wu-has"><code>wu.Iterator.has</code></a></li>
+                      <li><a href="#wu-map"><code>wu.Iterator.map</code></a></li>
+                      <li><a href="#wu-mapply"><code>wu.Iterator.mapply</code></a></li>
+                      <li><a href="#wu-takewhile"><code>wu.Iterator.takeWhile</code></a></li>
                     </ul>
                   </li>
                   <li>
                     Forcing evaluation
                     <ul>
+                      <li><a href="#wu-"><code>wu.Iterator.each</code></a></li>
+                      <li><a href="#wu-"><code>wu.Iterator.force</code></a></li>
+                      <li><a href="#wu-"><code>wu.Iterator.reduce</code></a></li>
+                      <li><a href="#wu-"><code>wu.Iterator.reduceRight</code></a></li>
+                      <li><a href="#wu-"><code>wu.Iterator.toArray</code></a></li>
                     </ul>
                   </li>
+                  <li><a href="#wu-fn">Extending iterators</a></li>
                 </ul>
               </li>
               <li>
                 Pattern matching
                 <ul>
+                  <li><a href="#wu-match"><code>wu.match</code></a></li>
                 </ul>
               </li>
               <li>
                 Lego functions
                 <ul>
+                  <li><a href="#wu-bind"><code>wu.bind</code></a></li>
+                  <li><a href="#wu-compose"><code>wu.compose</code></a></li>
+                  <li><a href="#wu-curry"><code>wu.curry</code></a></li>
+                  <li><a href="#wu-partial"><code>wu.partial</code></a></li>
                 </ul>
               </li>
               <li>
                 Utility functions
                 <ul>
+                  <li><a href="#wu-eq"><code>wu.eq</code></a></li>
+                  <li><a href="#wu-toarray"><code>wu.toArray</code></a></li>
+                  <li><a href="#wu-tobool"><code>wu.toBool</code></a></li>
                 </ul>
               </li>
             </ul>
@@ -79,7 +104,7 @@
               <li>Issues</li>
             </ul>
           </li>
-          <li><a href="test/wu.tests.html" target="_blank">Tests</a></li>
+          <li><a href="#tests">Tests</a></li>
         </ul>
       </div>
 
@@ -101,17 +126,35 @@
 
         <h3 id="why">Why?</h3>
 
-        <h3 id="what-to-do-while-reading">What to do while reading this document</h3>
+        <h3 id="what-to-do-while-reading">How to read this document</h3>
 
         <p>
-          Follow along of course! This page has <code>wu.js</code> included just
-          so that you can open up your console, tweak every example, and play to
-          your heart's content.
+          By following along of course! This page has <code>wu.js</code>
+          included just so that you can open up your console, tweak every
+          example, and play to your heart's content.
         </p>
 
         <h3 id="inspirations">Inspirations</h3>
 
+        <p>In no particular order:</p>
+
+        <ul>
+          <li><a href="http://www.sbcl.org/">Common Lisp</a></li>
+          <li><a href="http://www.haskell.org/">Haskell</a></li>
+          <li><a href="http://docs.python.org/library/itertools.html">itertools</a></li>
+          <li><a href="http://jquery.com/">jQuery</a></li>
+          <li><a href="http://www.prototypejs.org/">Prototype</a></li>
+          <li><a href="http://documentcloud.github.com/underscore/">underscore.js</a></li>
+          <li><a href="http://osteele.com/sources/javascript/functional/">Functional.js</a></li>
+          <li><a href="http://github.com/jfd/match-js">match-js</a></li>
+          <li><a href="http://closure-library.googlecode.com/svn/docs/closure_goog_iter_iter.js.html">closure/goog/iter</a></li>
+        </ul>
+
+        <hr />
+
         <h2 id="download">Download</h2>
+
+        <p>TODO: link these after a 0.1.0 release with nice pre packaged downloads.</p>
 
         <div class="span-5">
           <h3>Zip</h3>
@@ -123,15 +166,22 @@
           <h3>Git</h3>
         </div>
 
+        <hr />
+
         <h2 id="api">API</h2>
 
         <h3 id="iterators">Iterators</h3>
+
+        <h4 id="lazy-methods">Lazy methods</h4>
+        <h4 id="forcing-evaluation">Forcing evaluation</h4>
 
         <h3 id="pattern-matching">Pattern matching</h3>
 
         <h3 id="lego-functions">Lego functions</h3>
 
         <h3 id="utilities">Utilities</h3>
+
+        <hr />
 
         <h2 id="contributing">Contributing</h2>
 
@@ -142,11 +192,22 @@
         </p>
 
         <div class="span-8">
-          <h3 id="github-page">Github page</h3>
+          <h3 id="github-page"><a href="http://github.com/fitzgen/wu.js">Github page</a></h3>
         </div>
         <div class="span-7">
-          <h3 id="issues">Issues</h3>
+          <h3 id="issues"><a href="http://github.com/fitzgen/wu.js/issues">Issues</a></h3>
         </div>
+
+        <hr />
+
+        <h2 id="tests">Tests</h2>
+
+        <p>
+          See the results of the <a href="test/wu.tests.html"
+          target="_blank">tests</a> right in your browser. If any don't pass,
+          please file a ticket in the issue tracker detailing which test failed
+          and what browser you are running!
+        </p>
 
       </div>
 
