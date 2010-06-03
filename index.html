@@ -16,6 +16,9 @@
       h5 a code {
           font-weight: bold !important;
       }
+      h1 a {
+          text-decoration: none;
+      }
     </style>
 
   </head>
@@ -23,7 +26,7 @@
   <body>
     <div class="container">
 
-      <h1><code class="large">wu.js</code></h1>
+      <h1><a href="http://github.com/fitzgen/wu.js/"><code class="large">wu.js</code></a></h1>
 
       <hr />
       <h2 class="alt">A lazy, functional Javascript library that ain't nuthin' ta f*ck wit.</h2>
@@ -312,7 +315,7 @@ true</pre>
         <pre class="spec">iterator.mapply(fn)</pre>
         <pre class="spec">iterator.mapply(fn, context)</pre>
         <p>
-          The same as wu.Iterator.map, except instead of yeilding
+          The same as <code>wu.Iterator.map</code>, except instead of yeilding
           <code>fn.call(context, item)</code>, it is assumed that every item is
           an array and the resulting iterator yields <code>fn.apply(context,
           item)</code> for every item in this iterator. <code>Context</code>
@@ -457,10 +460,32 @@ undefined
         </p>
 
         <h5 id="wu-reduce"><a href="#wu-reduce"><code>wu.Iterator.reduce</code></a></h5>
-        <pre class="box">&gt;&gt;&gt; </pre>
+        <pre class="spec">iterator.reduce(fn)</pre>
+        <pre class="spec">iterator.reduce(fn, initial)</pre>
+        <pre class="spec">iterator.reduce(fn, initial, context)</pre>
+        <p>
+          Applies <code>fn</code> against each item in this iterator, left to
+          right, building them up to accumulate a single
+          value. <code>Initial</code> defaults to the first item in this
+          iterator, <code>context</code> defaults to this iterator.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu([1,2,3,4]).reduce(function (n, m) { return n + m; });
+10</pre>
 
         <h5 id="wu-reduceright"><a href="#wu-reduceright"><code>wu.Iterator.reduceRight</code></a></h5>
-        <pre class="box">&gt;&gt;&gt; </pre>
+        <pre class="spec">iterator.reduceRight(fn)</pre>
+        <pre class="spec">iterator.reduceRight(fn, initial)</pre>
+        <pre class="spec">iterator.reduceRight(fn, initial, context)</pre>
+        <p>
+          The exact same as <code>wu.Iterator.reduce</code>, except that instead
+          of accumulating from left to right, it accumulates from right to
+          left. <code>Initial</code> defaults to the last item in this
+          iterator, <code>context</code> defaults to this iterator.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu([[1,2,3], [4,5], [6,7,8]]).reduceRight(function (a, b) {
+...     return a.concat(b);
+... });
+[1, 2, 3, 4, 5, 6, 7, 8]</pre>
 
         <h5 id="wu-toarray"><a href="#wu-toarray"><code>wu.Iterator.toArray</code></a></h5>
         <pre class="spec">iterator.toArray()</pre>
@@ -479,19 +504,64 @@ undefined
         <h3 id="pattern-matching"><a href="#pattern-matching">Pattern matching</a></h3>
 
         <h4 id="wu-match"><a href="#wu-match"><code>wu.match</code></a></h4>
+        <pre class="spec"></pre>
+        <p>
+          TODO
+        </p>
+        <pre class="box"></pre>
 
         <h3 id="lego-functions"><a href="#lego-functions">Lego functions</a></h3>
 
         <h4 id="wu-bind"><a href="#wu-bind"><code>wu.bind</code></a></h4>
+        <pre class="spec"></pre>
+        <p>
+          TODO
+        </p>
+        <pre class="box"></pre>
+
         <h4 id="wu-compose"><a href="#wu-compose"><code>wu.compose</code></a></h4>
+        <pre class="spec"></pre>
+        <p>
+          TODO
+        </p>
+        <pre class="box"></pre>
+
         <h4 id="wu-curry"><a href="#wu-curry"><code>wu.curry</code></a></h4>
+        <pre class="spec"></pre>
+        <p>
+          TODO
+        </p>
+        <pre class="box"></pre>
+
         <h4 id="wu-partial"><a href="#wu-partial"><code>wu.partial</code></a></h4>
+        <pre class="spec"></pre>
+        <p>
+          TODO
+        </p>
+        <pre class="box"></pre>
 
         <h3 id="utilities"><a href="#utilities">Utilities</a></h3>
 
         <h4 id="wu-eq"><a href="#wu-eq"><code>wu.eq</code></a></h4>
+        <pre class="spec"></pre>
+        <p>
+          TODO
+        </p>
+        <pre class="box"></pre>
+
         <h4 id="wu-toarray"><a href="#wu-toarray"><code>wu.toArray</code></a></h4>
+        <pre class="spec"></pre>
+        <p>
+          TODO
+        </p>
+        <pre class="box"></pre>
+
         <h4 id="wu-tobool"><a href="#wu-tobool"><code>wu.toBool</code></a></h4>
+        <pre class="spec"></pre>
+        <p>
+          TODO
+        </p>
+        <pre class="box"></pre>
 
         <hr />
 
