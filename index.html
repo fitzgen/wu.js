@@ -13,6 +13,9 @@
           padding-left: 0;
           margin-left: -1.5em;
       }
+      h5 a code {
+          font-weight: bold !important;
+      }
     </style>
 
   </head>
@@ -50,6 +53,8 @@
                     <a href="#lazy-methods">Lazy methods</a>
                     <ul>
                       <li><a href="#wu-chain"><code>wu.chain</code></a></li>
+                      <li><a href="#wu-cycle"><code>wu.cycle</code></a></li>
+                      <li><a href="#wu-range"><code>wu.range</code></a></li>
                       <li><a href="#wu-zip"><code>wu.zip</code></a></li>
                       <li><a href="#wu-all"><code>wu.Iterator.all</code></a></li>
                       <li><a href="#wu-any"><code>wu.Iterator.any</code></a></li>
@@ -58,6 +63,7 @@
                       <li><a href="#wu-filter"><code>wu.Iterator.filter</code></a></li>
                       <li><a href="#wu-has"><code>wu.Iterator.has</code></a></li>
                       <li><a href="#wu-map"><code>wu.Iterator.map</code></a></li>
+                      <li><a href="#wu-mappend"><code>TODO:wu.Iterator.mappend</code></a></li>
                       <li><a href="#wu-mapply"><code>wu.Iterator.mapply</code></a></li>
                       <li><a href="#wu-takewhile"><code>wu.Iterator.takeWhile</code></a></li>
                     </ul>
@@ -173,9 +179,71 @@
 
         <h4 id="lazy-methods"><a href="#lazy-methods">Lazy methods</a></h4>
 
-        <p>TODO:</p>
         <h5 id="wu-chain"><a href="#wu-chain"><code>wu.chain</code></a></h5>
+        <pre class="spec">wu.chain(iterable1, iterable2, ..., iterableN)</pre>
+        <p>
+          Chain the iterable arguments to produce a new iterator over all items
+          in the iterables.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu.chain([1,2], [3,4], [5,6]).toArray();
+[1, 2, 3, 4, 5, 6]</pre>
+
+        <h5 id="wu-cycle"><a href="#wu-cycle"><code>wu.cycle</code></a></h5>
+        <pre class="spec">wu.cycle(iterable)</pre>
+        <p>
+          Create an infinite sequence yielding items from the <code>iterable</code>. Once
+          the <code>iterable</code> is exhausted, begin yielding from the start again.
+        </p>
+        <p>
+          Note: trying to force evaluation on infinite sequences will send your
+          code in to an infinite loop and freeze the browser!
+          Use <code>.takeWhile()</code>, <code>.asyncEach()</code>,
+          or <code>.next()</code> when working with infinite sequences.
+        </p>
+        <pre class="box">&gt;&gt;&gt; var iter = wu.cycle([1,2,3]);
+&gt;&gt;&gt; iter.next();
+1
+&gt;&gt;&gt; iter.next();
+2
+&gt;&gt;&gt; iter.next();
+3
+&gt;&gt;&gt; iter.next();
+1
+&gt;&gt;&gt; iter.next();
+2
+&gt;&gt;&gt; iter.next();
+3
+&gt;&gt;&gt; iter.next();
+1</pre>
+
+        <h5 id="wu-range"><a href="#wu-range"><code>wu.range</code></a></h5>
+        <pre class="spec">wu.range(stop)</pre>
+        <pre class="spec">wu.range(start, stop)</pre>
+        <pre class="spec">wu.range(start, stop, incr)</pre>
+        <p>
+          Returns an iterator that yields integers from <code>start</code> up to
+          (but not including) <code>stop</code>, incrementing
+          by <code>incr</code>. <code>Start</code> defaults to
+          0, <code>incr</code> defaults to 1.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu.range(3).toArray();
+[0, 1, 2]
+&gt;&gt;&gt; wu.range(3, 6).toArray()
+[3, 4, 5]
+&gt;&gt;&gt; wu.range(0, 7, 2).toArray()
+[0, 2, 4, 6]</pre>
+
         <h5 id="wu-zip"><a href="#wu-zip"><code>wu.zip</code></a></h5>
+        <pre class="spec">wu.zip(iterableA, iterableB)</pre>
+        <p>
+          Returns an iterator that yields pairs of the form <code>[a, b]</code>
+          where <code>a</code> is the next item in <code>iterableA</code>
+          and <code>b</code> is the next item in <code>iterableB</code>.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu.zip(wu.cycle(["even", "odd"]), wu.range(6)).toArray();
+[["even", 0], ["odd", 1], ["even", 2], ["odd", 3], ["even", 4], ["odd", 5]]</pre>
+
+        <p>TODO:</p>
         <h5 id="wu-all"><a href="#wu-all"><code>wu.Iterator.all</code></a></h5>
         <h5 id="wu-any"><a href="#wu-any"><code>wu.Iterator.any</code></a></h5>
         <h5 id="wu-dot"><a href="#wu-dot"><code>wu.Iterator.dot</code></a></h5>
