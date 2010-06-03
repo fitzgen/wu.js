@@ -50,14 +50,12 @@
                 <a href="#iterators">Iterators</a>
                 <ul>
                   <li>
-                    <a href="#lazy-methods">Lazy methods</a>
+                    <a href="#lazy">Lazy</a>
                     <ul>
                       <li><a href="#wu-chain"><code>wu.chain</code></a></li>
                       <li><a href="#wu-cycle"><code>wu.cycle</code></a></li>
                       <li><a href="#wu-range"><code>wu.range</code></a></li>
                       <li><a href="#wu-zip"><code>wu.zip</code></a></li>
-                      <li><a href="#wu-all"><code>wu.Iterator.all</code></a></li>
-                      <li><a href="#wu-any"><code>wu.Iterator.any</code></a></li>
                       <li><a href="#wu-dot"><code>wu.Iterator.dot</code></a></li>
                       <li><a href="#wu-dropwhile"><code>wu.Iterator.dropWhile</code></a></li>
                       <li><a href="#wu-filter"><code>wu.Iterator.filter</code></a></li>
@@ -71,6 +69,8 @@
                   <li>
                     <a href="#forcing-evaluation">Forcing evaluation</a>
                     <ul>
+                      <li><a href="#wu-all"><code>wu.Iterator.all</code></a></li>
+                      <li><a href="#wu-any"><code>wu.Iterator.any</code></a></li>
                       <li><a href="#wu-asynceach"><code>wu.Iterator.asyncEach</code></a></li>
                       <li><a href="#wu-each"><code>wu.Iterator.each</code></a></li>
                       <li><a href="#wu-eachply"><code>wu.Iterator.eachply</code></a></li>
@@ -177,7 +177,7 @@
 
         <h3 id="iterators"><a href="#iterators">Iterators</a></h3>
 
-        <h4 id="lazy-methods"><a href="#lazy-methods">Lazy methods</a></h4>
+        <h4 id="lazy-methods"><a href="#lazy">Lazy</a></h4>
 
         <h5 id="wu-chain"><a href="#wu-chain"><code>wu.chain</code></a></h5>
         <pre class="spec">wu.chain(iterable1, iterable2, ..., iterableN)</pre>
@@ -243,14 +243,48 @@
         <pre class="box">&gt;&gt;&gt; wu.zip(wu.cycle(["even", "odd"]), wu.range(6)).toArray();
 [["even", 0], ["odd", 1], ["even", 2], ["odd", 3], ["even", 4], ["odd", 5]]</pre>
 
-        <p>TODO:</p>
-        <h5 id="wu-all"><a href="#wu-all"><code>wu.Iterator.all</code></a></h5>
-        <h5 id="wu-any"><a href="#wu-any"><code>wu.Iterator.any</code></a></h5>
         <h5 id="wu-dot"><a href="#wu-dot"><code>wu.Iterator.dot</code></a></h5>
+        <pre class="spec">iterator.dot(propertyName)</pre>
+        <pre class="spec">iterator.dot(methodName)</pre>
+        <pre class="spec">iterator.dot(methodName, arg1, arg2, ..., argN)</pre>
+        <p>
+          Access a property or call a method of each item in this iterator.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu({ foo: 1}, { foo: 2 }, { foo: 3}).dot("foo").toArray();
+[1, 2, 3]
+&gt;&gt;&gt; wu([1, "hi", {}]).dot("toString").toArray();
+["1", "hi", "[object Object]"]
+&gt;&gt;&gt; wu([[1], [2,3], [4,5,6]]).dot("slice", 1).toArray();
+[[], [3], [5,6]]</pre>
+
         <h5 id="wu-dropwhile"><a href="#wu-dropwhile"><code>wu.Iterator.dropWhile</code></a></h5>
+        <pre class="spec">iterator.dropWhile(testFn)</pre>
+        <pre class="spec">iterator.dropWhile(testFn, context)</pre>
+        <p>
+          Drop items from this iterator while <code>testFn</code> returns a
+          truthy value. After it returns a non-truthy value, yield each
+          remaining element in turn. <code>Context</code> will be used
+          as <code>this</code> inside of the <code>testFn</code>. It defaults to
+          the iterator.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu([1,2,3,4,5]).dropWhile(function (n) { return n &lt; 3; }).toArray();
+[3,4,5]</pre>
+
         <h5 id="wu-filter"><a href="#wu-filter"><code>wu.Iterator.filter</code></a></h5>
+        <pre class="spec">iterator.filter(testFn)</pre>
+        <pre class="spec">iterator.filter(testFn, context)</pre>
+        <p>
+          Returns an iterator that yields only the items where
+          <code>testFn.call(context, item)</code> returns
+          truthy. <code>Context</code> defaults to the iterator.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu([1,2,3,4]).filter(function (x) { return x % 2 === 0; }).toArray();
+[2, 4]</pre>
+
+        <p>TODO:</p>
         <h5 id="wu-has"><a href="#wu-has"><code>wu.Iterator.has</code></a></h5>
         <h5 id="wu-map"><a href="#wu-map"><code>wu.Iterator.map</code></a></h5>
+        <h5 id="wu-mappend"><a href="#wu-mappend"><code>wu.Iterator.mappend</code></a></h5>
         <h5 id="wu-mapply"><a href="#wu-mapply"><code>wu.Iterator.mapply</code></a></h5>
         <h5 id="wu-takewhile"><a href="#wu-takewhile"><code>wu.Iterator.takeWhile</code></a></h5>
 
@@ -262,7 +296,13 @@
           of infinite sequences which will send the code in to an infinite loop!
         </p>
 
+        <h5 id="wu-all"><a href="#wu-all"><code>wu.Iterator.all</code></a></h5>
+        <pre class="spec">iterator.all()</pre>
+        <pre class="spec">iterator.all(testFn)</pre>
+        <pre class="spec">iterator.all(testFn, context)</pre>
+
         <p>TODO:</p>
+        <h5 id="wu-any"><a href="#wu-any"><code>wu.Iterator.any</code></a></h5>
         <h5 id="wu-asynceach"><a href="#wu-asynceach"><code>wu.Iterator.asyncEach</code></a></h5>
         <h5 id="wu-each"><a href="#wu-each"><code>wu.Iterator.each</code></a></h5>
         <h5 id="wu-eachply"><a href="#wu-eachply"><code>wu.Iterator.eachply</code></a></h5>
