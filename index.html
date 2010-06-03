@@ -61,7 +61,6 @@
                       <li><a href="#wu-filter"><code>wu.Iterator.filter</code></a></li>
                       <li><a href="#wu-has"><code>wu.Iterator.has</code></a></li>
                       <li><a href="#wu-map"><code>wu.Iterator.map</code></a></li>
-                      <li><a href="#wu-mappend"><code>TODO:wu.Iterator.mappend</code></a></li>
                       <li><a href="#wu-mapply"><code>wu.Iterator.mapply</code></a></li>
                       <li><a href="#wu-takewhile"><code>wu.Iterator.takeWhile</code></a></li>
                     </ul>
@@ -309,26 +308,90 @@ true</pre>
 &gt;&gt;&gt; wu.range(10).map(Math.sqrt).map(Math.ceil).toArray();
 [0, 1, 2, 2, 2, 3, 3, 3, 3, 3]</pre>
 
-        <p>TODO:</p>
-        <h5 id="wu-mappend"><a href="#wu-mappend"><code>wu.Iterator.mappend</code></a></h5>
         <h5 id="wu-mapply"><a href="#wu-mapply"><code>wu.Iterator.mapply</code></a></h5>
+        <pre class="spec">iterator.mapply(fn)</pre>
+        <pre class="spec">iterator.mapply(fn, context)</pre>
+        <p>
+          The same as wu.Iterator.map, except instead of yeilding
+          <code>fn.call(context, item)</code>, it is assumed that every item is
+          an array and the resulting iterator yields <code>fn.apply(context,
+          item)</code> for every item in this iterator. <code>Context</code>
+          defaults to this iterator.
+        </p>
+        <p>
+          <code>Mapply</code> is especially useful with iterating over objects,
+          since iterators yield <code>[key, value]</code> pairs for
+          objects. However, remember that you can't expect there to be any
+          particular order when iterating over objects.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu([[0,2], [1,2], [2,2], [3,2]]).mapply(Math.pow).toArray();
+[0, 1, 4, 9]
+&gt;&gt;&gt; wu({foo:1, bar:2, baz:3}).mapply(function (k, v) { return k + " is " + v; })
+...                          .toArray()
+...                          .join(", ");
+"foo is 1, bar is 2, baz is 3"</pre>
+
         <h5 id="wu-takewhile"><a href="#wu-takewhile"><code>wu.Iterator.takeWhile</code></a></h5>
+        <pre class="spec">iterator.takeWhile(testFn)</pre>
+        <pre class="spec">iterator.takeWhile(fn, context)</pre>
+        <p>
+          Returns a new iterator that yields elements from this iterator as long
+          as <code>testFn.call(context, item)</code> is
+          truthy. <code>Context</code> defaults to this iterator. Useful when
+          working with infinite sequences.
+        </p>
+        <pre class="box">&gt;&gt;&gt; var i = 10;
+&gt;&gt;&gt; wu.cycle([1,2,3]).takeWhile(function (n) { return i-- !== 0; }).toArray();
+[1, 2, 3, 1, 2, 3, 1, 2, 3, 1]</pre>
 
         <h4 id="forceful"><a href="#forceful">Forceful</a></h4>
 
         <p>
           All of the following methods will force the iterator to be
           evaluated. Be warned: these methods will attempt to evaluate the whole
-          of infinite sequences which will send the code in to an infinite loop!
+          of infinite sequences which will send the code in to an infinite loop
+          and make the browser freeze!
         </p>
 
         <h5 id="wu-all"><a href="#wu-all"><code>wu.Iterator.all</code></a></h5>
         <pre class="spec">iterator.all()</pre>
         <pre class="spec">iterator.all(testFn)</pre>
         <pre class="spec">iterator.all(testFn, context)</pre>
+        <p>
+          Returns true if testFn.call(context, item) is truthy for all items in
+          this iterator. <code>Context</code> defaults to this iterator,
+          and <code>testFn</code> defualts to coercion to boolean.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu([true, 1, {}]).all();
+true
+&gt;&gt;&gt; wu([true, 0, null]).all();
+false
+&gt;&gt;&gt; wu([1,2,3,4]).all(function (n) { return n &lt; 5; });
+true</pre>
+
+        <h5 id="wu-any"><a href="#wu-any"><code>wu.Iterator.any</code></a></h5>
+        <pre class="spec">iterator.any()</pre>
+        <pre class="spec">iterator.any(testFn)</pre>
+        <pre class="spec">iterator.any(testFn, context)</pre>
+        <p>
+          Returns true if testFn.call(context, item) is truthy for any items in
+          this iterator. <code>Context</code> defaults to this iterator,
+          and <code>testFn</code> defualts to coercion to boolean.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu([false, false, 1, false]).any();
+true
+&gt;&gt;&gt; wu([false, 0, null, undefined]).any();
+false
+&gt;&gt;&gt; wu([1,2,3,4,5]).any(function (n) { return n % 2 === 0; })
+true</pre>
+
+        <pre class="box">&gt;&gt;&gt; </pre>
+
+        <pre class="box">&gt;&gt;&gt; </pre>
+
+        <pre class="box">&gt;&gt;&gt; </pre>
 
         <p>TODO:</p>
-        <h5 id="wu-any"><a href="#wu-any"><code>wu.Iterator.any</code></a></h5>
         <h5 id="wu-asynceach"><a href="#wu-asynceach"><code>wu.Iterator.asyncEach</code></a></h5>
         <h5 id="wu-each"><a href="#wu-each"><code>wu.Iterator.each</code></a></h5>
         <h5 id="wu-eachply"><a href="#wu-eachply"><code>wu.Iterator.eachply</code></a></h5>
