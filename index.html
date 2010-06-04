@@ -14,7 +14,7 @@
           padding-left: 0;
           margin-left: -1.5em;
       }
-      h5 a code {
+      h5 code {
           font-weight: bold !important;
       }
       h1 a {
@@ -66,6 +66,7 @@
                       <li><a href="#wu-has"><code>wu.Iterator.has</code></a></li>
                       <li><a href="#wu-map"><code>wu.Iterator.map</code></a></li>
                       <li><a href="#wu-mapply"><code>wu.Iterator.mapply</code></a></li>
+                      <li><a href="#wu-next"><code>wu.Iterator.next</code></a></li>
                       <li><a href="#wu-takewhile"><code>wu.Iterator.takeWhile</code></a></li>
                     </ul>
                   </li>
@@ -335,6 +336,39 @@ true</pre>
 ...                          .join(", ");
 "foo is 1, bar is 2, baz is 3"</pre>
 
+        <h5 id="wu-next"><a href="#wu-next"><code>wu.Iterator.next</code></a></h5>
+        <pre class="spec">iterator.next()</pre>
+        <p>
+          The <code>next</code> method is the low level building block
+          of <code>wu.Iterator</code>. Calling it will return the next item in
+          this iterator. If the iterator is exhausted and there are no more
+          items in this iterator, the <code>wu.StopIteration</code> error is
+          thrown. Generally, you shouldn't need to access this method directly
+          since there are so many other methods like <code>each</code>
+          and <code>toArray</code> that would probably better fit your needs.
+        </p>
+        <pre class="box">&gt;&gt;&gt; var iterator = wu({ foo: 1, bar: 2 });
+&gt;&gt;&gt; iterator.next();
+["foo", 1]
+&gt;&gt;&gt; iterator.next();
+["bar", 2]
+&gt;&gt;&gt; iterator.next();
+StopIteration
+&gt;&gt;&gt; iterator = wu("Hi");
+&gt;&gt;&gt; iterator.next();
+"H"
+&gt;&gt;&gt; iterator.next();
+"i"
+&gt;&gt;&gt; iterator.next();
+StopIteration
+&gt;&gt;&gt; iterator = wu([1,2]);
+&gt;&gt;&gt; iterator.next();
+1
+&gt;&gt;&gt; iterator.next();
+2
+&gt;&gt;&gt; iterator.next();
+StopIteration</pre>
+
         <h5 id="wu-takewhile"><a href="#wu-takewhile"><code>wu.Iterator.takeWhile</code></a></h5>
         <pre class="spec">iterator.takeWhile(testFn)</pre>
         <pre class="spec">iterator.takeWhile(fn, context)</pre>
@@ -500,16 +534,102 @@ undefined
 
         <h4 id="extending-iterators"><a href="#extending-iterators">Extending iterators</a></h4>
 
-        <p>TODO: wu.fn.*, wu.Iterator(function next() {})</p>
+        <h5><code>wu.fn</code></h5>
+
+        <p>
+          To extend <code>wu.Iterator</code> and add your own methods, simply
+          attach your custom method to <code>wu.fn</code>. Here is an example
+          that allows you to filter and map at the same time, with the same
+          function. Any <code>null</code> value is assumed to be unwanted, and
+          is filtered.
+        </p>
+
+        <pre class="box">&gt;&gt;&gt; wu.fn.mapFilter = function mapFilter(fn, context) {
+...     context = context || this;
+...     return this.map(fn, context).filter(function (obj) {
+...         return obj !== null;
+...     });
+... }</pre>
+
+        <h5><code>wu.Iterator(function next() { ... })</code></h5>
+
+        <p>
+          If your custom method is more complex, and you want to just implement
+          the iterators <code>.next()</code> method directly, there is a way to
+          do that too. Pass your <code>.next()</code> method to the wu.Iterator
+          constructor directly. Here is the implementation
+          of <code>wu.Iterator.dot</code> which uses this technique (modified for readability).
+        </p>
+
+        <pre class="box">// Access a method or property of each object in this iterable. For example,
+// wu([[1], [2,3], [4,5,6]]).dot("slice", 1).toArray() -> [[], [3], [5,6]]
+wu.fn.dot = function dot(slot /*, and variadic args */) {
+    var args = Array.prototype.slice.call(arguments, 1),
+    that = this;
+
+    return wu.Iterator(function next() {
+        var item = that.next();
+        return item[slot] instanceof Function ?
+            item[slot].apply(item, args) :
+            item[slot];
+    });
+};</pre>
 
         <h3 id="pattern-matching"><a href="#pattern-matching">Pattern matching</a></h3>
 
         <h4 id="wu-match"><a href="#wu-match"><code>wu.match</code></a></h4>
-        <pre class="spec"></pre>
+        <pre class="spec">wu.match(pattern1, then1, pattern2, then2, ..., patternN, thenN)</pre>
+
         <p>
-          TODO
+          Returns a function that performs Erlang-/Haskell-esque pattern
+          matching on the arguments object when it is called. To match on the
+          type of an object, use its constructor as a placeholder. To provide a
+          pattern that will always succeed, use <code>wu.___</code> as the
+          placeholder. If no match is found, a <code>TypeError</code> is thrown.
         </p>
-        <pre class="box"></pre>
+
+        <p>
+          Below is a simple example involving matching arguments to numbers
+          literals and the <code>Number</code> constructor. Notice
+          the <code>TypeError</code> when no match is found.
+        </p>
+
+        <pre class="box">
+&gt;&gt;&gt; var describeNums = wu.match([ 1 ],      "One!",
+...                             [ 2 ],      "Two!",
+...                             [ Number ], "Some other number!")
+&gt;&gt;&gt; describeNums(1);
+"One!"
+&gt;&gt;&gt; describeNums(2);
+"Two!"
+&gt;&gt;&gt; describeNums(NaN);
+"Some other number!"
+&gt;&gt;&gt; describeNums({});
+TypeError: wu.match: The form did not match any given pattern.</pre>
+
+        <p>Here is an example showcasing the typical definition of factorial.</p>
+
+        <pre class="box">&gt;&gt;&gt; var factorial = wu.match([ 0 ],      1,
+...                          [ Number ], function (n) {
+...                              return n * factorial(n - 1);
+...                          });
+&gt;&gt;&gt; factorial(5);
+120</pre>
+
+        <p>
+          The classic definition of map is easily expressed via pattern
+          matching.
+        </p>
+
+        <pre class="box">&gt;&gt;&gt; var greedyMap = wu.match([ wu.___, [] ],
+...                              [],
+...                          [ Function, Array ],
+...                              function (fn, arr) {
+...                                  return [fn(arr[0])].concat(map(fn, arr.slice(1)));
+...                              }
+...                          );
+&gt;&gt;&gt; greedyMap(function (n) { return n * n; }, [1,2,3,4])
+[1, 4, 9, 16]</pre>
 
         <h3 id="lego-functions"><a href="#lego-functions">Lego functions</a></h3>
 
