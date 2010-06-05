@@ -126,12 +126,52 @@
         <h3 id="what-is-wu-js"><a href="#what-is-wu-js">What is <code>wu.js</code>?</a></h3>
 
         <p>
-          TODO
+          <code>Wu.js</code> is a library for lazy, functional programming in
+          Javascript. Works great in the browser, and also with CommonJS
+          (including node and Narwhal).
         </p>
 
-        <h3 id="why"><a href="#why">Why?</a></h3>
+        <p>
+          The largest part of wu is dedicated to iterators. Iterators are lazy
+          sequences with a number of methods that encourage functional
+          programming. What does it mean to be lazy? Many people might expect
+          the following code to log "1 squared is 1", "2 squared is 4", and "3
+          squared is 9" immediately.
+        </p>
 
-        <p>TODO</p>
+        <pre class="box">wu([1,2,3]).map(function (n) {
+    console.log(n + " squared is " + (n*n));
+    return n*n;
+});</pre>
+
+        <p>
+          However, nothing is logged. Because iterators are lazy, you must
+          explicitly ask for an item and force evaluation. As you ask for items
+          from this iterator, the messages will come one by one.
+        </p>
+
+        <pre class="box">&gt;&gt;&gt; var iterator = wu([1,2,3]).map(function (n) {
+...     console.log(n + " squared is " + (n*n));
+...     return n*n;
+... });
+&gt;&gt;&gt; iterator.next();
+"1 squared is 1"
+1
+&gt;&gt;&gt; iterator.next();
+"2 squared is 4"
+4</pre>
+
+        <p>
+          Calling <code>iterator.next()</code> directly isn't very fun though, so there
+          are <a href="#forceful">a few methods</a> that make this logic cleaner for you.
+        </p>
+
+        <p>
+          The other large chunk of <code>wu.js</code> is a set of higher order
+          functions that strongly encourage a functional style. Examples include
+          Haskell-esque pattern matching with <code>wu.match</code>, function
+          composition, and partial application.
+        </p>
 
         <h3 id="how-to-read-this-document"><a href="#how-to-read-this-document">How to read this document</a></h3>
 
@@ -429,14 +469,18 @@ true</pre>
           control to the UI thread between every iteration via
           <code>setTimeout</code>.
         </p>
-        <pre class="box">&gt;&gt;&gt; wu.range(Infinity).asyncEach(wu.bind(console, console.log));
-undefined
-0
-1
-2
-3
-4
-5
+        <pre class="box">&gt;&gt;&gt; wu(Infinity).asyncEach(wu.curry(wu.bind(console, console.log),
+...                                 "All work and no play makes Jack a dull boy."));
+"All work and no play makes Jack a dull boy."
+"All work and no play makes Jack a dull boy."
+"All work and no play makes Jack a dull boy."
+"All work and no play makes Jack a dull boy."
+"All work and no play makes Jack a dull boy."
+"All work and no play makes Jack a dull boy."
+"All work and no play makes Jack a dull boy."
+"All work and no play makes Jack a dull boy."
+"All work and no play makes Jack a dull boy."
+"All work and no play makes Jack a dull boy."
 .
 .
 .</pre>
