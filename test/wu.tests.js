@@ -213,6 +213,12 @@ test("wu.match",
          ok(wu.match(wu.___, true)(undefined), "wu.___ matches undefined.");
      });
 
+test("wu.not",
+     function () {
+         ok(wu.not(wu.curry(wu.eq, 1))(2), "wu.not(wu.curry(wu.eq, 1))(2)");
+         ok(!wu.not(wu.curry(wu.eq, 1))(1), "!wu.not(wu.curry(wu.eq, 1))(1)");
+     });
+
 test("wu.partial",
      function () {
          var square = wu.partial(Math.pow, wu.___, 2),
