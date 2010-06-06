@@ -114,6 +114,19 @@ test("wu.eq",
          ok( !wu.eq(/regex/, new Date), "Regexes and dates are not equal.");
      });
 
+test("wu.autoCurry",
+     function () {
+         var add = function (a, b) {
+             return a + b;
+         };
+         var explicit = wu.autoCurry(add, 1);
+         var implicit = wu.autoCurry(add);
+         ok(explicit(1)(1) === 2, "explicit(1)(1) === 2");
+         ok(implicit(1)(1) === 2, "implicit(1)(1) === 2");
+         ok(explicit(1, 1) === 2, "explicit(1, 1) === 2");
+         ok(implicit(1, 1) === 2, "implicit(1, 1) === 2");
+     });
+
 test("wu.bind",
      function () {
          var obj = {};
