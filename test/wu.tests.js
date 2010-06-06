@@ -114,6 +114,19 @@ test("wu.eq",
          ok( !wu.eq(/regex/, new Date), "Regexes and dates are not equal.");
      });
 
+test("wu.autoCurry",
+     function () {
+         var add = function (a, b) {
+             return a + b;
+         };
+         var explicit = wu.autoCurry(add, 1);
+         var implicit = wu.autoCurry(add);
+         ok(explicit(1)(1) === 2, "explicit(1)(1) === 2");
+         ok(implicit(1)(1) === 2, "implicit(1)(1) === 2");
+         ok(explicit(1, 1) === 2, "explicit(1, 1) === 2");
+         ok(implicit(1, 1) === 2, "implicit(1, 1) === 2");
+     });
+
 test("wu.bind",
      function () {
          var obj = {};
@@ -211,6 +224,12 @@ test("wu.match",
          ok(wu.match(wu.___, true)(false), "wu.___ matches false.");
          ok(wu.match(wu.___, true)(null), "wu.___ matches null.");
          ok(wu.match(wu.___, true)(undefined), "wu.___ matches undefined.");
+     });
+
+test("wu.not",
+     function () {
+         ok(wu.not(wu.curry(wu.eq, 1))(2), "wu.not(wu.curry(wu.eq, 1))(2)");
+         ok(!wu.not(wu.curry(wu.eq, 1))(1), "!wu.not(wu.curry(wu.eq, 1))(1)");
      });
 
 test("wu.partial",
