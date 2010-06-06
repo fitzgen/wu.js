@@ -15,3 +15,8 @@ JAKE.task("test-min", ["minify"], function () {
     );
     f.close();
 });
+
+JAKE.task("clean", function () {
+    FILE.remove("wu.min.js");
+    FILE.remove("test/wu.tests.min.html");
+});
