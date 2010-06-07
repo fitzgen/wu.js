@@ -100,6 +100,7 @@
                   <li><a href="#wu-bind"><code>wu.bind</code></a></li>
                   <li><a href="#wu-compose"><code>wu.compose</code></a></li>
                   <li><a href="#wu-curry"><code>wu.curry</code></a></li>
+                  <li><a href="#wu-not"><code>wu.not</code></a></li>
                   <li><a href="#wu-partial"><code>wu.partial</code></a></li>
                 </ul>
               </li>
@@ -725,6 +726,16 @@ undefined
 &gt;&gt;&gt; var add3 = wu.curry(add, 3);
 &gt;&gt;&gt; add3(5);
 8</pre>
+
+        <h4 id="wu-not"><a href="#wu-not"><code>wu.not</code></a></h4>
+        <pre class="spec">wu.not(fn)</pre>
+        <p>
+          Returns a function that, when called, returns the boolean negation of
+          applying its arguments to <code>fn</code>.
+        </p>
+        <pre class="box">&gt;&gt;&gt; wu([4, 5, 6]).all(wu.not(wu.match([ Number ], false,
+...                                   [ wu.___ ], true)));
+true</pre>
 
         <h4 id="wu-partial"><a href="#wu-partial"><code>wu.partial</code></a></h4>
         <pre class="spec">wu.partial(fn, arg1, arg2, ..., argN)</pre>
