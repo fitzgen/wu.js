@@ -346,7 +346,7 @@ true</pre>
         <pre class="spec">iterator.mapply(fn)</pre>
         <pre class="spec">iterator.mapply(fn, context)</pre>
         <p>
-          The same as <code>wu.Iterator.map</code>, except instead of yeilding
+          The same as <code>wu.Iterator.map</code>, except instead of yielding
           <code>fn.call(context, item)</code>, it is assumed that every item is
           an array and the resulting iterator yields <code>fn.apply(context,
           item)</code> for every item in this iterator. <code>Context</code>
@@ -445,7 +445,7 @@ true</pre>
         <p>
           Returns true if testFn.call(context, item) is truthy for any items in
           this iterator. <code>Context</code> defaults to this iterator,
-          and <code>testFn</code> defualts to coercion to boolean.
+          and <code>testFn</code> defaults to coercion to boolean.
         </p>
         <pre class="box">&gt;&gt;&gt; wu([false, false, 1, false]).any();
 true
@@ -466,8 +466,8 @@ true</pre>
         </p>
         <p>
           <strong>This is the only safe way to force evaluation of infinite
-          sequences without freezing the browser</strong>. Does this by yielding
-          control to the UI thread between every iteration via
+          sequences without freezing the browser</strong>. It does this by
+          yielding control to the UI thread between every iteration via
           <code>setTimeout</code>.
         </p>
         <pre class="box">&gt;&gt;&gt; wu(Infinity).asyncEach(wu.curry(wu.bind(console, console.log),
@@ -510,7 +510,7 @@ true</pre>
         <p>
           Useful for use with objects, since iterators yield <code>[key,
           value]</code> pairs from objects. However, keep in mind that order is
-          not guarenteed when iterating over objects.
+          not guaranteed when iterating over objects.
         </p>
         <pre class="box">&gt;&gt;&gt; var userRecord = {
 ...     name:"Johnny Keyboard",
@@ -635,7 +635,7 @@ wu.fn.dot = function dot(slot /*, and variadic args */) {
 "One!"
 &gt;&gt;&gt; describeNums(2);
 "Two!"
-&gt;&gt;&gt; describeNums(NaN);
+&gt;&gt;&gt; describeNums(3);
 "Some other number!"
 &gt;&gt;&gt; describeNums({});
 TypeError: wu.match: The form did not match any given pattern.</pre>
