@@ -20,3 +20,19 @@ JAKE.task("clean", function () {
     FILE.remove("wu.min.js");
     FILE.remove("test/wu.tests.min.html");
 });
+
+JAKE.task("npm-publish", function () {
+    var dirtyIndex = false;
+    if ( OS.popen("git status").stdout.read().match(/modified: /) !== null ) {
+        dirtyIndex = true;
+        OS.system("git stash");
+    }
+
+    FILE.remove("./build/google-compiler-20091218.jar");
+    OS.system("sudo npm publish .");
+    OS.system("git reset --hard");
+
+    if (dirtyIndex) {
+        OS.system("git stash pop");
+    }
+});
