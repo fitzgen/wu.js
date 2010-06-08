@@ -15,5 +15,8 @@
         "type": "git",
         "url": "http://github.com/fitzgen/wu.js"
     }],
-    "url": "http://fitzgen.github.com/wu.js"
+    "url": "http://fitzgen.github.com/wu.js",
+    "version": "0.1.1",
+    "directories": {"lib":"./lib"},
+    "main": "./lib/wu"
 }
