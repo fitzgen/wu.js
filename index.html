@@ -111,6 +111,9 @@
                   <li><a href="#wu-tobool"><code>wu.toBool</code></a></li>
                 </ul>
               </li>
+              <li>
+                <a href="#wu-noconflict">wu.noConflict</a>
+              </li>
             </ul>
           </li>
           <li>
@@ -792,6 +795,25 @@ true
 false
 &gt;&gt;&gt; wu.toBool(Infinity)
 true</pre>
+
+        <h3 id="wu-noconflict"><a href="#wu-noconflict"><code>wu.noConflict</code></a></h3>
+
+        <pre class="spec">wu.noConflict()</pre>
+        <p>
+          If you ever run in to issues where the global name <code>"wu"</code>
+          is already taken and you still want <code>wu.js</code> to play nice,
+          there is a wu.noConflict function. It will make <code>wu.js</code>
+          remove itself from the global object, replace whatever used to live
+          at <code>"wu"</code>, and return the library. You might use it like
+          this:
+        </p>
+        <pre class="box">(function (wu) {
+
+    // In here, we can still access wu
+
+}(wu.noConflict());
+
+// Out here, only the old wu exists</pre>
 
         <hr />
 
