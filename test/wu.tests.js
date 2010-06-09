@@ -160,6 +160,7 @@ test("wu.compose",
          };
 
          ok(wu.compose(timesTwo, plusOne)(3) === 8, "timesTwo(plusOne(3)) === 8");
+         ok(wu.compose(timesTwo, plusOne)(3) === 8, "Call it twice as regression test against losing the list of functions to .pop()");
      });
 
 test("wu.curry",
