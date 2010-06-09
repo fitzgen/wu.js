@@ -596,22 +596,46 @@ true</pre>
           the iterators <code>.next()</code> method directly, there is a way to
           do that too. Pass your <code>.next()</code> method to the wu.Iterator
           constructor directly. Here is the implementation
-          of <code>wu.Iterator.dot</code> which uses this technique (modified for readability).
+          of <code>wu.Iterator.dropWhile</code> which uses this technique (modified for readability).
         </p>
 
-        <pre class="box">// Access a method or property of each object in this iterable. For example,
-// wu([[1], [2,3], [4,5,6]]).dot("slice", 1).toArray() -> [[], [3], [5,6]]
-wu.fn.dot = function dot(slot /*, and variadic args */) {
-    var args = Array.prototype.slice.call(arguments, 1),
-    that = this;
-
+        <pre class="box">// While fn.call(context, item) is "truthy", do not return any items from
+// this iterable.
+wu.fn.dropWhile = function dropWhile(fn, context) {
+    var keepDropping = true, that = this;
+    context = context || this;
     return wu.Iterator(function next() {
         var item = that.next();
-        return item[slot] instanceof Function ?
-            item[slot].apply(item, args) :
-            item[slot];
+        return keepDropping && fn.call(context, item) ?
+            next() :
+            (function () {
+                keepDropping = false;
+                return item;
+            }());
     });
-};</pre>
+};
+</pre>
+
+        <h5>Marking iterators empty with <code>wu.fn.stop</code></h5>
+
+        <p>
+          When writing you custom iterator method, if you want to make the
+          iterator stop yielding items earlier than it normally would, just
+          call <code>wu.fn.stop</code> (which is available
+          as <code>this.stop()</code> from within your <code>next</code>
+          method). It will do the following in order:
+        </p>
+        <ol>
+          <li>
+            Replace this iterator instance's <code>.next()</code> method
+            with <pre class="box">function () { throw new StopIteration(); }</pre> so that
+            the remaining items in your iterator are no longer accessible.
+          </li>
+          <li>
+            Throw a <code>StopIteration</code> error to signify that this
+            iterator is empty.
+          </li>
+        </ol>
 
         <h3 id="pattern-matching"><a href="#pattern-matching">Pattern matching</a></h3>
 
