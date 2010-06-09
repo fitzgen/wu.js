@@ -116,15 +116,19 @@ test("wu.eq",
 
 test("wu.autoCurry",
      function () {
-         var add = function (a, b) {
-             return a + b;
+         var add = function (a, b, c) {
+             return a + b + c;
          };
-         var explicit = wu.autoCurry(add, 1);
+         var explicit = wu.autoCurry(add, 3);
          var implicit = wu.autoCurry(add);
-         ok(explicit(1)(1) === 2, "explicit(1)(1) === 2");
-         ok(implicit(1)(1) === 2, "implicit(1)(1) === 2");
-         ok(explicit(1, 1) === 2, "explicit(1, 1) === 2");
-         ok(implicit(1, 1) === 2, "implicit(1, 1) === 2");
+         ok(explicit(1)(1)(1) === 3, "explicit(1)(1)(1) === 3");
+         ok(implicit(1)(1)(1) === 3, "implicit(1)(1)(1) === 3");
+         ok(explicit(1, 1)(1) === 3, "explicit(1, 1)(1) === 3");
+         ok(implicit(1, 1)(1) === 3, "implicit(1, 1)(1) === 3");
+         ok(explicit(1)(1, 1) === 3, "explicit(1)(1, 1) === 3");
+         ok(implicit(1)(1, 1) === 3, "implicit(1)(1, 1) === 3");
+         ok(explicit(1, 1, 1) === 3, "explicit(1, 1, 1) === 3");
+         ok(implicit(1, 1, 1) === 3, "implicit(1, 1, 1) === 3");
      });
 
 test("wu.bind",
