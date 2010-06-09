@@ -72,6 +72,12 @@ test("Numbers",
          }
      });
 
+test("Arguments",
+     function () {
+         ok((function (){ return wu(arguments); }(1,2)).next() === 1,
+            "wu(arguments) returns an iterator");
+     });
+
 module("Wu methods");
 
 test("wu.eq",
