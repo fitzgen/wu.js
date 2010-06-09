@@ -670,18 +670,22 @@ TypeError: wu.match: The form did not match any given pattern.</pre>
 
         <h4 id="wu-autocurry"><a href="#wu-wu-autocurry"><code>wu.autoCurry</code></a></h4>
         <pre class="spec">wu.autoCurry(fn)</pre>
-        <pre class="spec">wu.autoCurry(fn, maxArgsToCurry)</pre>
+        <pre class="spec">wu.autoCurry(fn, numArgsExpected)</pre>
         <p>
           Function decorator that automatically provides currying to the given
           function. Optionally, pass a number as the second argument to signify
           the maximum number of arguments to curry. If it is missing, we default
-          to one less than the number of explicit arguments the function has.
+          to <code>fn.length</code>.
         </p>
-        <pre class="box">&gt;&gt;&gt; var add = wu.autoCurry(function (a, b) { return a + b; });
-&gt;&gt;&gt; add(1)(1);
-2
-&gt;&gt;&gt; add(1, 1);
-2</pre>
+        <pre class="box">&gt;&gt;&gt; var add = wu.autoCurry(function (a, b, c) { return a + b + c; });
+&gt;&gt;&gt; add(1)(1)(1);
+3
+&gt;&gt;&gt; add(1)()(1)()(1);
+3
+&gt;&gt;&gt; add(1)(1, 1);
+3
+&gt;&gt;&gt; add(1, 1, 1);
+3</pre>
 
         <h4 id="wu-bind"><a href="#wu-bind"><code>wu.bind</code></a></h4>
         <pre class="spec">wu.bind(context, fn)</pre>
