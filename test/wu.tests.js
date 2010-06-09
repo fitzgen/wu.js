@@ -72,6 +72,12 @@ test("Numbers",
          }
      });
 
+test("Arguments",
+     function () {
+         ok((function (){ return wu(arguments); }(1,2)).next() === 1,
+            "wu(arguments) returns an iterator");
+     });
+
 module("Wu methods");
 
 test("wu.eq",
@@ -160,6 +166,7 @@ test("wu.compose",
          };
 
          ok(wu.compose(timesTwo, plusOne)(3) === 8, "timesTwo(plusOne(3)) === 8");
+         ok(wu.compose(timesTwo, plusOne)(3) === 8, "Call it twice as regression test against losing the list of functions to .pop()");
      });
 
 test("wu.curry",
@@ -260,6 +267,9 @@ test("wu.zip",
          ok(wu.eq(wu.zip([1,2,3], [4,5,6]).toArray(),
                   [[1,4], [2,5], [3,6]]),
             "wu.zip([1,2,3], [4,5,6]).toArray() -> [[1,4], [2,5], [3,6]]");
+
+         ok(wu.eq(wu.zip([1], [2], [3], [4]).next(), [1,2,3,4]),
+            "wu.zip works with variadic arguments");
      });
 
 module("Augmented function methods");
