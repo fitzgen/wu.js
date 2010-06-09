@@ -267,6 +267,9 @@ test("wu.zip",
          ok(wu.eq(wu.zip([1,2,3], [4,5,6]).toArray(),
                   [[1,4], [2,5], [3,6]]),
             "wu.zip([1,2,3], [4,5,6]).toArray() -> [[1,4], [2,5], [3,6]]");
+
+         ok(wu.eq(wu.zip([1], [2], [3], [4]).next(), [1,2,3,4]),
+            "wu.zip works with variadic arguments");
      });
 
 module("Augmented function methods");
