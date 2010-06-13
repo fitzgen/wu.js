@@ -260,6 +260,11 @@ test("wu.range",
             "wu.range(3, 6).toArray() -> [3,4,5]");
          ok(wu.eq(wu.range(0, 10, 2).toArray(), [0,2,4,6,8]),
             "wu.range(0, 10, 2).toArray() -> [0,2,4,6,8]");
+         try {
+             ok(!wu.range(undefined), "This should never happen");
+         } catch (err) {
+             ok(err instanceof TypeError, "Passing undefined to wu.range throws a TypeError");
+         }
      });
 
 test("wu.zip",
