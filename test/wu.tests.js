@@ -385,6 +385,17 @@ test("wu.Iterator.filter",
             "wu([1,2,3,4]).filter(even?).toArray() -> [2,4]");
      });
 
+test("wu.Iterator.groupBy",
+     function () {
+         var results = wu([{first:"Nick", last:"Fitzgerald"},
+                           {first:"Nick", last:"Nolte"},
+                           {first:"John", last:"Smith"}]).groupBy("first");
+         ok(wu.eq(results, {Nick: [{first:"Nick", last:"Fitzgerald"},
+                                   {first:"Nick", last:"Nolte"}],
+                            John: [{first:"John", last:"Smith"}]}),
+            "wu(...).groupBy(\"first\")");
+     });
+
 test("wu.Iterator.has",
      function () {
          ok(wu([0,1,2]).has(2), "wu([0,1,2]).has(2)");
