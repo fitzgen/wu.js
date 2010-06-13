@@ -78,6 +78,7 @@
                       <li><a href="#wu-each"><code>wu.Iterator.each</code></a></li>
                       <li><a href="#wu-eachply"><code>wu.Iterator.eachply</code></a></li>
                       <li><a href="#wu-force"><code>wu.Iterator.force</code></a></li>
+                      <li><a href="#wu-groupby"><code>wu.Iterator.groupBy</code></a></li>
                       <li><a href="#wu-reduce"><code>wu.Iterator.reduce</code></a></li>
                       <li><a href="#wu-reduceright"><code>wu.Iterator.reduceRight</code></a></li>
                       <li><a href="#wu-toarray"><code>wu.Iterator.toArray</code></a></li>
@@ -531,6 +532,23 @@ true</pre>
         <p>
           A synonym for <a href="#wu-toarray"><code>wu.Iterator.toArray()</code></a>.
         </p>
+
+        <h5 id="wu-groupby"><a href="#wu-groupby"><code>wu.Iterator.groupBy</code></a></h5>
+        <pre class="spec">iterator.groupBy(propertyName)</pre>
+        <pre class="spec">iterator.groupBy(methodName)</pre>
+        <pre class="spec">iterator.groupBy(methodName, arg1, arg2, ..., argN)</pre>
+        <p>
+          Aggregate each item in this iterator based on
+          common <code>item.propertyName</code> or <code>item.methodName(arg1,
+          arg2, ..., argN)</code> values.
+        </p>
+        <pre class="box">&gt;&gt;&gt; var people = [{first:"Nick", last:"Fitzgerald"},
+...               {first:"Nick", last:"Nolte"},
+...               {first:"John", last:"Smith"}];
+&gt;&gt;&gt; wu(people).groupBy("first");
+{ Nick: [{first:"Nick", last:"Fitzgerald"},
+         {first:"Nick", last:"Nolte"}],
+  John: [{first:"John", last:"Smith"}] }</pre>
 
         <h5 id="wu-reduce"><a href="#wu-reduce"><code>wu.Iterator.reduce</code></a></h5>
         <pre class="spec">iterator.reduce(fn)</pre>
