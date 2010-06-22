@@ -325,6 +325,10 @@ test("wu.Iterator.all",
             "wu([0,2,4]).all(even?)");
          ok( !wu([0,2,4,5]).all(function (x) { return x % 2 === 0; }),
             "wu([0,2,4,5]).all(even?) is false");
+         ok(wu([1,2,3]).all(),
+            "wu.all() works with implicit boolean coercion");
+         ok( !wu([1,0,3]).all(),
+            "wu.all() works with implicit boolean coercion");
      });
 
 test("wu.Iterator.any",
@@ -333,6 +337,10 @@ test("wu.Iterator.any",
             "wu([0,2,4,5]).any(odd?)");
          ok( !wu([0,2,4]).any(function (x) { return x % 2 === 1; }),
             "wu([0,2,4]).any(odd?) is false");
+         ok(wu([0,2,4]).any(),
+            "wu.any() works with implicit boolean coercion");
+         ok( !wu([0,false,null]).any(),
+            "wu.any() works with implicit boolean coercion");
      });
 
 asyncTest("wu.Iterator.asyncEach",
