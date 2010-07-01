@@ -379,7 +379,8 @@ test("wu.Iterator.each",
          ok(wu.eq([1,2,3], wu([1,2,3]).each(Math.log)),
             "Each returns the values from the original iterator, despite what the each function is.");
          var items = [];
-         wu([1,2,3]).each(wu.bind(items, items.push));
+         wu([1,2,3]).each(function (n) { items.push(n); });
+         console.log(items);
          ok(wu.eq([1,2,3], items), "wu(...).each() reuns for every item in the iterator in order.");
      });
 
