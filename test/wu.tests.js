@@ -438,8 +438,8 @@ test("wu.Iterator.reduce",
 test("wu.Iterator.reduceRight",
      function () {
          ok(wu.eq(wu([[1,2,3], [4,5], [6,7,8]]).reduceRight(function (a, b) { return a.concat(b); }),
-                  [1,2,3,4,5,6,7,8]),
-            "wu([[1,2,3], [4,5], [6,7,8]]).reduceRight(a.concat(b)) -> [1,2,3,4,5,6,7,8]");
+                  [6,7,8,4,5,1,2,3]),
+            "wu([[1,2,3], [4,5], [6,7,8]]).reduceRight(a.concat(b)) -> [6,7,8,4,5,1,2,3]");
      });
 
 test("wu.Iterator.takeWhile",
