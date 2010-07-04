@@ -277,6 +277,20 @@ test("wu.zip",
             "wu.zip works with variadic arguments");
      });
 
+test("wu.zipWith",
+     function () {
+         var add = function (a, b) {
+             return a + b;
+         };
+
+         ok(wu.eq(wu.zipWith(add, [1,2,3], [4,5,6]).toArray(),
+                  [5,7,9]),
+            "wu.zipWith([1,2,3], [4,5,6], add).toArray() -> [5,7,9]");
+
+         ok(wu.eq(wu.zipWith(add, [1], [2], [3], [4]).next(), 10),
+            "wu.zipWith works with variadic arguments");
+     });
+
 module("Augmented function methods");
 
 test("wu(fn).bind",
