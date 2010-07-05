@@ -282,15 +282,15 @@ test("wu.zipWith",
          var add2 = function add2(a, b) {
              return a + b;
          };
-         deepEqual(wu.zipWith(add2, [1,2,3], [4,5,6]).toArray(),
-                   [5,7,9],
+         ok(wu.eq(wu.zipWith(add2, [1,2,3], [4,5,6]).toArray(),
+                  [5,7,9]),
             "wu.zipWith([1,2,3], [4,5,6], add).toArray() -> [5,7,9]");
 
          var add3 = function add3(a, b, c) {
              return a + b + c;
          };
-         deepEqual(wu.zipWith(add3, [1,2,3], [4,5,6], [7,8,9]).toArray(),
-                   [12,15,18],
+         ok(wu.eq(wu.zipWith(add3, [1,2,3], [4,5,6], [7,8,9]).toArray(),
+                  [12,15,18]),
             "wu.zipWith works with variadic arguments");
      });
 
