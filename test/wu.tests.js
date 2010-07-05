@@ -334,6 +334,23 @@ test("wu(fn).partial",
          ok(twoToThe(3) === 8, "wu(fn).partial works like wu.curry when there is no wu.___");
      });
 
+test("wu(fn).zipWith",
+     function () {
+         var add2 = wu(function (a, b) {
+             return a + b;
+         });
+         ok(wu.eq(add2.zipWith([1,2,3], [4,5,6]).toArray(),
+                  [5,7,9]),
+            "add2.zipWith([1,2,3], [4,5,6]).toArray() -> [5,7,9]");
+
+         var add3 = wu(function (a, b, c) {
+             return a + b + c;
+         });
+         ok(wu.eq(add3.zipWith([1,2,3], [4,5,6], [7,8,9]).toArray(),
+                  [12,15,18]),
+            "wu(fn).zipWith works with variadic arguments");
+     });
+
 module("Iterator methods");
 
 test("wu.Iterator.all",
