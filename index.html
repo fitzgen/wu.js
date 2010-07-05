@@ -59,6 +59,7 @@
                       <li><a href="#wu-cycle"><code>wu.cycle</code></a></li>
                       <li><a href="#wu-range"><code>wu.range</code></a></li>
                       <li><a href="#wu-zip"><code>wu.zip</code></a></li>
+                      <li><a href="#wu-zipWith"><code>wu.zipWith</code></a></li>
                       <li><a href="#wu-dot"><code>wu.Iterator.dot</code></a></li>
                       <li><a href="#wu-dropwhile"><code>wu.Iterator.dropWhile</code></a></li>
                       <li><a href="#wu-filter"><code>wu.Iterator.filter</code></a></li>
@@ -285,6 +286,20 @@
 [["even", 0], ["odd", 1], ["even", 2], ["odd", 3], ["even", 4], ["odd", 5]]
 &gt;&gt;&gt; wu.zip([1,2], [3,4], [5,6], [7,8]).next();
 [1, 3, 5, 7]</pre>
+
+        <h5 id="wu-zipWith"><a href="#wu-zipWith"><code>wu.zipWith</code></a></h5>
+        <pre class="spec">wu.zipWith(fn, iterable1, iterable2, ..., iterableN)</pre>
+        <p>
+          Returns an iterator that yields the result of applying <code>fn</code>
+          to the items at the same index in every iterable. Iterables can be Iterators,
+          or anything that can be coerced to an iterator.
+        </p>
+        <pre class="box">&gt;&gt;&gt; var add2 = function (a, b) { return a + b; };
+&gt;&gt;&gt; wu.zipWith(add2, [1,2,3], [4,5,6]).toArray();
+[5, 7, 9]
+&gt;&gt;&gt; var add3 = function (a, b, c) { return a + b + c; };
+&gt;&gt;&gt; wu.zipWith(add3, [1, 2, 3], [4, 5, 6], [7, 8, 9]).toArray();
+[12, 15, 18]</pre>
 
         <h5 id="wu-dot"><a href="#wu-dot"><code>wu.Iterator.dot</code></a></h5>
         <pre class="spec">iterator.dot(propertyName)</pre>
