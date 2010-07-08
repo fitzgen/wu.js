@@ -237,6 +237,41 @@ test("wu.match",
          ok(wu.match(wu.___, true)(undefined), "wu.___ matches undefined.");
      });
 
+test("wu.memoize",
+     function() {
+         var c = 0;
+         var counter = function() {
+             c += 1;
+             return c;
+         }
+         counter = wu.memoize(counter);
+         counter();
+         ok(c === 1, "Counter was 0, but is incremented because the function is called.");
+         counter();
+         ok(c === 1, "Counter remains the same because memoized function should not execute again.");
+
+         c = 0;
+
+         var paramify = wu.memoize(function (obj) {
+             var bits = [];
+             c += 1;
+             for (var key in obj) if (obj.hasOwnProperty(key))
+                 bits.push(key + "=" + obj[key]);
+             return bits.join("&");
+         });
+
+         paramify({ foo: "bar", baz: "bang" });
+         ok(c === 1, "Function is called once.")
+         paramify({ foo: "bar", baz: "bang" });
+         ok(c === 1, "Function is not called again, the cached version is used.")
+
+         var oldJSON = JSON;
+         delete JSON;
+         var sq = function (n) { return n * n; };
+         ok(wu.memoize(sq) === sq, "When JSON is not available, memoize returns the original function.")
+         JSON = oldJSON;
+    });
+
 test("wu.not",
      function () {
          ok(wu.not(wu.curry(wu.eq, 1))(2), "wu.not(wu.curry(wu.eq, 1))(2)");
@@ -325,6 +360,41 @@ test("wu(fn).curry",
             "wu.curry(add, 5)(2) === 7");
      });
 
+test("wu(fn).memoize",
+     function() {
+         var c = 0;
+         var counter = function() {
+             c += 1;
+             return c;
+         }
+         counter = wu(counter).memoize();
+         counter();
+         ok(c === 1, "Counter was 0, but is incremented because the function is called.");
+         counter();
+         ok(c === 1, "Counter remains the same because memoized function should not execute again.");
+
+         c = 0;
+
+         var paramify = wu(function (obj) {
+             var bits = [];
+             c += 1;
+             for (var key in obj) if (obj.hasOwnProperty(key))
+                 bits.push(key + "=" + obj[key]);
+             return bits.join("&");
+         }).memoize();
+
+         paramify({ foo: "bar", baz: "bang" });
+         ok(c === 1, "Function is called once.")
+         paramify({ foo: "bar", baz: "bang" });
+         ok(c === 1, "Function is not called again, the cached version is used.")
+
+         var oldJSON = JSON;
+         delete JSON;
+         var sq = function (n) { return n * n; };
+         ok(wu(sq).memoize() === sq, "When JSON is not available, memoize returns the original function.")
+         JSON = oldJSON;
+    });
+
 test("wu(fn).partial",
      function () {
          var square = wu(Math.pow).partial(wu.___, 2),
@@ -349,23 +419,6 @@ test("wu(fn).zipWith",
          deepEqual(add3.zipWith([1,2,3], [4,5,6], [7,8,9]).toArray(),
                    [12,15,18],
                    "wu(fn).zipWith works with variadic arguments");
-     });
-
-test("wu(fn).memoize",
-     function() {
-        var c = 0;
-        var counter = function() {
-            c += 1;
-            return c;
-        }
-       
-        counter = wu(counter).memoize();
-        
-        counter();
-        ok(c === 1);
-        
-        counter();
-        ok(c === 1, "memoized function should not execute again");
      });
 
 module("Iterator methods");
