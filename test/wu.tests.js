@@ -351,6 +351,23 @@ test("wu(fn).zipWith",
                    "wu(fn).zipWith works with variadic arguments");
      });
 
+test("wu(fn).memoize",
+     function() {
+        var c = 0;
+        var counter = function() {
+            c += 1;
+            return c;
+        }
+       
+        counter = wu(counter).memoize();
+        
+        counter();
+        ok(c === 1);
+        
+        counter();
+        ok(c === 1, "memoized function should not execute again");
+     });
+
 module("Iterator methods");
 
 test("wu.Iterator.all",
