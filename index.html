@@ -109,6 +109,7 @@
                 <a href="#utilities">Utilities</a>
                 <ul>
                   <li><a href="#wu-eq"><code>wu.eq</code></a></li>
+                  <li><a href="#wu-memoize"><code>wu.memoize</code></a></li>
                   <li><a href="#wu-toarray2"><code>wu.toArray</code></a></li>
                   <li><a href="#wu-tobool"><code>wu.toBool</code></a></li>
                 </ul>
@@ -834,6 +835,42 @@ false
 false
 &gt;&gt;&gt; wu.eq([1, 2, [4, 5], { foo: {} }], [1, 2, [4, 5], { foo: {} }]);
 true</pre>
+
+        <h4 id="wu-memoize"><a href="#wu-memoize"><code>wu.memoize</code></a></h4>
+        <pre class="spec">wu.memoize(fn)</pre>
+        <p>
+          Returns a new function that caches the results of calling the
+          function <code>fn</code>. Arguments are keyed in the cache
+          using <code>JSON.stringify()</code>.
+        </p>
+        <p>
+          <strong>Important:</strong> If the <code>JSON</code> object is not
+          globally available, <code>wu.memoize</code> will return the original
+          function and will not cache function calls. In older browsers that
+          don't support native JSON (notably IE7 and lower), this means you will
+          need to include
+          the <a href="http://json.org/"><code>json2.js</code></a> script for
+          wu.memoize to work correctly.
+        </p>
+        <pre class="box">&gt;&gt;&gt; var factorial = function (n) {
+...     console.log("Calling factorial");
+...     return n === 0 ? 1 : n * factorial(n - 1);
+... };
+&gt;&gt;&gt; factorial(3);
+Calling factorial
+Calling factorial
+Calling factorial
+Calling factorial
+6
+&gt;&gt;&gt; var mfactorial = wu.memoize(factorial);
+&gt;&gt;&gt; mfactorial(3);
+Calling factorial
+Calling factorial
+Calling factorial
+Calling factorial
+6
+&gt;&gt;&gt; mfactorial(3);
+6</pre>
 
         <h4 id="wu-toarray2"><a href="#wu-toarray2"><code>wu.toArray</code></a></h4>
         <pre class="spec">wu.toArray(thing)</pre>
