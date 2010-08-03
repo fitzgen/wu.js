@@ -1,7 +1,10 @@
 `wu.js`
 =======
 
+A lazy, functional JavaScript library that ain't nuthin' ta f*ck wit.
+
 [Complete Documentation](http://fitzgen.github.com/wu.js/)
+----------------------------------------------------------
 
            NNNNNNNNN==..                                               .=NNNNN=
          NNNNNNNNNNNNNNNNNNN==..                               .=NNNNNNNNNNNNNNI

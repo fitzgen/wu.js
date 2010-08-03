@@ -27,7 +27,7 @@ test("Objects",
              ok(err instanceof wu.StopIteration);
          }
 
-         ok(wu.eq(wu({ foo: 1 }).toArray(), [["foo", 1]]), "wu({foo:1}).toArray() -> [['foo', 1]]");
+         deepEqual(wu({ foo: 1 }).toArray(), [["foo", 1]], "wu({foo:1}).toArray() -> [['foo', 1]]");
      });
 
 test("Arrays",
@@ -41,7 +41,7 @@ test("Arrays",
              ok(err instanceof wu.StopIteration);
          }
 
-         ok(wu.eq(wu([1,2,3]).toArray(), [1,2,3]), "wu([1,2,3]).toArray() -> [1,2,3]");
+         deepEqual(wu([1,2,3]).toArray(), [1,2,3], "wu([1,2,3]).toArray() -> [1,2,3]");
      });
 
 test("Strings",
@@ -56,7 +56,7 @@ test("Strings",
              ok(err instanceof wu.StopIteration);
          }
 
-         ok(wu.eq(wu("Hi!").toArray(), ["H", "i", "!"]), "wu('Hi!').toArray() -> ['H', 'i', '!']");
+         deepEqual(wu("Hi!").toArray(), ["H", "i", "!"], "wu('Hi!').toArray() -> ['H', 'i', '!']");
      });
 
 test("Numbers",
@@ -152,8 +152,8 @@ test("wu.bind",
 
 test("wu.chain",
      function () {
-         ok(wu.eq(wu.chain([1], [2], [3], [4]).toArray(), [1,2,3,4]),
-            "wu.chain([1],[2],[3],[4]).toArray() -> [1,2,3,4]");
+         deepEqual(wu.chain([1], [2], [3], [4]).toArray(), [1,2,3,4],
+                   "wu.chain([1],[2],[3],[4]).toArray() -> [1,2,3,4]");
      });
 
 test("wu.compose",
@@ -237,6 +237,41 @@ test("wu.match",
          ok(wu.match(wu.___, true)(undefined), "wu.___ matches undefined.");
      });
 
+test("wu.memoize",
+     function() {
+         var c = 0;
+         var counter = function() {
+             c += 1;
+             return c;
+         }
+         counter = wu.memoize(counter);
+         counter();
+         ok(c === 1, "Counter was 0, but is incremented because the function is called.");
+         counter();
+         ok(c === 1, "Counter remains the same because memoized function should not execute again.");
+
+         c = 0;
+
+         var paramify = wu.memoize(function (obj) {
+             var bits = [];
+             c += 1;
+             for (var key in obj) if (obj.hasOwnProperty(key))
+                 bits.push(key + "=" + obj[key]);
+             return bits.join("&");
+         });
+
+         paramify({ foo: "bar", baz: "bang" });
+         ok(c === 1, "Function is called once.")
+         paramify({ foo: "bar", baz: "bang" });
+         ok(c === 1, "Function is not called again, the cached version is used.")
+
+         var oldJSON = JSON;
+         delete JSON;
+         var sq = function (n) { return n * n; };
+         ok(wu.memoize(sq) === sq, "When JSON is not available, memoize returns the original function.")
+         JSON = oldJSON;
+    });
+
 test("wu.not",
      function () {
          ok(wu.not(wu.curry(wu.eq, 1))(2), "wu.not(wu.curry(wu.eq, 1))(2)");
@@ -254,12 +289,12 @@ test("wu.partial",
 
 test("wu.range",
      function () {
-         ok(wu.eq(wu.range(3).toArray(), [0,1,2]),
-            "wu.range(3).toArray() -> [0,1,2]");
-         ok(wu.eq(wu.range(3, 6).toArray(), [3,4,5]),
-            "wu.range(3, 6).toArray() -> [3,4,5]");
-         ok(wu.eq(wu.range(0, 10, 2).toArray(), [0,2,4,6,8]),
-            "wu.range(0, 10, 2).toArray() -> [0,2,4,6,8]");
+         deepEqual(wu.range(3).toArray(), [0,1,2],
+                   "wu.range(3).toArray() -> [0,1,2]");
+         deepEqual(wu.range(3, 6).toArray(), [3,4,5],
+                   "wu.range(3, 6).toArray() -> [3,4,5]");
+         deepEqual(wu.range(0, 10, 2).toArray(), [0,2,4,6,8],
+                   "wu.range(0, 10, 2).toArray() -> [0,2,4,6,8]");
          try {
              ok(!wu.range(undefined), "This should never happen");
          } catch (err) {
@@ -269,12 +304,29 @@ test("wu.range",
 
 test("wu.zip",
      function () {
-         ok(wu.eq(wu.zip([1,2,3], [4,5,6]).toArray(),
-                  [[1,4], [2,5], [3,6]]),
-            "wu.zip([1,2,3], [4,5,6]).toArray() -> [[1,4], [2,5], [3,6]]");
+         deepEqual(wu.zip([1,2,3], [4,5,6]).toArray(),
+                   [[1,4], [2,5], [3,6]],
+                   "wu.zip([1,2,3], [4,5,6]).toArray() -> [[1,4], [2,5], [3,6]]");
 
-         ok(wu.eq(wu.zip([1], [2], [3], [4]).next(), [1,2,3,4]),
-            "wu.zip works with variadic arguments");
+         deepEqual(wu.zip([1], [2], [3], [4]).next(), [1,2,3,4],
+                   "wu.zip works with variadic arguments");
+     });
+
+test("wu.zipWith",
+     function () {
+         var add2 = function add2(a, b) {
+             return a + b;
+         };
+         deepEqual(wu.zipWith(add2, [1,2,3], [4,5,6]).toArray(),
+                   [5,7,9],
+                   "wu.zipWith([1,2,3], [4,5,6], add).toArray() -> [5,7,9]");
+
+         var add3 = function add3(a, b, c) {
+             return a + b + c;
+         };
+         deepEqual(wu.zipWith(add3, [1,2,3], [4,5,6], [7,8,9]).toArray(),
+                   [12,15,18],
+                   "wu.zipWith works with variadic arguments");
      });
 
 module("Augmented function methods");
@@ -308,6 +360,41 @@ test("wu(fn).curry",
             "wu.curry(add, 5)(2) === 7");
      });
 
+test("wu(fn).memoize",
+     function() {
+         var c = 0;
+         var counter = function() {
+             c += 1;
+             return c;
+         }
+         counter = wu(counter).memoize();
+         counter();
+         ok(c === 1, "Counter was 0, but is incremented because the function is called.");
+         counter();
+         ok(c === 1, "Counter remains the same because memoized function should not execute again.");
+
+         c = 0;
+
+         var paramify = wu(function (obj) {
+             var bits = [];
+             c += 1;
+             for (var key in obj) if (obj.hasOwnProperty(key))
+                 bits.push(key + "=" + obj[key]);
+             return bits.join("&");
+         }).memoize();
+
+         paramify({ foo: "bar", baz: "bang" });
+         ok(c === 1, "Function is called once.")
+         paramify({ foo: "bar", baz: "bang" });
+         ok(c === 1, "Function is not called again, the cached version is used.")
+
+         var oldJSON = JSON;
+         delete JSON;
+         var sq = function (n) { return n * n; };
+         ok(wu(sq).memoize() === sq, "When JSON is not available, memoize returns the original function.")
+         JSON = oldJSON;
+    });
+
 test("wu(fn).partial",
      function () {
          var square = wu(Math.pow).partial(wu.___, 2),
@@ -315,6 +402,23 @@ test("wu(fn).partial",
 
          ok(square(3) === 9, "wu(fn).partial works with wu.___ placeholder");
          ok(twoToThe(3) === 8, "wu(fn).partial works like wu.curry when there is no wu.___");
+     });
+
+test("wu(fn).zipWith",
+     function () {
+         var add2 = wu(function (a, b) {
+             return a + b;
+         });
+         deepEqual(add2.zipWith([1,2,3], [4,5,6]).toArray(),
+                   [5,7,9],
+                   "add2.zipWith([1,2,3], [4,5,6]).toArray() -> [5,7,9]");
+
+         var add3 = wu(function (a, b, c) {
+             return a + b + c;
+         });
+         deepEqual(add3.zipWith([1,2,3], [4,5,6], [7,8,9]).toArray(),
+                   [12,15,18],
+                   "wu(fn).zipWith works with variadic arguments");
      });
 
 module("Iterator methods");
@@ -350,7 +454,7 @@ asyncTest("wu.Iterator.asyncEach",
               wu([1,2,3]).asyncEach(function each(n) {
                   items.push(n);
                   if (items.length === 3) {
-                      ok(wu.eq(items, [1,2,3]), "asyncEach runs through each item in the iterator in correct order.");
+                      deepEqual(items, [1,2,3], "asyncEach runs through each item in the iterator in correct order.");
                   }
               },
               function then() {
@@ -361,41 +465,41 @@ asyncTest("wu.Iterator.asyncEach",
 
 test("wu.Iterator.dot",
      function () {
-         ok(wu.eq(wu([{foo:1},{foo:2},{foo:3}]).dot("foo").toArray(), [1,2,3]),
-            "wu([{foo:1},{foo:2},{foo:3}]).dot('foo').toArray() -> [1,2,3]");
-         ok(wu.eq(wu([[1], [2,3], [4,5,6]]).dot('slice', 1).toArray(), [[], [3], [5,6]]),
-            "wu([[1], [2,3], [4,5,6]]).dot('slice', 1).toArray() -> [[], [3], [5,6]]");
+         deepEqual(wu([{foo:1},{foo:2},{foo:3}]).dot("foo").toArray(), [1,2,3],
+                   "wu([{foo:1},{foo:2},{foo:3}]).dot('foo').toArray() -> [1,2,3]");
+         deepEqual(wu([[1], [2,3], [4,5,6]]).dot('slice', 1).toArray(), [[], [3], [5,6]],
+                   "wu([[1], [2,3], [4,5,6]]).dot('slice', 1).toArray() -> [[], [3], [5,6]]");
      });
 
 test("wu.Iterator.dropWhile",
      function () {
-         ok(wu.eq(wu([1,2,3,4,5]).dropWhile(function (n) { return n < 3; }).toArray(),
-                  [3,4,5]),
-            "wu.eq(wu([1,2,3,4,5]).dropWhile(n < 3).toArray() -> [3,4,5]");
+         deepEqual(wu([1,2,3,4,5]).dropWhile(function (n) { return n < 3; }).toArray(),
+                   [3,4,5],
+                   "wu.eq(wu([1,2,3,4,5]).dropWhile(n < 3).toArray() -> [3,4,5]");
      });
 
 test("wu.Iterator.each",
      function () {
-         ok(wu.eq([1,2,3], wu([1,2,3]).each(Math.log)),
-            "Each returns the values from the original iterator, despite what the each function is.");
+         deepEqual([1,2,3], wu([1,2,3]).each(Math.log),
+                   "Each returns the values from the original iterator, despite what the each function is.");
          var items = [];
-         wu([1,2,3]).each(wu.bind(items, items.push));
-         ok(wu.eq([1,2,3], items), "wu(...).each() reuns for every item in the iterator in order.");
+         wu([1,2,3]).each(function (n) { items.push(n); });
+         deepEqual([1,2,3], items, "wu(...).each() reuns for every item in the iterator in order.");
      });
 
 test("wu.Iterator.eachply",
      function () {
-         ok(wu.eq([["foo",1]], wu({ foo: 1 }).eachply(function (k, v) {
+         deepEqual([["foo",1]], wu({ foo: 1 }).eachply(function (k, v) {
                                                           ok(k === "foo" && v === 1, "eachply applies keys and values correctly.");
-                                                      })),
-            "eachply returns the values from the original iterator.");
+                                                      }),
+                   "eachply returns the values from the original iterator.");
      });
 
 test("wu.Iterator.filter",
      function () {
-         ok(wu.eq(wu([1,2,3,4]).filter(function (x) { return x % 2 === 0; }).toArray(),
-                  [2,4]),
-            "wu([1,2,3,4]).filter(even?).toArray() -> [2,4]");
+         deepEqual(wu([1,2,3,4]).filter(function (x) { return x % 2 === 0; }).toArray(),
+                   [2,4],
+                   "wu([1,2,3,4]).filter(even?).toArray() -> [2,4]");
      });
 
 test("wu.Iterator.groupBy",
@@ -403,10 +507,10 @@ test("wu.Iterator.groupBy",
          var results = wu([{first:"Nick", last:"Fitzgerald"},
                            {first:"Nick", last:"Nolte"},
                            {first:"John", last:"Smith"}]).groupBy("first");
-         ok(wu.eq(results, {Nick: [{first:"Nick", last:"Fitzgerald"},
+         deepEqual(results, {Nick: [{first:"Nick", last:"Fitzgerald"},
                                    {first:"Nick", last:"Nolte"}],
-                            John: [{first:"John", last:"Smith"}]}),
-            "wu(...).groupBy(\"first\")");
+                            John: [{first:"John", last:"Smith"}]},
+                   "wu(...).groupBy(\"first\")");
      });
 
 test("wu.Iterator.has",
@@ -417,16 +521,16 @@ test("wu.Iterator.has",
 
 test("wu.Iterator.map",
      function () {
-         ok(wu.eq(wu(4).map(function (x) { return x + 1; }).toArray(),
-                  [4,3,2,1]),
-           "wu(4).map(function (x) { return x + 1; }).toArray() -> [4,3,2,1]");
+         deepEqual(wu(4).map(function (x) { return x + 1; }).toArray(),
+                   [4,3,2,1],
+                   "wu(4).map(function (x) { return x + 1; }).toArray() -> [4,3,2,1]");
      });
 
 test("wu.Iterator.mapply",
      function () {
-         ok(wu.eq(wu([[1,2], [2,2], [3,2]]).mapply(Math.pow).toArray(),
-                  [1,4,9]),
-            "wu([[1,2], [2,2], [3,2]]).mapply(Math.pow).toArray() -> [1,4,9]");
+         deepEqual(wu([[1,2], [2,2], [3,2]]).mapply(Math.pow).toArray(),
+                   [1,4,9],
+                   "wu([[1,2], [2,2], [3,2]]).mapply(Math.pow).toArray() -> [1,4,9]");
      });
 
 test("wu.Iterator.reduce",
@@ -437,14 +541,14 @@ test("wu.Iterator.reduce",
 
 test("wu.Iterator.reduceRight",
      function () {
-         ok(wu.eq(wu([[1,2,3], [4,5], [6,7,8]]).reduceRight(function (a, b) { return a.concat(b); }),
-                  [1,2,3,4,5,6,7,8]),
-            "wu([[1,2,3], [4,5], [6,7,8]]).reduceRight(a.concat(b)) -> [1,2,3,4,5,6,7,8]");
+         deepEqual(wu([[1,2,3], [4,5], [6,7,8]]).reduceRight(function (a, b) { return a.concat(b); }),
+                   [6,7,8,4,5,1,2,3],
+                   "wu([[1,2,3], [4,5], [6,7,8]]).reduceRight(a.concat(b)) -> [6,7,8,4,5,1,2,3]");
      });
 
 test("wu.Iterator.takeWhile",
      function () {
-         ok(wu.eq(wu([1,2,3,4,5,6]).takeWhile(function (n) { return n < 4; }).toArray(),
-                  [1,2,3]),
-            "wu([1,2,3,4,5,6]).takeWhile(function (n) { return n < 4; }).toArray() -> [1,2,3]");
+         deepEqual(wu([1,2,3,4,5,6]).takeWhile(function (n) { return n < 4; }).toArray(),
+                   [1,2,3],
+                   "wu([1,2,3,4,5,6]).takeWhile(function (n) { return n < 4; }).toArray() -> [1,2,3]");
      });
