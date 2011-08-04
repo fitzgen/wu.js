@@ -295,6 +295,8 @@ test("wu.range",
                    "wu.range(3, 6).toArray() -> [3,4,5]");
          deepEqual(wu.range(0, 10, 2).toArray(), [0,2,4,6,8],
                    "wu.range(0, 10, 2).toArray() -> [0,2,4,6,8]");
+         deepEqual(wu.range(3, 0, -1).toArray(), [3,2,1],
+                   "wu.range(3, 0, -1).toArray() -> [3,2,1]");
          try {
              ok(!wu.range(undefined), "This should never happen");
          } catch (err) {
