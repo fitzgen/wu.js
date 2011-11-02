@@ -224,6 +224,14 @@ test("wu.match",
          // Regex -> string matching
          ok(wu.match([ /hey/ ], true)("hey there"), "When all else fails, regex matching strings works");
 
+         // Multiple Arguments
+         var identity = function() {};
+
+         ok(wu.match([ Function, Function ], true)(identity, identity), "Matches two functions");
+         ok(wu.match([ Number, Number ], true)(1, 1), "Matches two numbers");
+         ok(wu.match([ Function, Number ], true)(identity, 1), "Matches function then number");
+         ok(wu.match([ Number, Function ], true)(identity, 1), "Matches number then function");
+
          // wu.___
          ok(wu.match(wu.___, true)({}), "wu.___ matches objects.");
          ok(wu.match(wu.___, true)([]), "wu.___ matches arrays.");
