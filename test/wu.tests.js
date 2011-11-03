@@ -230,7 +230,7 @@ test("wu.match",
          ok(wu.match([ Function, Function ], true)(identity, identity), "Matches two functions");
          ok(wu.match([ Number, Number ], true)(1, 1), "Matches two numbers");
          ok(wu.match([ Function, Number ], true)(identity, 1), "Matches function then number");
-         ok(wu.match([ Number, Function ], true)(identity, 1), "Matches number then function");
+         ok(wu.match([ Number, Function ], true)(1, identity), "Matches number then function");
 
          // wu.___
          ok(wu.match(wu.___, true)({}), "wu.___ matches objects.");
