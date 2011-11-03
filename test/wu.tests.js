@@ -224,6 +224,14 @@ test("wu.match",
          // Regex -> string matching
          ok(wu.match([ /hey/ ], true)("hey there"), "When all else fails, regex matching strings works");
 
+         // Multiple Arguments
+         var identity = function() {};
+
+         ok(wu.match([ Function, Function ], true)(identity, identity), "Matches two functions");
+         ok(wu.match([ Number, Number ], true)(1, 1), "Matches two numbers");
+         ok(wu.match([ Function, Number ], true)(identity, 1), "Matches function then number");
+         ok(wu.match([ Number, Function ], true)(1, identity), "Matches number then function");
+
          // wu.___
          ok(wu.match(wu.___, true)({}), "wu.___ matches objects.");
          ok(wu.match(wu.___, true)([]), "wu.___ matches arrays.");
@@ -421,6 +429,23 @@ test("wu(fn).zipWith",
          deepEqual(add3.zipWith([1,2,3], [4,5,6], [7,8,9]).toArray(),
                    [12,15,18],
                    "wu(fn).zipWith works with variadic arguments");
+     });
+
+test("wu(fn).memoize",
+     function() {
+        var c = 0;
+        var counter = function() {
+            c += 1;
+            return c;
+        }
+       
+        counter = wu(counter).memoize();
+        
+        counter();
+        ok(c === 1);
+        
+        counter();
+        ok(c === 1, "memoized function should not execute again");
      });
 
 module("Iterator methods");
