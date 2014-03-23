@@ -68,7 +68,9 @@
   // static method on `wu` directly that takes an iterable as its first
   // parameter.
   const prototypeAndStatic = (name, fn) => {
-    fn.prototype = wu.prototype;
+    if (fn instanceof GeneratorFunction) {
+      fn.prototype = wu.prototype;
+    }
     wu.prototype[name] = fn;
     wu[name] = (iterable, ...args) => {
       return wu(iterable)[name](...args);
@@ -183,7 +185,9 @@
   });
 
   prototypeAndStatic("invoke", function* (name, ...args) {
-    TODO;
+    for (let x of this) {
+      yield x[name](...args);
+    }
   });
 
   prototypeAndStatic("map", function* (fn) {
@@ -193,7 +197,9 @@
   });
 
   prototypeAndStatic("pluck", function* (name) {
-    TODO;
+    for (let x of this) {
+      yield x[name];
+    }
   });
 
   prototypeAndStatic("reject", function* (fn=Boolean) {
@@ -234,7 +240,14 @@
   });
 
   prototypeAndStatic("unique", function* () {
-    TODO;
+    const seen = new Set();
+    for (let x of this) {
+      if (!seen.has(x)) {
+        yield x;
+        seen.add(x);
+      }
+    }
+    seen.clear();
   });
 
   staticMethod("zip", function (...iterables) {
@@ -309,7 +322,11 @@
   });
 
   prototypeAndStatic("find", function (fn) {
-    TODO;
+    for (let x of this) {
+      if (fn(x)) {
+        return x;
+      }
+    }
   });
 
   prototypeAndStatic("forEach", function (fn) {
@@ -352,7 +369,7 @@
    * Methods that return an array of iterables.
    */
 
-  prototypeAndStatic("tee", (n=2) => {
+  prototypeAndStatic("tee", function (n=2) {
     TODO;
   });
 
