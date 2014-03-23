@@ -146,7 +146,21 @@
   });
 
   prototypeAndStatic("chunk", function* (n=2) {
-    TODO;
+    let items = [];
+    let index = 0;
+
+    for (let item of this) {
+      items[index++] = item;
+      if (index === n) {
+        yield items;
+        items = [];
+        index = 0;
+      }
+    }
+
+    if (index) {
+      yield items;
+    }
   });
 
   prototypeAndStatic("compress", function* (selectors) {
