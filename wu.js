@@ -390,7 +390,21 @@
     return val;
   });
 
-  // TODO wtf is irakli's name for the yielding iterative reduce
+  // TODO name this better.
+  prototypeAndStatic("ireduce", function* (fn, initial=undefined) {
+    let val = initial;
+    if (val === undefined) {
+      for (let x of this) {
+        val = x;
+        break;
+      }
+    }
+    yield val;
+    for (let x of this) {
+      yield val = fn(val, x);
+    }
+    return val;
+  });
 
   prototypeAndStatic("some", function (fn=Boolean) {
     for (let x of this) {
