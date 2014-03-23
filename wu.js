@@ -455,8 +455,79 @@
     return iterables;
   });
 
-  staticMethod("unzip", function (...iterables) {
-    TODO;
+  // An efficient implementation of the queue data structure using an array.
+  function Queue(iterable) {
+    this._head = 0;
+    this._items = iterable ? [...iterable] : [];
+    this.size = this._items.length;
+  }
+
+  Queue.COMPACT_SIZE = 500;
+
+  Queue.prototype.enqueue = function(item) {
+    this._items.push(item);
+    return ++this.size;
+  };
+
+  Queue.prototype.dequeue = function() {
+    if (this.size) {
+      const item = this._items[this._head];
+      if (this._head === Queue.COMPACT_SIZE) {
+        this._items = this._items.slice(this._head + 1);
+        this._head = 0;
+      } else {
+        this._items[this._head++] = MISSING;
+      }
+      return item;
+    }
+  };
+
+  const _unzip = function*(iterator, index, queues) {
+    const queue = queues[index];
+    while (true) {
+      if (queue.size) {
+        yield queue.dequeue();
+      } else {
+        const {value, done} = iterator.next();
+        if (done) {
+          return;
+        }
+
+        let item = MISSING;
+        for (let i = 0; i < queues.length; i++) {
+          if (i in value) {
+            if (index === i) {
+              item = value[i];
+            } else {
+              queues[i].enqueue(value[i]);
+            }
+          }
+        }
+
+        if (item !== MISSING) {
+          yield item;
+        }
+      }
+    }
+  }
+  _unzip.prototype = wu.prototype;
+
+  prototypeAndStatic("unzip", function () {
+    const { value, done } = this.next();
+    if (done) {
+      return [];
+    }
+    let count = value.length;
+    const iterables = new Array(count);
+    const queues = new Array(count);
+
+    while (count--) {
+      queues[count] = new Queue();
+      queues[count].enqueue(value[count]);
+      iterables[count] = _unzip(this, count, queues);
+    }
+
+    return iterables;
   });
 
 
