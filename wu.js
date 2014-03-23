@@ -33,8 +33,11 @@
   // well-known name or importable, find the @@iterator object by expecting it
   // as the first property accessed on a for-of iterable.
   const iteratorSymbol = (() => {
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      return Symbol.iterator;
+    }
     try {
-      for (let _ of Proxy.create({get: function(_, name) { throw name; } }))
+      for (let _ of new Proxy({ get: (_, name) => { throw name; } }))
         break;
     } catch (name) {
       return name;
@@ -44,8 +47,8 @@
 
   // Get the iterator for the thing or throw an error.
   const getIterator = (thing) => {
-    if (thing[iteratorSymbol]) {
-      return thing[iteratorSymbol].bind(thing);
+    if (thing && thing[iteratorSymbol]) {
+      return thing[iteratorSymbol]();
     }
     throw new TypeError("Not iterable: " + thing);
   };
