@@ -29,13 +29,13 @@
   // Return a new function that is the complement of the given function.
   const not = fn => (...args) => !fn(...args);
 
-  // This is known as @@iterator in the ES6 spec. Until it is bound to some
-  // well-known name or importable, find the @@iterator object by expecting it
-  // as the first property accessed on a for-of iterable.
+  // This is known as @@iterator in the ES6 spec.
   const iteratorSymbol = (() => {
+    // Check if `Symbol.iterator` exists and use that if possible.
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
       return Symbol.iterator;
     }
+    // Fall back to using a Proxy to get @@iterator.
     try {
       for (let _ of new Proxy({ get: (_, name) => { throw name; } }))
         break;
