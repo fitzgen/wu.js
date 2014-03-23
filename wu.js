@@ -164,7 +164,7 @@
   });
 
   prototypeAndStatic("compress", function* (selectors) {
-    for (let [x, s] of wu.zip(this, selectors)) {
+    for (let [x, s] of _zip([this, selectors])) {
       if (s) {
         yield x;
       }
@@ -183,7 +183,7 @@
   });
 
   prototypeAndStatic("enumerate", function () {
-    return wu.zip(this, wu.count());
+    return _zip([this, wu.count()]);
   });
 
   prototypeAndStatic("filter", function* (fn=Boolean) {
@@ -264,33 +264,42 @@
     seen.clear();
   });
 
-  staticMethod("zip", function (...iterables) {
-    let iters = iterables.map(getIterator);
-    let anyDone = false;
 
-    while (!anyDone) {
+  const _zip = function* (iterables, longest) {
+    if (!iterables.length) {
+      return;
+    }
+
+    const iters = iterables.map(getIterator);
+
+    while (true) {
       let zipped = [];
       for (let it of iters) {
         let { value, done } = it.next();
-        zipped.push(value);
         if (done) {
-          anyDone = true;
+          if (!longest) {
+            return;
+          }
+          zipped.length++;
+        } else {
+          zipped.push(value);
         }
       }
       yield zipped;
-
-      if (anyDone) {
-        break;
-      }
     }
+  };
+  _zip.prototype = wu.prototype;
+
+  staticMethod("zip", function (...iterables) {
+    return _zip(iterables);
   });
 
   staticMethod("zipLongest", function (...iterables) {
-    TODO;
+    return _zip(iterables, true);
   });
 
-  staticMethod("zipWith", function (fn, ...args) {
-    return wu.zip(...args).spreadMap(fn);
+  staticMethod("zipWith", function (fn, ...iterables) {
+    return _zip(iterables).spreadMap(fn);
   });
 
 
@@ -415,6 +424,7 @@
       }
     }
   };
+  _product.prototype = wu.prototype;
 
   prototypeAndStatic("product", function* (...iterables) {
     return iterables.reduce(_product, getIterator([[]]));
