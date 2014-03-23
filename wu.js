@@ -45,9 +45,14 @@
     throw new Error("Cannot find iterator symbol.");
   }());
 
+  // Return whether a thing is iterable.
+  const isIterable = (thing) => {
+    return thing && typeof thing[iteratorSymbol] === "function";
+  };
+
   // Get the iterator for the thing or throw an error.
   const getIterator = (thing) => {
-    if (thing && thing[iteratorSymbol]) {
+    if (isIterable(thing)) {
       return thing[iteratorSymbol]();
     }
     throw new TypeError("Not iterable: " + thing);
@@ -195,7 +200,13 @@
   });
 
   prototypeAndStatic("flatten", function* (shallow=false) {
-    TODO;
+    for (let x of this) {
+      if (typeof x !== "string" && isIterable(x)) {
+        yield* shallow ? x : wu.flatten(x);
+      } else {
+        yield x;
+      }
+    }
   });
 
   prototypeAndStatic("invoke", function* (name, ...args) {
