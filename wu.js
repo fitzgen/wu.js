@@ -394,8 +394,16 @@
     TODO;
   });
 
-  prototypeAndStatic("product", function* () {
-    TODO;
+  const _product = function* (chained, iterable) {
+    for (let tuple of chained) {
+      for (let item of iterable) {
+        yield tuple.concat(item);
+      }
+    }
+  };
+
+  prototypeAndStatic("product", function* (...iterables) {
+    return iterables.reduce(_product, getIterator([[]]));
   });
 
 
