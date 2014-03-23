@@ -48,7 +48,18 @@
       return thing[iteratorSymbol].bind(thing);
     }
     throw new TypeError("Not iterable: " + thing);
-  }
+  };
+
+  const GeneratorFunction = function* () {}.constructor;
+
+  // Define a static method on `wu` and set its prototype to the shared
+  // `wu.prototype`.
+  const staticMethod = (name, fn) => {
+    if (fn instanceof GeneratorFunction) {
+      fn.prototype = wu.prototype;
+    }
+    wu[name] = fn;
+  };
 
   // Define a function that is attached as both a `wu.prototype` method and a
   // static method on `wu` directly that takes an iterable as its first
@@ -66,21 +77,21 @@
    * Exposed utilities
    */
 
-  wu.keys = function* (obj) {
+  staticMethod("keys", function* (obj) {
     yield* Object.keys(obj);
-  };
+  });
 
-  wu.values = function* (obj) {
+  staticMethod("values", function* (obj) {
     for (let k of Object.keys(obj)) {
       yield obj[k];
     }
-  };
+  });
 
-  wu.entries = function* (obj) {
+  staticMethod("entries", function* (obj) {
     for (let k of Object.keys(obj)) {
       yield [k, obj[k]];
     }
-  };
+  });
 
 
   /*
@@ -98,15 +109,15 @@
     }
   });
 
-  wu.count = function* (start=0, step=1) {
+  staticMethod("count", function* (start=0, step=1) {
     let n = start;
     while (true) {
       yield n;
       n += step;
     }
-  };
+  });
 
-  wu.repeat = function* (thing, times=Infinity) {
+  staticMethod("repeat", function* (thing, times=Infinity) {
     if (times === Infinity) {
       while (true) {
         yield thing;
@@ -116,18 +127,18 @@
         yield thing;
       }
     }
-  };
+  });
 
 
   /*
    * Iterators that terminate once the input sequence has been exhausted
    */
 
-  wu.chain = function* (...iterables) {
+  staticMethod("chain", function* (...iterables) {
     for (let it of iterables) {
       yield* it;
     }
-  };
+  });
 
   prototypeAndStatic("chunk", function* (n=2) {
     TODO;
@@ -223,7 +234,7 @@
     TODO;
   });
 
-  wu.zip = function (...iterables) {
+  staticMethod("zip", function (...iterables) {
     let iters = iterables.map(getIterator);
     let anyDone = false;
 
@@ -242,15 +253,15 @@
         break;
       }
     }
-  };
+  });
 
-  wu.zipLongest = function (...iterables) {
+  staticMethod("zipLongest", function (...iterables) {
     TODO;
-  };
+  });
 
-  wu.zipWith = function (fn, ...args) {
+  staticMethod("zipWith", function (fn, ...args) {
     return wu.zip(...args).spreadMap(fn);
-  };
+  });
 
 
   /*
@@ -342,9 +353,9 @@
     TODO;
   });
 
-  wu.unzip = function (...iterables) {
+  staticMethod("unzip", function (...iterables) {
     TODO;
-  };
+  });
 
 
   /*
