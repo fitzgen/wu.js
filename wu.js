@@ -26,6 +26,9 @@
    * Internal utilities
    */
 
+  // An internal placeholder value.
+  const MISSING = {};
+
   // Return a new function that is the complement of the given function.
   const not = fn => (...args) => !fn(...args);
 
@@ -403,8 +406,53 @@
    * Methods that return an array of iterables.
    */
 
+  const _tee = function* (iterator, cache) {
+    const {items} = cache;
+    let index = 0;
+
+    while (true) {
+      if (index === items.length) {
+        let {done, value} = iterator.next();
+        if (done) {
+          if (cache.returned === MISSING) {
+            cache.returned = value;
+          }
+          break;
+        }
+        yield items[index++] = value;
+      } else if (index === cache.tail) {
+        let value = items[index];
+        if (index === 500) {
+          items = cache.items = items.slice(index);
+          index = 0;
+          cache.tail = 0;
+        } else {
+          items[index] = undefined;
+          cache.tail = ++index;
+        }
+        yield value;
+      } else {
+        yield items[index++];
+      }
+    }
+
+    if (cache.tail === index) {
+      items.length = 0;
+    }
+
+    return cache.returned;
+  };
+  _tee.prototype = wu.prototype;
+
   prototypeAndStatic("tee", function (n=2) {
-    TODO;
+    const iterables = new Array(count);
+    const cache = { tail: 0, items: [], returned: MISSING };
+
+    while (n--) {
+      iterables[n] = _tee(this, cache);
+    }
+
+    return iterables;
   });
 
   staticMethod("unzip", function (...iterables) {
