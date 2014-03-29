@@ -1,5 +1,6 @@
 describe("wu.chunk", () => {
   it("should chunk items into tuples", () => {
-    TODO
+    assert.eqArray([[1,2,3], [4,5,6]],
+                   wu.chunk([1,2,3,4,5,6], 3));
   });
 });

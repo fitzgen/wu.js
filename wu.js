@@ -42,7 +42,7 @@
       }
       // Fall back to using a Proxy to get @@iterator.
       try {
-        for (let _ of new Proxy({ get: (_, name) => { throw name; } }))
+        for (let _ of new Proxy({}, { get: (_, name) => { throw name; } }))
           break;
       } catch (name) {
         return name;
@@ -84,6 +84,7 @@
     }
     wu.prototype[name] = fn;
     wu[name] = (iterable, ...args) => {
+      debugger;
       return wu(iterable)[name](...args);
     };
   };
@@ -206,6 +207,7 @@
   });
 
   prototypeAndStatic("flatten", function* (shallow=false) {
+    debugger;
     for (let x of this) {
       if (typeof x !== "string" && isIterable(x)) {
         yield* shallow ? x : wu.flatten(x);

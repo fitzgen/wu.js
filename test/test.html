@@ -27,7 +27,7 @@
      assert.eqArray = (expected, actual) => {
        let i = 0;
        for (let x of actual) {
-         assert.equal(expected[i++], x);
+         assert.deepEqual(expected[i++], x);
        }
      };
 
