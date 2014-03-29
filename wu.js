@@ -262,7 +262,7 @@
     }
   });
 
-  prototypeAndStatic("tap", function (fn=console.log) {
+  prototypeAndStatic("tap", function* (fn=console.log) {
     for (let x of this) {
       fn(x);
       yield x;
@@ -422,7 +422,7 @@
    */
 
   const _tee = function* (iterator, cache) {
-    const {items} = cache;
+    let { items } = cache;
     let index = 0;
 
     while (true) {
