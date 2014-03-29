@@ -1,6 +1,6 @@
 {
     "name": "wu",
-    "description": "A lazy, functional Javascript library that ain't nuthin' ta f*ck wit.",
+    "description": "An ECMAScript 6 iterator library that ain't nuthin' ta f*ck wit",
     "author": {
         "name": "Nick Fitzgerald",
         "email": "fitzgen@gmail.com",

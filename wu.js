@@ -182,6 +182,10 @@
     TODO;
   });
 
+  prototypeAndStatic("reductions", function* (fn) {
+    TODO;
+  });
+
   prototypeAndStatic("reject", function* (fn=Boolean) {
     return this.filter(not(fn));
   });

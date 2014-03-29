@@ -1,0 +1,123 @@
+---
+---
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="index.css" rel="stylesheet" />
+    <title>
+      wu.js &mdash; A lazy, functional ECMAScript 6 iterator library that ain't
+      nuthin' ta f*ck wit.
+    </title>
+  </head>
+  <body>
+    <div class="container-fluid">
+
+      <div class="row col-xs-12 col-md-3">
+        <ul class="nav nav-sidebar affix">
+          <li>
+            <a href="#getting-started">Getting Started</a>
+            <ul class="nav">
+              <li>
+                <a href="#quick-start">Quick Start</a>
+              </li>
+              <li>
+                <a href="#basics">Basics</a>
+              </li>
+              <li>
+                <a href="#examples">Examples</a>
+              </li>
+              <li>
+                <a href="#basics">Engine and Browser Support</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#API">API</a>
+            <ul class="nav">
+              {% for p in site.posts %}
+              <li>
+                <a href="#{{ p.title | slugify }}">{{ p.title }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </li>
+          <li>
+            <a href="#community">Community</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="row col-xs-12 col-md-9">
+
+        <header class="row col-xs-12">
+          <h1>wu.js</h1>
+          <p class="hidden-xs tagline">
+            A lazy, functional ECMAScript 6 iterator library that ain't nuthin'
+            ta f*ck wit.
+          </p>
+        </header>
+
+        <section id="getting-started">
+          <h3><a href="#getting-started">Getting Started</h3></a>
+
+          <p>TODO</p>
+
+          <section id="quick-start">
+            <h4><a href="#quick-start">Quick Start</a></h4>
+            {% highlight html %}
+<script src="path/to/wu.js" type="application/javascript;version=1.8"></script>
+{% endhighlight %}
+            <p>Or</p>
+            {% highlight bash %}
+$ npm install wu
+{% endhighlight %}
+          </section>
+
+          <section id="basics">
+            <h4><a href="#basics">Basics</a></h4>
+            <p>
+              TODO
+            </p>
+          </section>
+
+          <section id="examples">
+            <h4><a href="#examples">Examples</a></h4>
+            <p>
+              TODO
+            </p>
+          </section>
+
+          <section id="support">
+            <h4><a href="#support">Engine and Browser Support</a></h4>
+            <p>
+              TODO
+            </p>
+          </section>
+        </section>
+
+        <section id="API">
+          <h3><a href="#API">API</a></h3>
+          {% for p in site.posts %}
+          <section id="{{ p.title | slugify }}">
+            {{ p.content }}
+          </section>
+          {% endfor %}
+        </section>
+
+
+        <section id="community">
+          <h3><a href="#community">Community</a></h3>
+          <p>
+            TODO
+          </p>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="wu.js" type="application/javascript;version=1.8"></script>
+  </body>
+</html>
