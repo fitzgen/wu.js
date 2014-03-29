@@ -32,30 +32,34 @@
   const not = fn => (...args) => !fn(...args);
 
   // This is known as @@iterator in the ES6 spec.
-  const iteratorSymbol = (function () {
-    // Check if `Symbol.iterator` exists and use that if possible.
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      return Symbol.iterator;
-    }
-    // Fall back to using a Proxy to get @@iterator.
-    try {
-      for (let _ of new Proxy({ get: (_, name) => { throw name; } }))
-        break;
-    } catch (name) {
-      return name;
-    }
-    throw new Error("Cannot find iterator symbol.");
-  }());
+  Object.defineProperty(wu, "iteratorSymbol", {
+    configurable: false,
+    writable: false,
+    value: (function () {
+      // Check if `Symbol.iterator` exists and use that if possible.
+      if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+        return Symbol.iterator;
+      }
+      // Fall back to using a Proxy to get @@iterator.
+      try {
+        for (let _ of new Proxy({ get: (_, name) => { throw name; } }))
+          break;
+      } catch (name) {
+        return name;
+      }
+      throw new Error("Cannot find iterator symbol.");
+    }())
+  });
 
   // Return whether a thing is iterable.
   const isIterable = (thing) => {
-    return thing && typeof thing[iteratorSymbol] === "function";
+    return thing && typeof thing[wu.iteratorSymbol] === "function";
   };
 
   // Get the iterator for the thing or throw an error.
   const getIterator = (thing) => {
     if (isIterable(thing)) {
-      return thing[iteratorSymbol]();
+      return thing[wu.iteratorSymbol]();
     }
     throw new TypeError("Not iterable: " + thing);
   };
@@ -229,6 +233,21 @@
     }
   });
 
+  prototypeAndStatic("reductions", function* (fn, initial=undefined) {
+    let val = initial;
+    if (val === undefined) {
+      for (let x of this) {
+        val = x;
+        break;
+      }
+    }
+    yield val;
+    for (let x of this) {
+      yield val = fn(val, x);
+    }
+    return val;
+  });
+
   prototypeAndStatic("reject", function* (fn=Boolean) {
     return this.filter(not(fn));
   });
@@ -388,21 +407,6 @@
     }
     for (let x of this) {
       val = fn(val, x);
-    }
-    return val;
-  });
-
-  prototypeAndStatic("reductions", function* (fn, initial=undefined) {
-    let val = initial;
-    if (val === undefined) {
-      for (let x of this) {
-        val = x;
-        break;
-      }
-    }
-    yield val;
-    for (let x of this) {
-      yield val = fn(val, x);
     }
     return val;
   });

@@ -49,6 +49,9 @@
               <li>
                 <a href="#tests">Tests</a>
               </li>
+              <li>
+                <a href="#documentation">Documentation</a>
+              </li>
             </ul>
           </li>
         </ul>
@@ -57,7 +60,7 @@
       <div class="row col-xs-12 col-md-9">
 
         <header class="row col-xs-12">
-          <h1>wu.js</h1>
+          <h1><a href="#"><code>wu.js</code></a></h1>
           <p class="hidden-xs tagline">
             A lazy, functional ECMAScript 6 iterator library that ain't nuthin'
             ta f*ck wit.
@@ -137,6 +140,31 @@ $ npm install wu
               is the test
               runner. <a href="http://chaijs.com/api/assert/">Chai's <code>assert</code>
               module</a> is used for assertions.
+            </p>
+          </section>
+
+          <section id="documentation">
+            <h4><a href="#documentation">Documentation</a></h4>
+
+            <p>
+              This documentation is created with the static site
+              generator <a href="http://jekyllrb.com/">Jekyll</a>. To serve the
+              docs locally and automatically recompile them on change, run:
+            </p>
+
+            <pre><code>$ npm run docs</code></pre>
+
+            <p>
+              The documentation will be served
+              at <a href="http://0.0.0.0:4000">http://0.0.0.0:4000</a>.
+            </p>
+
+            <p>
+              The sources for this documentation live in <code>index.html</code>
+              and markdown files in the <code>_posts</code>
+              directory. Each <code>wu</code> method has its own markdown file
+              in the <code>_posts</code> directory, and the table of contents
+              for the <code>wu</code> methods is generated automatically.
             </p>
           </section>
         </section>
