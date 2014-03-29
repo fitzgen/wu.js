@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mocha Tests</title>
+    <link rel="stylesheet" href="mocha.css" />
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script src="../wu.js" type="application/javascript;version=1.8"></script>
+    <script src="mocha.js"></script>
+    <script src="chai.js"></script>
+    <script type="application/javascript;version=1.8">
+     window.assert = chai.assert;
+     assert.eqSet = (expected, actual) => {
+       for (let x of actual) {
+         assert.ok(expected.has(x));
+         expected.delete(x);
+       }
+     };
+     mocha.setup('bdd');
+    </script>
+    <script src="test-entries.js" type="application/javascript;version=1.8"></script>
+    <script src="test-keys.js" type="application/javascript;version=1.8"></script>
+    <script src="test-values.js" type="application/javascript;version=1.8"></script>
+
+    <script src="test-cycle.js" type="application/javascript;version=1.8"></script>
+    <script src="test-count.js" type="application/javascript;version=1.8"></script>
+    <script src="test-repeat.js" type="application/javascript;version=1.8"></script>
+    <script>
+     mocha.checkLeaks();
+     mocha.globals(["wu", "chai", "assert"]);
+     mocha.run();
+    </script>
+  </body>
+</html>

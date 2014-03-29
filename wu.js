@@ -89,6 +89,12 @@
    * Public utilities
    */
 
+  staticMethod("entries", function* (obj) {
+    for (let k of Object.keys(obj)) {
+      yield [k, obj[k]];
+    }
+  });
+
   staticMethod("keys", function* (obj) {
     yield* Object.keys(obj);
   });
@@ -96,12 +102,6 @@
   staticMethod("values", function* (obj) {
     for (let k of Object.keys(obj)) {
       yield obj[k];
-    }
-  });
-
-  staticMethod("entries", function* (obj) {
-    for (let k of Object.keys(obj)) {
-      yield [k, obj[k]];
     }
   });
 
@@ -262,7 +262,7 @@
     }
   });
 
-  prototypeAndStatic("tap", function* (fn=console.log) {
+  prototypeAndStatic("tap", function* (fn=console.log.bind(console)) {
     for (let x of this) {
       fn(x);
       yield x;

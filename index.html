@@ -44,7 +44,12 @@
             </ul>
           </li>
           <li>
-            <a href="#community">Community</a>
+            <a href="#contributing">Contributing</a>
+            <ul class="nav">
+              <li>
+                <a href="#tests">Tests</a>
+              </li>
+            </ul>
           </li>
         </ul>
       </div>
@@ -107,11 +112,33 @@ $ npm install wu
         </section>
 
 
-        <section id="community">
-          <h3><a href="#community">Community</a></h3>
+        <section id="contributing">
+          <h3><a href="#contributing">Contributing</a></h3>
           <p>
             TODO
           </p>
+
+          <section id="tests">
+            <h4><a href="#tests">Tests</a></h4>
+
+            <h5>Running the Test Suite</h5>
+
+            <p>
+              <a href="test/test.html">Run the tests in your browser.</a>
+            </p>
+
+            <h5>Creating New Tests</h5>
+
+            <p>
+              To add a new test, find or create the appropriate file
+              in <code>test/test-X.js</code>. If creating a new test file, make
+              sure to add a script tag
+              to <code>test/test.html</code>. <a href="http://visionmedia.github.io/mocha/">Mocha</a>
+              is the test
+              runner. <a href="http://chaijs.com/api/assert/">Chai's <code>assert</code>
+              module</a> is used for assertions.
+            </p>
+          </section>
         </section>
 
       </div>
