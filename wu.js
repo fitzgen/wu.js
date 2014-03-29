@@ -21,7 +21,6 @@
   }
 
 
-
   /*
    * Internal utilities
    */
@@ -33,7 +32,7 @@
   const not = fn => (...args) => !fn(...args);
 
   // This is known as @@iterator in the ES6 spec.
-  const iteratorSymbol = (() => {
+  const iteratorSymbol = (function () {
     // Check if `Symbol.iterator` exists and use that if possible.
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
       return Symbol.iterator;
@@ -87,7 +86,7 @@
 
 
   /*
-   * Exposed utilities
+   * Public utilities
    */
 
   staticMethod("keys", function* (obj) {
@@ -230,10 +229,6 @@
     }
   });
 
-  prototypeAndStatic("reductions", function* (fn) {
-    TODO;
-  });
-
   prototypeAndStatic("reject", function* (fn=Boolean) {
     return this.filter(not(fn));
   });
@@ -268,7 +263,10 @@
   });
 
   prototypeAndStatic("tap", function (fn=console.log) {
-    TODO;
+    for (let x of this) {
+      fn(x);
+      yield x;
+    }
   });
 
   prototypeAndStatic("unique", function* () {
@@ -283,7 +281,7 @@
   });
 
 
-  const _zip = function* (iterables, longest) {
+  const _zip = function* (iterables, opts={ longest: false }) {
     if (!iterables.length) {
       return;
     }
@@ -295,7 +293,7 @@
       for (let it of iters) {
         let { value, done } = it.next();
         if (done) {
-          if (!longest) {
+          if (!opts.longest) {
             return;
           }
           zipped.length++;
@@ -313,7 +311,7 @@
   });
 
   staticMethod("zipLongest", function (...iterables) {
-    return _zip(iterables, true);
+    return _zip(iterables, { longest: true });
   });
 
   staticMethod("zipWith", function (fn, ...iterables) {
@@ -327,12 +325,12 @@
 
   // The maximum number of milliseconds we will block the main thread at a time
   // while in `asyncEach`.
-  wu.MAX_BLOCKING = 15;
+  wu.MAX_BLOCK = 15;
   // The number of milliseconds to yield to the main thread between bursts or
   // work.
   wu.TIMEOUT = 0;
 
-  prototypeAndStatic("asyncEach", function (fn, maxBlock=wu.MAX_BLOCKING, timeout=wu.TIMEOUT) {
+  prototypeAndStatic("asyncEach", function (fn, maxBlock=wu.MAX_BLOCK, timeout=wu.TIMEOUT) {
     const iterable = this[iteratorSymbol]();
 
     return new Promise((resolve, reject) => {
@@ -394,8 +392,7 @@
     return val;
   });
 
-  // TODO name this better.
-  prototypeAndStatic("ireduce", function* (fn, initial=undefined) {
+  prototypeAndStatic("reductions", function* (fn, initial=undefined) {
     let val = initial;
     if (val === undefined) {
       for (let x of this) {
@@ -546,36 +543,6 @@
     }
 
     return iterables;
-  });
-
-
-  /*
-   * Combinatoric methods
-   */
-
-  prototypeAndStatic("combos", function* () {
-    TODO;
-  });
-
-  prototypeAndStatic("combosWithReplacement", function* () {
-    TODO;
-  });
-
-  prototypeAndStatic("permutations", function* () {
-    TODO;
-  });
-
-  const _product = function* (chained, iterable) {
-    for (let tuple of chained) {
-      for (let item of iterable) {
-        yield tuple.concat(item);
-      }
-    }
-  };
-  _product.prototype = wu.prototype;
-
-  prototypeAndStatic("product", function* (...iterables) {
-    return iterables.reduce(_product, getIterator([[]]));
   });
 
 
