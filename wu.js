@@ -26,15 +26,21 @@
    * Internal utilities
    */
 
+  // An internal placeholder value.
+  const MISSING = {};
+
   // Return a new function that is the complement of the given function.
   const not = fn => (...args) => !fn(...args);
 
-  // This is known as @@iterator in the ES6 spec. Until it is bound to some
-  // well-known name or importable, find the @@iterator object by expecting it
-  // as the first property accessed on a for-of iterable.
+  // This is known as @@iterator in the ES6 spec.
   const iteratorSymbol = (() => {
+    // Check if `Symbol.iterator` exists and use that if possible.
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      return Symbol.iterator;
+    }
+    // Fall back to using a Proxy to get @@iterator.
     try {
-      for (let _ of Proxy.create({get: function(_, name) { throw name; } }))
+      for (let _ of new Proxy({ get: (_, name) => { throw name; } }))
         break;
     } catch (name) {
       return name;
@@ -42,19 +48,37 @@
     throw new Error("Cannot find iterator symbol.");
   }());
 
+  // Return whether a thing is iterable.
+  const isIterable = (thing) => {
+    return thing && typeof thing[iteratorSymbol] === "function";
+  };
+
   // Get the iterator for the thing or throw an error.
   const getIterator = (thing) => {
-    if (thing[iteratorSymbol]) {
-      return thing[iteratorSymbol].bind(thing);
+    if (isIterable(thing)) {
+      return thing[iteratorSymbol]();
     }
     throw new TypeError("Not iterable: " + thing);
-  }
+  };
+
+  const GeneratorFunction = function* () {}.constructor;
+
+  // Define a static method on `wu` and set its prototype to the shared
+  // `wu.prototype`.
+  const staticMethod = (name, fn) => {
+    if (fn instanceof GeneratorFunction) {
+      fn.prototype = wu.prototype;
+    }
+    wu[name] = fn;
+  };
 
   // Define a function that is attached as both a `wu.prototype` method and a
   // static method on `wu` directly that takes an iterable as its first
   // parameter.
   const prototypeAndStatic = (name, fn) => {
-    fn.prototype = wu.prototype;
+    if (fn instanceof GeneratorFunction) {
+      fn.prototype = wu.prototype;
+    }
     wu.prototype[name] = fn;
     wu[name] = (iterable, ...args) => {
       return wu(iterable)[name](...args);
@@ -66,21 +90,21 @@
    * Exposed utilities
    */
 
-  wu.keys = function* (obj) {
+  staticMethod("keys", function* (obj) {
     yield* Object.keys(obj);
-  };
+  });
 
-  wu.values = function* (obj) {
+  staticMethod("values", function* (obj) {
     for (let k of Object.keys(obj)) {
       yield obj[k];
     }
-  };
+  });
 
-  wu.entries = function* (obj) {
+  staticMethod("entries", function* (obj) {
     for (let k of Object.keys(obj)) {
       yield [k, obj[k]];
     }
-  };
+  });
 
 
   /*
@@ -98,15 +122,15 @@
     }
   });
 
-  wu.count = function* (start=0, step=1) {
+  staticMethod("count", function* (start=0, step=1) {
     let n = start;
     while (true) {
       yield n;
       n += step;
     }
-  };
+  });
 
-  wu.repeat = function* (thing, times=Infinity) {
+  staticMethod("repeat", function* (thing, times=Infinity) {
     if (times === Infinity) {
       while (true) {
         yield thing;
@@ -116,25 +140,39 @@
         yield thing;
       }
     }
-  };
+  });
 
 
   /*
    * Iterators that terminate once the input sequence has been exhausted
    */
 
-  wu.chain = function* (...iterables) {
+  staticMethod("chain", function* (...iterables) {
     for (let it of iterables) {
       yield* it;
     }
-  };
+  });
 
   prototypeAndStatic("chunk", function* (n=2) {
-    TODO;
+    let items = [];
+    let index = 0;
+
+    for (let item of this) {
+      items[index++] = item;
+      if (index === n) {
+        yield items;
+        items = [];
+        index = 0;
+      }
+    }
+
+    if (index) {
+      yield items;
+    }
   });
 
   prototypeAndStatic("compress", function* (selectors) {
-    for (let [x, s] of wu.zip(this, selectors)) {
+    for (let [x, s] of _zip([this, selectors])) {
       if (s) {
         yield x;
       }
@@ -153,7 +191,7 @@
   });
 
   prototypeAndStatic("enumerate", function () {
-    return wu.zip(this, wu.count());
+    return _zip([this, wu.count()]);
   });
 
   prototypeAndStatic("filter", function* (fn=Boolean) {
@@ -165,11 +203,19 @@
   });
 
   prototypeAndStatic("flatten", function* (shallow=false) {
-    TODO;
+    for (let x of this) {
+      if (typeof x !== "string" && isIterable(x)) {
+        yield* shallow ? x : wu.flatten(x);
+      } else {
+        yield x;
+      }
+    }
   });
 
   prototypeAndStatic("invoke", function* (name, ...args) {
-    TODO;
+    for (let x of this) {
+      yield x[name](...args);
+    }
   });
 
   prototypeAndStatic("map", function* (fn) {
@@ -179,7 +225,9 @@
   });
 
   prototypeAndStatic("pluck", function* (name) {
-    TODO;
+    for (let x of this) {
+      yield x[name];
+    }
   });
 
   prototypeAndStatic("reductions", function* (fn) {
@@ -224,37 +272,53 @@
   });
 
   prototypeAndStatic("unique", function* () {
-    TODO;
+    const seen = new Set();
+    for (let x of this) {
+      if (!seen.has(x)) {
+        yield x;
+        seen.add(x);
+      }
+    }
+    seen.clear();
   });
 
-  wu.zip = function (...iterables) {
-    let iters = iterables.map(getIterator);
-    let anyDone = false;
 
-    while (!anyDone) {
+  const _zip = function* (iterables, longest) {
+    if (!iterables.length) {
+      return;
+    }
+
+    const iters = iterables.map(getIterator);
+
+    while (true) {
       let zipped = [];
       for (let it of iters) {
         let { value, done } = it.next();
-        zipped.push(value);
         if (done) {
-          anyDone = true;
+          if (!longest) {
+            return;
+          }
+          zipped.length++;
+        } else {
+          zipped.push(value);
         }
       }
       yield zipped;
-
-      if (anyDone) {
-        break;
-      }
     }
   };
+  _zip.prototype = wu.prototype;
 
-  wu.zipLongest = function (...iterables) {
-    TODO;
-  };
+  staticMethod("zip", function (...iterables) {
+    return _zip(iterables);
+  });
 
-  wu.zipWith = function (fn, ...args) {
-    return wu.zip(...args).spreadMap(fn);
-  };
+  staticMethod("zipLongest", function (...iterables) {
+    return _zip(iterables, true);
+  });
+
+  staticMethod("zipWith", function (fn, ...iterables) {
+    return _zip(iterables).spreadMap(fn);
+  });
 
 
   /*
@@ -299,7 +363,11 @@
   });
 
   prototypeAndStatic("find", function (fn) {
-    TODO;
+    for (let x of this) {
+      if (fn(x)) {
+        return x;
+      }
+    }
   });
 
   prototypeAndStatic("forEach", function (fn) {
@@ -326,7 +394,21 @@
     return val;
   });
 
-  // TODO wtf is irakli's name for the yielding iterative reduce
+  // TODO name this better.
+  prototypeAndStatic("ireduce", function* (fn, initial=undefined) {
+    let val = initial;
+    if (val === undefined) {
+      for (let x of this) {
+        val = x;
+        break;
+      }
+    }
+    yield val;
+    for (let x of this) {
+      yield val = fn(val, x);
+    }
+    return val;
+  });
 
   prototypeAndStatic("some", function (fn=Boolean) {
     for (let x of this) {
@@ -342,13 +424,129 @@
    * Methods that return an array of iterables.
    */
 
-  prototypeAndStatic("tee", (n=2) => {
-    TODO;
+  const _tee = function* (iterator, cache) {
+    const {items} = cache;
+    let index = 0;
+
+    while (true) {
+      if (index === items.length) {
+        let {done, value} = iterator.next();
+        if (done) {
+          if (cache.returned === MISSING) {
+            cache.returned = value;
+          }
+          break;
+        }
+        yield items[index++] = value;
+      } else if (index === cache.tail) {
+        let value = items[index];
+        if (index === 500) {
+          items = cache.items = items.slice(index);
+          index = 0;
+          cache.tail = 0;
+        } else {
+          items[index] = undefined;
+          cache.tail = ++index;
+        }
+        yield value;
+      } else {
+        yield items[index++];
+      }
+    }
+
+    if (cache.tail === index) {
+      items.length = 0;
+    }
+
+    return cache.returned;
+  };
+  _tee.prototype = wu.prototype;
+
+  prototypeAndStatic("tee", function (n=2) {
+    const iterables = new Array(count);
+    const cache = { tail: 0, items: [], returned: MISSING };
+
+    while (n--) {
+      iterables[n] = _tee(this, cache);
+    }
+
+    return iterables;
   });
 
-  wu.unzip = function (...iterables) {
-    TODO;
+  // An efficient implementation of the queue data structure using an array.
+  function Queue(iterable) {
+    this._head = 0;
+    this._items = iterable ? [...iterable] : [];
+    this.size = this._items.length;
+  }
+
+  Queue.COMPACT_SIZE = 500;
+
+  Queue.prototype.enqueue = function(item) {
+    this._items.push(item);
+    return ++this.size;
   };
+
+  Queue.prototype.dequeue = function() {
+    if (this.size) {
+      const item = this._items[this._head];
+      if (this._head === Queue.COMPACT_SIZE) {
+        this._items = this._items.slice(this._head + 1);
+        this._head = 0;
+      } else {
+        this._items[this._head++] = MISSING;
+      }
+      return item;
+    }
+  };
+
+  const _unzip = function*(iterator, index, queues) {
+    const queue = queues[index];
+    while (true) {
+      if (queue.size) {
+        yield queue.dequeue();
+      } else {
+        const {value, done} = iterator.next();
+        if (done) {
+          return;
+        }
+
+        let item = MISSING;
+        for (let i = 0; i < queues.length; i++) {
+          if (i in value) {
+            if (index === i) {
+              item = value[i];
+            } else {
+              queues[i].enqueue(value[i]);
+            }
+          }
+        }
+
+        if (item !== MISSING) {
+          yield item;
+        }
+      }
+    }
+  }
+  _unzip.prototype = wu.prototype;
+
+  prototypeAndStatic("unzip", function () {
+    const { value, done } = this.next();
+    if (done) {
+      return [];
+    }
+    let count = value.length;
+    const iterables = new Array(count);
+    const queues = new Array(count);
+
+    while (count--) {
+      queues[count] = new Queue();
+      queues[count].enqueue(value[count]);
+      iterables[count] = _unzip(this, count, queues);
+    }
+
+    return iterables;
+  });
 
 
   /*
@@ -367,8 +565,17 @@
     TODO;
   });
 
-  prototypeAndStatic("product", function* () {
-    TODO;
+  const _product = function* (chained, iterable) {
+    for (let tuple of chained) {
+      for (let item of iterable) {
+        yield tuple.concat(item);
+      }
+    }
+  };
+  _product.prototype = wu.prototype;
+
+  prototypeAndStatic("product", function* (...iterables) {
+    return iterables.reduce(_product, getIterator([[]]));
   });
 
 
