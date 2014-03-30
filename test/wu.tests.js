@@ -135,6 +135,10 @@ test("wu.autoCurry",
          ok(implicit(1)(1, 1) === 3, "implicit(1)(1, 1) === 3");
          ok(explicit(1, 1, 1) === 3, "explicit(1, 1, 1) === 3");
          ok(implicit(1, 1, 1) === 3, "implicit(1, 1, 1) === 3");
+
+         // call with too many arguments (makes numArgs - arguments.length < 0)
+         ok(implicit(1, 1, 1, 1) === 3, "implicit(1, 1, 1, 1) === 3");
+         ok(explicit(1, 1, 1, 1) === 3, "explicit(1, 1, 1, 1) === 3");
      });
 
 test("wu.bind",
