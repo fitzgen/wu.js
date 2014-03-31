@@ -1,9 +1,14 @@
 describe("wu.slice", () => {
   it("should slice the front of iterables", () => {
-    TODO
+    assert.eqArray([3, 4, 5],
+                   wu.slice([0, 1, 2, 3, 4, 5],
+                            3));
   });
 
   it("should slice the end of iterables", () => {
-    TODO
+    assert.eqArray([0, 1, 2],
+                   wu.slice([0, 1, 2, 3, 4, 5],
+                            undefined,
+                            3));
   });
 });

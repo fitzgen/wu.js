@@ -1,5 +1,7 @@
 describe("wu.takeWhile", () => {
   it("should keep yielding items from the iterable until the predicate is false", () => {
-    TODO
+    assert.eqArray([0, 1, 2, 3, 4],
+                   wu.takeWhile(wu.count(),
+                                x => x < 5));
   });
 });

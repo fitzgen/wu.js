@@ -1,5 +1,7 @@
 describe("wu.spreadMap", () => {
   it("should map the function over the iterable with spread arguments", () => {
-    TODO
+    assert.eqArray([32, 9, 1000],
+                   wu.spreadMap([[2, 5], [3, 2], [10, 3]],
+                                Math.pow));
   });
 });

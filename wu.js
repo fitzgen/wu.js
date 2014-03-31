@@ -28,9 +28,6 @@
   // An internal placeholder value.
   const MISSING = {};
 
-  // Return a new function that is the complement of the given function.
-  const not = fn => (...args) => !fn(...args);
-
   // This is known as @@iterator in the ES6 spec.
   Object.defineProperty(wu, "iteratorSymbol", {
     configurable: false,
@@ -84,7 +81,6 @@
     }
     wu.prototype[name] = fn;
     wu[name] = (iterable, ...args) => {
-      debugger;
       return wu(iterable)[name](...args);
     };
   };
@@ -207,7 +203,6 @@
   });
 
   prototypeAndStatic("flatten", function* (shallow=false) {
-    debugger;
     for (let x of this) {
       if (typeof x !== "string" && isIterable(x)) {
         yield* shallow ? x : wu.flatten(x);
@@ -251,20 +246,27 @@
   });
 
   prototypeAndStatic("reject", function* (fn=Boolean) {
-    return this.filter(not(fn));
+    for (let x of this) {
+      if (!fn(x)) {
+        yield x;
+      }
+    }
   });
 
   prototypeAndStatic("slice", function* (start=0, stop=Infinity) {
+    if (stop < start) {
+      throw new RangeError("parameter `stop` (= " + stop
+                           + ") must be >= `start` (= " + start + ")");
+    }
+
     for (let [x, i] of this.enumerate()) {
       if (i < start) {
         continue;
       }
-
-      yield x;
-
       if (i >= stop) {
         break;
       }
+      yield x;
     }
   });
 
@@ -302,21 +304,33 @@
   });
 
 
-  const _zip = function* (iterables, opts={ longest: false }) {
+  const _zip = function* (iterables, longest=false) {
     if (!iterables.length) {
       return;
     }
 
     const iters = iterables.map(getIterator);
+    const numIters = iterables.length;
+    let numFinished = 0;
+    let finished = false;
 
-    while (true) {
+    while (!finished) {
       let zipped = [];
+
       for (let it of iters) {
         let { value, done } = it.next();
         if (done) {
-          if (!opts.longest) {
+          if (!longest) {
             return;
           }
+          if (++numFinished == numIters) {
+            finished = true;
+          }
+        }
+        if (value === undefined) {
+          // Leave a hole in the array so that you can distinguish an iterable
+          // that's done (via `index in array == false`) from an iterable
+          // yielding `undefined`.
           zipped.length++;
         } else {
           zipped.push(value);
@@ -332,7 +346,7 @@
   });
 
   staticMethod("zipLongest", function (...iterables) {
-    return _zip(iterables, { longest: true });
+    return _zip(iterables, true);
   });
 
   staticMethod("zipWith", function (fn, ...iterables) {
@@ -347,27 +361,27 @@
   // The maximum number of milliseconds we will block the main thread at a time
   // while in `asyncEach`.
   wu.MAX_BLOCK = 15;
-  // The number of milliseconds to yield to the main thread between bursts or
+  // The number of milliseconds to yield to the main thread between bursts of
   // work.
   wu.TIMEOUT = 0;
 
   prototypeAndStatic("asyncEach", function (fn, maxBlock=wu.MAX_BLOCK, timeout=wu.TIMEOUT) {
-    const iterable = this[iteratorSymbol]();
+    const iter = this[wu.iteratorSymbol]();
 
     return new Promise((resolve, reject) => {
       (function loop() {
         const start = Date.now();
 
-        for (let x of iterable) {
-          if (Date.now() - start > maxBlock) {
-            setTimeout(loop, timeout);
-            return;
-          }
-
+        for (let x of iter) {
           try {
             fn(x);
           } catch (e) {
             reject(e);
+            return;
+          }
+
+          if (Date.now() - start > maxBlock) {
+            setTimeout(loop, timeout);
             return;
           }
         }
@@ -378,7 +392,12 @@
   });
 
   prototypeAndStatic("every", function (fn=Boolean) {
-    return !this.some(not(fn));
+    for (let x of this) {
+      if (!fn(x)) {
+        return false;
+      }
+    }
+    return true;
   });
 
   prototypeAndStatic("find", function (fn) {
@@ -466,7 +485,7 @@
   _tee.prototype = wu.prototype;
 
   prototypeAndStatic("tee", function (n=2) {
-    const iterables = new Array(count);
+    const iterables = new Array(n);
     const cache = { tail: 0, items: [], returned: MISSING };
 
     while (n--) {

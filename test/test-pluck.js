@@ -1,5 +1,7 @@
 describe("wu.pluck", () => {
   it("should access the named property of each item in the iterable", () => {
-    TODO
+    assert.eqArray([1, 2, 3],
+                   wu.pluck([{ i: 1 }, { i: 2 }, { i: 3 }],
+                            "i"));
   });
 });

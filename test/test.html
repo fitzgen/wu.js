@@ -25,10 +25,7 @@
      // iterator are equal to and in the same order as the elements of the
      // |expected| array.
      assert.eqArray = (expected, actual) => {
-       let i = 0;
-       for (let x of actual) {
-         assert.deepEqual(expected[i++], x);
-       }
+       assert.deepEqual(expected, [...actual]);
      };
 
      mocha.setup('bdd');
