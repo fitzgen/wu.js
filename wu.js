@@ -171,12 +171,22 @@
     }
   });
 
-  prototypeAndStatic("compress", function* (selectors) {
-    for (let [x, s] of _zip([this, selectors])) {
-      if (s) {
-        yield x;
-      }
+  prototypeAndStatic("concatMap", function *(fn) {
+    for (let x of this) {
+      yield* fn(x);
     }
+  });
+
+  prototypeAndStatic("drop", function* (n) {
+    let i = 0;
+    for (let x of this) {
+      if (i++ < n) {
+        continue;
+      }
+      yield x;
+      break;
+    }
+    yield* this;
   });
 
   prototypeAndStatic("dropWhile", function* (fn=Boolean) {
@@ -276,6 +286,19 @@
     }
   });
 
+  prototypeAndStatic("take", function* (n) {
+    if (n < 1) {
+      return;
+    }
+    let i = 0;
+    for (let x of this) {
+      yield x;
+      if (++i >= n) {
+        break;
+      }
+    }
+  });
+
   prototypeAndStatic("takeWhile", function* (fn=Boolean) {
     for (let x of this) {
       if (!fn(x)) {
@@ -363,7 +386,7 @@
   wu.MAX_BLOCK = 15;
   // The number of milliseconds to yield to the main thread between bursts of
   // work.
-  wu.TIMEOUT = 0;
+  wu.TIMEOUT = 1;
 
   prototypeAndStatic("asyncEach", function (fn, maxBlock=wu.MAX_BLOCK, timeout=wu.TIMEOUT) {
     const iter = this[wu.iteratorSymbol]();

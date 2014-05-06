@@ -1,0 +1,7 @@
+describe("wu.take", () => {
+  it("should yield as many items as requested", () => {
+    assert.eqArray([0, 1, 2, 3, 4],
+                   wu.take(wu.count(),
+                           5));
+  });
+});

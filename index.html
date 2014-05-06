@@ -7,21 +7,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link href="index.css" rel="stylesheet" />
     <title>
-      wu.js &mdash; A lazy, functional ECMAScript 6 iterator library that ain't
-      nuthin' ta f*ck wit.
+      wu.js &mdash; Combinators for ECMAScript 6 iterators
     </title>
   </head>
   <body>
     <div class="container-fluid">
 
-      <div class="row col-xs-12 col-md-3">
-        <ul class="nav nav-sidebar affix">
+      <header class="row col-xs-12 col-sm-9 col-md-9 col-lg-9">
+        <h1><a href="#"><code>wu.js</code></a></h1>
+        <hr/>
+        <p>
+          <code>wu.js</code> is a library providing combinators (such as
+          <code>map</code>, <code>filter</code>, and <code>reduce</code>) for
+          ECMAScript 6 iterators.
+        </p>
+        <hr/>
+      </header>
+
+      <div class="row col-xs-12 col-sm-3 col-md-3 col-lg-3">
+        <ul id="sidebar" class="nav nav-sidebar affix">
           <li>
             <a href="#getting-started">Getting Started</a>
             <ul class="nav">
-              <li>
-                <a href="#quick-start">Quick Start</a>
-              </li>
               <li>
                 <a href="#basics">Basics</a>
               </li>
@@ -57,37 +64,87 @@
         </ul>
       </div>
 
-      <div class="row col-xs-12 col-md-9">
-
-        <header class="row col-xs-12">
-          <h1><a href="#"><code>wu.js</code></a></h1>
-          <p class="hidden-xs tagline">
-            A lazy, functional ECMAScript 6 iterator library that ain't nuthin'
-            ta f*ck wit.
-          </p>
-        </header>
+      <div class="row col-xs-12 col-sm-9 col-md-9 col-lg-9">
 
         <section id="getting-started">
           <h3><a href="#getting-started">Getting Started</h3></a>
 
-          <p>TODO</p>
+          <p>
+            TODO download from raw.github.com
+          </p>
 
-          <section id="quick-start">
-            <h4><a href="#quick-start">Quick Start</a></h4>
-            {% highlight html %}
+          {% highlight html %}
 <script src="path/to/wu.js" type="application/javascript;version=1.8"></script>
 {% endhighlight %}
-            <p>Or</p>
-            {% highlight bash %}
+
+          <p>Or</p>
+
+          {% highlight bash %}
 $ npm install wu
 {% endhighlight %}
-          </section>
 
           <section id="basics">
             <h4><a href="#basics">Basics</a></h4>
+
             <p>
-              TODO
+              Iterators represent a stream of data. To get the next value in the
+              stream, you call the iterator's <code>next</code> method. This
+              enables both <em>lazy</em> and <em>infinite</em> sequences. Most
+              of the time you don't need to call <code>next</code>
+              yourself: when you use a for-of loop, you're using iterators
+              behind the scenes.
             </p>
+
+            <p>
+              Anything can create iterators &mdash; they just need to make an
+              object with the proper <code>next</code> interface &mdash; but
+              generator functions and the <code>yield</code> expression provide
+              extra convenience.
+            </p>
+
+            {% highlight js %}
+// Yield every positive integer.
+function* positiveIntegers() {
+  let i = 1;
+  while (true) {
+    yield i++;
+  }
+}
+
+// Log some of them.
+for (let x of positiveIntegers()) {
+  if (x > 5) {
+    break;
+  }
+  console.log(x);
+}
+{% endhighlight %}
+
+            <p>
+              Unfortunately, the 
+            </p>
+
+<!--             {% highlight js %} -->
+<!-- for (let x of thing { -->
+<!--   doSomething(x); -->
+<!-- } -->
+<!-- {% endhighlight %} -->
+
+<!--             <p> -->
+<!--               The above code is equivalent to this: -->
+<!--             </p> -->
+
+<!--             {% highlight js %} -->
+<!-- const iterator = thing[Symbol.iterator]; -->
+<!-- while (true) { -->
+<!--   let iteratorResult = iterator.next(); -->
+<!--   if (iteratorResult.done) { -->
+<!--     break; -->
+<!--   } -->
+<!--   let x = iteratorResult.value; -->
+<!--   doSomething(x); -->
+<!-- } -->
+<!-- {% endhighlight %} -->
           </section>
 
           <section id="examples">
@@ -108,17 +165,28 @@ $ npm install wu
         <section id="API">
           <h3><a href="#API">API</a></h3>
           {% for p in site.posts %}
+          <hr />
           <section id="{{ p.title | slugify }}">
             {{ p.content }}
           </section>
           {% endfor %}
+          <hr/>
         </section>
 
 
         <section id="contributing">
           <h3><a href="#contributing">Contributing</a></h3>
+
           <p>
-            TODO
+            Development happens
+            on <a href="https://github.com/fitzgen/wu.js">GitHub</a>. Include
+            test(s) and documentation updates in your pull requests.
+          </p>
+
+          <p>
+            File bugs and feature requests in
+            the <a href="https://github.com/fitzgen/wu.js/issues">GitHub issue
+            tracker</a>.
           </p>
 
           <section id="tests">
@@ -147,9 +215,17 @@ $ npm install wu
             <h4><a href="#documentation">Documentation</a></h4>
 
             <p>
-              This documentation is created with the static site
-              generator <a href="http://jekyllrb.com/">Jekyll</a>. To serve the
-              docs locally and automatically recompile them on change, run:
+              This documentation is created with the static site generator
+              <a href="http://jekyllrb.com/">Jekyll</a>. To set up jekyll, run:
+            </p>
+
+            <pre><code>$ gem install jekyll bundler
+$ cd path/to/wu.js
+$ bundle install</code></pre>
+
+            <p>
+              Once Jekyll is set up, to serve the docs locally and automatically
+              recompile them on change, run:
             </p>
 
             <pre><code>$ npm run docs</code></pre>
@@ -164,7 +240,8 @@ $ npm install wu
               and markdown files in the <code>_posts</code>
               directory. Each <code>wu</code> method has its own markdown file
               in the <code>_posts</code> directory, and the table of contents
-              for the <code>wu</code> methods is generated automatically.
+              for the<code>wu</code> methods is generated automatically. The CSS
+              styles live in <code>index.css</code>.
             </p>
           </section>
         </section>
