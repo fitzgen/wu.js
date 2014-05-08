@@ -17,8 +17,8 @@
         <h1><a href="#"><code>wu.js</code></a></h1>
         <hr/>
         <p>
-          <code>wu.js</code> is a library providing combinators (such as
-          <code>map</code>, <code>filter</code>, and <code>reduce</code>) for
+          <code>wu.js</code> is a JavaScript library providing combinators (such
+          as <code>map</code>, <code>filter</code>, and <code>reduce</code>) for
           ECMAScript 6 iterators.
         </p>
         <hr/>
@@ -54,6 +54,9 @@
             <a href="#contributing">Contributing</a>
             <ul class="nav">
               <li>
+                <a href="#building">Building</a>
+              </li>
+              <li>
                 <a href="#tests">Tests</a>
               </li>
               <li>
@@ -73,11 +76,13 @@
             TODO download from raw.github.com
           </p>
 
+          <h5>In the Browser</h5>
+
           {% highlight html %}
-<script src="path/to/wu.js" type="application/javascript;version=1.8"></script>
+<script src="path/to/wu.es5.js"></script>
 {% endhighlight %}
 
-          <p>Or</p>
+          <h5>Node and npm</h5>
 
           {% highlight bash %}
 $ npm install wu
@@ -121,43 +126,22 @@ for (let x of positiveIntegers()) {
 {% endhighlight %}
 
             <p>
-              Unfortunately, the 
+              TODO
             </p>
-
-<!--             {% highlight js %} -->
-<!-- for (let x of thing { -->
-<!--   doSomething(x); -->
-<!-- } -->
-<!-- {% endhighlight %} -->
-
-<!--             <p> -->
-<!--               The above code is equivalent to this: -->
-<!--             </p> -->
-
-<!--             {% highlight js %} -->
-<!-- const iterator = thing[Symbol.iterator]; -->
-<!-- while (true) { -->
-<!--   let iteratorResult = iterator.next(); -->
-<!--   if (iteratorResult.done) { -->
-<!--     break; -->
-<!--   } -->
-<!--   let x = iteratorResult.value; -->
-<!--   doSomething(x); -->
-<!-- } -->
-<!-- {% endhighlight %} -->
           </section>
 
           <section id="examples">
             <h4><a href="#examples">Examples</a></h4>
             <p>
-              TODO
+              TODO: tree iteration?
             </p>
           </section>
 
           <section id="support">
             <h4><a href="#support">Engine and Browser Support</a></h4>
             <p>
-              TODO
+              TODO: works in all browsers when compiled to ES5. Works in Firefox
+              in the ES6 source it is written in.
             </p>
           </section>
         </section>
@@ -189,6 +173,43 @@ for (let x of positiveIntegers()) {
             tracker</a>.
           </p>
 
+          <section id="building">
+            <h4><a href="#building">Building</a></h4>
+
+            <p>
+              To compile <code>wu.js</code> and its tests to ES5 using Traceur
+              Compiler, run:
+            </p>
+
+            <pre><code>$ npm run build</code></pre>
+
+            <p>
+              This command regenerates:
+            </p>
+
+            <ul>
+              <li>
+                <code>wu.es5.js</code> &mdash; The ES5 compatible version
+                of <code>wu.js</code> with the Traceur runtime library included.
+              </li>
+              <li>
+                <code>wu.es5.map</code> &mdash; TODO (probably need to separate
+                the runtime to support source maps)
+              </li>
+              <li>
+                <code>wu.es5.min.js</code> &mdash; TODO
+              </li>
+              <li>
+                <code>wu.es5.min.map</code> &mdash; TODO
+              </li>
+              <li>
+                <code>test-es5/</code> &mdash; A copy of the test directory with
+                all tests compiled down to ES5 and uses the ES5 version
+                of <code>wu.js</code>.
+              </li>
+            </ul>
+          </section>
+
           <section id="tests">
             <h4><a href="#tests">Tests</a></h4>
 
@@ -196,6 +217,15 @@ for (let x of positiveIntegers()) {
 
             <p>
               <a href="test/test.html">Run the tests in your browser.</a>
+            </p>
+
+            <p>
+              <a href="test/test.html">Run the ES5 version of the tests
+              and <code>wu.js</code> in your browser.</a>
+            </p>
+
+            <p>
+              TODO: run the ES5 tests via the command line.
             </p>
 
             <h5>Creating New Tests</h5>
@@ -208,6 +238,12 @@ for (let x of positiveIntegers()) {
               is the test
               runner. <a href="http://chaijs.com/api/assert/">Chai's <code>assert</code>
               module</a> is used for assertions.
+            </p>
+
+            <p>
+              Note that new tests will be copied into the <code>test-es5/</code>
+              directory and compiled down to ES5 automatically when
+              you <a href="#building">rebuild the project</a>.
             </p>
           </section>
 

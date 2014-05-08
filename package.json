@@ -1,24 +1,30 @@
 {
   "name": "wu",
-  "description": "An ECMAScript 6 iterator library that ain't nuthin' ta f*ck wit",
+  "description": "Combinators for ECMAScript 6 iterators.",
   "author": {
     "name": "Nick Fitzgerald",
     "email": "fitzgen@gmail.com",
     "url": "http://fitzgeraldnick.com"
   },
   "bugs": "http://github.com/fitzgen/wu.js/issues",
-  "licenses": [{
-    "type": "MIT",
-    "url": "http://www.opensource.org/licenses/mit-license.php "
-  }],
-  "repositories": [{
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/mit-license.php "
+    }
+  ],
+  "repository": {
     "type": "git",
     "url": "git://github.com/fitzgen/wu.js.git"
-  }],
+  },
   "url": "http://fitzgen.github.com/wu.js",
-  "version": "1.0.0",
-  "main": "wu.js",
+  "version": "2.0.0",
+  "main": "wu.es5.js",
   "scripts": {
-    "docs": "bundle exec jekyll serve --watch"
+    "docs": "bundle exec jekyll serve --watch",
+    "build": "./compile-to-es5.sh"
+  },
+  "dependencies": {
+    "traceur": "0.0.41"
   }
 }
