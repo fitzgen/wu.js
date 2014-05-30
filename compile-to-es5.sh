@@ -7,7 +7,11 @@ cd `dirname $0`
 # Make sure all dependencies are installed.
 npm install
 
-TRACEUR="./node_modules/traceur/traceur"
+# TRACEUR="./node_modules/traceur/traceur"
+# TRACEUR_RUNTIME="./node_modules/traceur/bin/traceur-runtime.js"
+TRACEUR="/Users/fitzgen/src/traceur-compiler/traceur"
+TRACEUR_RUNTIME="/Users/fitzgen/src/traceur-compiler/bin/traceur-runtime.js"
+
 
 # Compile wu.js itself to ES5.
 $TRACEUR                            \
@@ -16,10 +20,10 @@ $TRACEUR                            \
     --out _temp.js                  \
     wu.js
 
-echo "// traceur-runtime.js"                     > wu.es5.js
-cat node_modules/traceur/bin/traceur-runtime.js >> wu.es5.js
-echo "// wu.js"                                 >> wu.es5.js
-cat _temp.js                                    >> wu.es5.js
+echo "// traceur-runtime.js"            > wu.es5.js
+cat $TRACEUR_RUNTIME                   >> wu.es5.js
+echo "// wu.js"                        >> wu.es5.js
+cat _temp.js                           >> wu.es5.js
 rm _temp.js
 
 # Compile all tests to ES5 and put them into the the "test-es5" directory.

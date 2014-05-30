@@ -464,6 +464,13 @@
     return false;
   });
 
+  prototypeAndStatic("toArray", function () {
+    let array = [];
+    for (let x of this) {
+      array.push(x);
+    }
+    return array;
+  });
 
   /*
    * Methods that return an array of iterables.
