@@ -5,6 +5,7 @@ var $__wu__ = (function() {
     if (typeof define === "function" && define.amd) {
       define(factory);
     } else if ((typeof exports === 'undefined' ? 'undefined' : $traceurRuntime.typeof(exports)) === "object") {
+      require("traceur/bin/traceur-runtime");
       module.exports = factory();
     } else {
       try {

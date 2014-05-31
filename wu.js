@@ -2,6 +2,7 @@
   if (typeof define === "function" && define.amd) {
     define(factory);
   } else if (typeof exports === "object") {
+    require("traceur/bin/traceur-runtime");
     module.exports = factory();
   } else {
     const oldWu = root.wu;
