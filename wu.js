@@ -49,12 +49,12 @@
   });
 
   // Return whether a thing is iterable.
-  const isIterable = (thing) => {
+  const isIterable = thing => {
     return thing && typeof thing[wu.iteratorSymbol] === "function";
   };
 
   // Get the iterator for the thing or throw an error.
-  const getIterator = (thing) => {
+  const getIterator = thing => {
     if (isIterable(thing)) {
       return thing[wu.iteratorSymbol]();
     }
