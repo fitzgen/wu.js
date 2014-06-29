@@ -504,6 +504,13 @@ test("wu.Iterator.filter",
                    "wu([1,2,3,4]).filter(even?).toArray() -> [2,4]");
      });
 
+test("wu.Iterator.compact",
+     function () {
+         deepEqual(wu(["",0,-0,NaN,null,false,undefined,"false"]).compact().toArray(),
+                   ["false"],
+                   'wu(["",0,-0,NaN,null,false,undefined,"false"]).compact().toArray() -> ["false"]');
+     });
+
 test("wu.Iterator.groupBy",
      function () {
          var results = wu([{first:"Nick", last:"Fitzgerald"},
