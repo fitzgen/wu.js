@@ -1,0 +1,30 @@
+{
+  "name": "wu.js",
+  "version": "0.1.9",
+  "homepage": "http://fitzgen.github.io/wu.js/",
+  "authors": [
+    "Nick Fitzgerald <fitzgen@gmail.com>"
+  ],
+  "description": "A lazy, functional Javascript library that ain't nuthin' ta f*ck wit.",
+  "main": "dist/wu.min.js",
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "wu",
+    "functional",
+    "lazy",
+    "iterators",
+    "autocurry",
+    "compose"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "build"
+  ]
+}

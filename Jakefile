@@ -3,7 +3,7 @@ var OS = require("os");
 var FILE = require("file");
 
 JAKE.task("minify", function () {
-    OS.system("java -jar build/google-compiler-20091218.jar --js lib/wu.js > wu.min.js");
+    OS.system("java -jar build/google-compiler-20091218.jar --js lib/wu.js > dist/wu.min.js");
 });
 
 JAKE.task("test-min", ["minify"], function () {
@@ -17,7 +17,7 @@ JAKE.task("test-min", ["minify"], function () {
 });
 
 JAKE.task("clean", function () {
-    FILE.remove("wu.min.js");
+    FILE.remove("dist/wu.min.js");
     FILE.remove("test/wu.tests.min.html");
 });
 
