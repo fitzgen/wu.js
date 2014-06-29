@@ -11,7 +11,7 @@ JAKE.task("test-min", ["minify"], function () {
     f.write(
         FILE.open("test/wu.tests.html", "r")
             .read()
-            .replace("../lib/wu.js", "../wu.min.js")
+            .replace("../lib/wu.js", "../dist/wu.min.js")
     );
     f.close();
 });
