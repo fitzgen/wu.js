@@ -41,7 +41,12 @@ header p {
 }
 
 p {
-    max-width: 42em;
+    max-width: 45em;
+    text-align: justify;
+}
+
+.highlight {
+    margin: 10px 0;
 }
 
 /* Pygments */

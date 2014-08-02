@@ -91,16 +91,12 @@
 
           <h5>Node and npm</h5>
 
-          <p>
-            Install:
-          </p>
-
           {% highlight bash %}
 $ npm install wu
 {% endhighlight %}
 
           <p>
-            Use:
+            and
           </p>
 
           {% highlight js %}
@@ -123,37 +119,138 @@ var wu = require("wu");
               Anything can create iterators &mdash; they just need to make an
               object with the proper <code>next</code> interface &mdash; but
               generator functions and the <code>yield</code> expression provide
-              extra convenience.
+              convenient syntactic sugar.
             </p>
 
             {% highlight js %}
-// Yield every positive integer.
-function* positiveIntegers() {
-  let i = 1;
+// Generate an infinite sequence of the fibonacci numbers.
+function* fibs() {
+  let a = 0;
+  let b = 1;
   while (true) {
-    yield i++;
+    yield a;
+    [a, b] = [b, a + b];
   }
 }
 
-// Log some of them.
-for (let x of positiveIntegers()) {
-  if (x > 5) {
+// Log each even fibonacci number that is less than ten.
+
+const isEven      = n => n % 2 == 0;
+const lessThanTen = n => n < 10;
+
+for (let n of fibs()) {
+  if (!lessThanTen(n)) {
     break;
   }
-  console.log(x);
+  if (isEven(n)) {
+    console.log(n);
+  }
 }
 {% endhighlight %}
 
             <p>
-              TODO
+              <code>wu.js</code> provides the combinators you've come to love
+              from working with arrays (such
+              as <a href="#map"><code>map</code></a>
+              and <a href="#filter"><code>filter</code></a>) as well as ones
+              that may be new to JavaScript developers (such
+              as <a href="#takeWhile"><code>takeWhile</code></a>). With <code>wu.js</code>,
+              we can rewrite the above example like this:
             </p>
+
+            {% highlight js %}
+wu(fibs())
+  .filter(isEven)
+  .takeWhile(lessThanTen)
+  .forEach(console.log.bind(console));
+{% endhighlight %}
           </section>
 
           <section id="examples">
             <h4><a href="#examples">Examples</a></h4>
+
+            <h5>Binary trees</h5>
+
             <p>
-              TODO: tree iteration?
+              The following is a simple immutable sorted set implementation that
+              doesn't do tree balancing for simplicity. It has an iterator
+              method which yields items in sorted order.
             </p>
+
+            {% highlight js %}
+const theEmptySet = null;
+
+function SortedSet(value, left=theEmptySet, right=theEmptySet) {
+  this.value = value;
+  this.left  = left;
+  this.right = right;
+}
+
+SortedSet.prototype[wu.iteratorSymbol] = function* () {
+  if (this.left !== theEmptySet) {
+    yield* this.left;
+  }
+
+  yield this.value;
+
+  if (this.right !== theEmptySet) {
+    yield* this.right;
+  }
+};
+
+const insert = (set, x) => {
+  if (set === theEmptySet) {
+    return new SortedSet(x);
+  }
+
+  const { value, left, right } = set;
+
+  if (x < value) {
+    return new SortedSet(value, insert(left, x), right);
+  } else if (x > value) {
+    return new SortedSet(value, left, insert(right, x));
+  } else {
+    return set;
+  }
+};
+{% endhighlight %}
+
+              <p>
+                We can initialize a set of 100 random floats to work with:
+              </p>
+
+              {% highlight js %}
+let s = theEmptySet;
+
+let n = 100;
+while (n--) {
+  s = insert(s, Math.random());
+}
+{% endhighlight %}
+
+              <p>
+                To get the sum of all elements greater than .8 in the set:
+              </p>
+
+              {% highlight js %}
+wu(s).dropWhile(n => n <= .8).reduce((x, y) => x + y);
+{% endhighlight %}
+
+              <p>
+                To find the number of elements that are less than .25:
+              </p>
+
+              {% highlight js %}
+wu(s).takeWhile(n => n < .25).length();
+{% endhighlight %}
+
+              <p>
+                To find the first element whose square is greater than .5:
+              </p>
+
+              {% highlight js %}
+wu(s).filter(n => n * n > .5).find(n => n > .5);
+{% endhighlight %}
           </section>
 
           <section id="support">
