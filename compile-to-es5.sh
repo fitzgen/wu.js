@@ -43,3 +43,5 @@ sed -i'' -e 's/\-\->//g'                     test-es5/test.html
 
 # For some reason this file gets generated. *shrug*
 rm test-es5/test.html-e
+
+echo "OK"

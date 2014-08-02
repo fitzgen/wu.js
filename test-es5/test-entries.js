@@ -18,12 +18,14 @@ describe("wu.entries", (function() {
             throw undefined;
           } catch ($__2) {
             {
-              $__2 = $traceurRuntime.assertObject($__1.value);
-              k = $__2[0];
-              v = $__2[1];
-            }
-            {
-              assert.equal(expected.get(k), v);
+              {
+                $__2 = $traceurRuntime.assertObject($__1.value);
+                k = $__2[0];
+                v = $__2[1];
+              }
+              {
+                assert.equal(expected.get(k), v);
+              }
             }
           }
         }

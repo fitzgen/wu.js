@@ -8,11 +8,13 @@ describe("wu.cycle", (function() {
       try {
         throw undefined;
       } catch (x) {
-        x = $__1.value;
         {
-          assert.equal(x, arr[$traceurRuntime.toProperty(i % 3)]);
-          if (i++ > 9) {
-            break;
+          x = $__1.value;
+          {
+            assert.equal(x, arr[$traceurRuntime.toProperty(i % 3)]);
+            if (i++ > 9) {
+              break;
+            }
           }
         }
       }

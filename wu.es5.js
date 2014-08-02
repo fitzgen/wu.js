@@ -11,13 +11,15 @@ var $__wu__ = (function() {
       try {
         throw undefined;
       } catch (oldWu) {
-        oldWu = root.wu;
-        root.wu = factory();
-        root.wu.noConflict = (function() {
-          var wu = root.wu;
-          root.wu = oldWu;
-          return wu;
-        });
+        {
+          oldWu = root.wu;
+          root.wu = factory();
+          root.wu.noConflict = (function() {
+            var wu = root.wu;
+            root.wu = oldWu;
+            return wu;
+          });
+        }
       }
     }
   }(this, function() {
@@ -70,8 +72,10 @@ var $__wu__ = (function() {
             try {
               throw undefined;
             } catch (_) {
-              _ = $__1.value;
-              break;
+              {
+                _ = $__1.value;
+                break;
+              }
             }
           }
         } catch (name) {
@@ -117,7 +121,7 @@ var $__wu__ = (function() {
         for (var args = [],
             $__4 = 1; $__4 < arguments.length; $__4++)
           $traceurRuntime.setProperty(args, $__4 - 1, arguments[$traceurRuntime.toProperty($__4)]);
-        return ($__10 = wu(iterable))[$traceurRuntime.toProperty(name)].apply($__10, $traceurRuntime.toObject(args));
+        return ($__10 = wu(iterable))[$traceurRuntime.toProperty(name)].apply($__10, $traceurRuntime.spread(args));
       }));
     });
     staticMethod("entries", $traceurRuntime.initGeneratorFunction(function $__15(obj) {
@@ -823,10 +827,38 @@ var $__wu__ = (function() {
           }
       }, $__35, this);
     }));
-    prototypeAndStatic("enumerate", function() {
-      return _zip([this, wu.count()]);
-    });
-    prototypeAndStatic("filter", $traceurRuntime.initGeneratorFunction(function $__38() {
+    prototypeAndStatic("enumerate", $traceurRuntime.initGeneratorFunction(function $__38() {
+      var $__39,
+          $__40;
+      return $traceurRuntime.createGeneratorInstance(function($ctx) {
+        while (true)
+          switch ($ctx.state) {
+            case 0:
+              $__39 = _zip([this, wu.count()])[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $ctx.sent = void 0;
+              $ctx.action = 'next';
+              $ctx.state = 12;
+              break;
+            case 12:
+              $__40 = $__39[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $ctx.state = 9;
+              break;
+            case 9:
+              $ctx.state = ($__40.done) ? 3 : 2;
+              break;
+            case 3:
+              $ctx.sent = $__40.value;
+              $ctx.state = -2;
+              break;
+            case 2:
+              $ctx.state = 12;
+              return $__40.value;
+            default:
+              return $ctx.end();
+          }
+      }, $__38, this);
+    }));
+    prototypeAndStatic("filter", $traceurRuntime.initGeneratorFunction(function $__41() {
       var fn,
           $__0,
           $__1,
@@ -880,14 +912,14 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__38, this);
+      }, $__41, this);
     }));
-    prototypeAndStatic("flatten", $traceurRuntime.initGeneratorFunction(function $__39() {
+    prototypeAndStatic("flatten", $traceurRuntime.initGeneratorFunction(function $__42() {
       var shallow,
           $__0,
           $__1,
-          $__40,
-          $__41,
+          $__43,
+          $__44,
           x;
       var $arguments = arguments;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
@@ -929,25 +961,25 @@ var $__wu__ = (function() {
               $ctx.state = (typeof x !== "string" && isIterable(x)) ? 11 : 13;
               break;
             case 11:
-              $__40 = shallow ? x : wu.flatten(x)[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__43 = shallow ? x : wu.flatten(x)[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 12;
               break;
             case 12:
-              $__41 = $__40[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $__44 = $__43[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
               $ctx.state = 9;
               break;
             case 9:
-              $ctx.state = ($__41.done) ? 3 : 2;
+              $ctx.state = ($__44.done) ? 3 : 2;
               break;
             case 3:
-              $ctx.sent = $__41.value;
+              $ctx.sent = $__44.value;
               $ctx.state = 27;
               break;
             case 2:
               $ctx.state = 12;
-              return $__41.value;
+              return $__44.value;
             case 13:
               $ctx.state = 14;
               return x;
@@ -958,9 +990,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__39, this);
+      }, $__42, this);
     }));
-    prototypeAndStatic("invoke", $traceurRuntime.initGeneratorFunction(function $__42(name) {
+    prototypeAndStatic("invoke", $traceurRuntime.initGeneratorFunction(function $__45(name) {
       var $__10,
           args,
           $__5,
@@ -1006,7 +1038,7 @@ var $__wu__ = (function() {
               break;
             case 6:
               $ctx.state = 2;
-              return ($__10 = x)[$traceurRuntime.toProperty(name)].apply($__10, $traceurRuntime.toObject(args));
+              return ($__10 = x)[$traceurRuntime.toProperty(name)].apply($__10, $traceurRuntime.spread(args));
             case 2:
               $ctx.maybeThrow();
               $ctx.state = 14;
@@ -1014,9 +1046,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__42, this);
+      }, $__45, this);
     }));
-    prototypeAndStatic("map", $traceurRuntime.initGeneratorFunction(function $__43(fn) {
+    prototypeAndStatic("map", $traceurRuntime.initGeneratorFunction(function $__46(fn) {
       var $__0,
           $__1,
           x;
@@ -1061,9 +1093,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__43, this);
+      }, $__46, this);
     }));
-    prototypeAndStatic("pluck", $traceurRuntime.initGeneratorFunction(function $__44(name) {
+    prototypeAndStatic("pluck", $traceurRuntime.initGeneratorFunction(function $__47(name) {
       var $__0,
           $__1,
           x;
@@ -1108,9 +1140,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__44, this);
+      }, $__47, this);
     }));
-    prototypeAndStatic("reductions", $traceurRuntime.initGeneratorFunction(function $__45(fn) {
+    prototypeAndStatic("reductions", $traceurRuntime.initGeneratorFunction(function $__48(fn) {
       var initial,
           val,
           $__0,
@@ -1211,9 +1243,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__45, this);
+      }, $__48, this);
     }));
-    prototypeAndStatic("reject", $traceurRuntime.initGeneratorFunction(function $__46() {
+    prototypeAndStatic("reject", $traceurRuntime.initGeneratorFunction(function $__49() {
       var fn,
           $__0,
           $__1,
@@ -1267,9 +1299,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__46, this);
+      }, $__49, this);
     }));
-    prototypeAndStatic("slice", $traceurRuntime.initGeneratorFunction(function $__47() {
+    prototypeAndStatic("slice", $traceurRuntime.initGeneratorFunction(function $__50() {
       var start,
           stop,
           $__0,
@@ -1371,9 +1403,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__47, this);
+      }, $__50, this);
     }));
-    prototypeAndStatic("spreadMap", $traceurRuntime.initGeneratorFunction(function $__48(fn) {
+    prototypeAndStatic("spreadMap", $traceurRuntime.initGeneratorFunction(function $__51(fn) {
       var $__0,
           $__1,
           x;
@@ -1410,7 +1442,7 @@ var $__wu__ = (function() {
               break;
             case 6:
               $ctx.state = 2;
-              return fn.apply(null, $traceurRuntime.toObject(x));
+              return fn.apply(null, $traceurRuntime.spread(x));
             case 2:
               $ctx.maybeThrow();
               $ctx.state = 14;
@@ -1418,9 +1450,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__48, this);
+      }, $__51, this);
     }));
-    prototypeAndStatic("take", $traceurRuntime.initGeneratorFunction(function $__49(n) {
+    prototypeAndStatic("take", $traceurRuntime.initGeneratorFunction(function $__52(n) {
       var i,
           $__0,
           $__1,
@@ -1479,9 +1511,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__49, this);
+      }, $__52, this);
     }));
-    prototypeAndStatic("takeWhile", $traceurRuntime.initGeneratorFunction(function $__50() {
+    prototypeAndStatic("takeWhile", $traceurRuntime.initGeneratorFunction(function $__53() {
       var fn,
           $__0,
           $__1,
@@ -1535,9 +1567,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__50, this);
+      }, $__53, this);
     }));
-    prototypeAndStatic("tap", $traceurRuntime.initGeneratorFunction(function $__51() {
+    prototypeAndStatic("tap", $traceurRuntime.initGeneratorFunction(function $__54() {
       var fn,
           $__0,
           $__1,
@@ -1592,9 +1624,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__51, this);
+      }, $__54, this);
     }));
-    prototypeAndStatic("unique", $traceurRuntime.initGeneratorFunction(function $__52() {
+    prototypeAndStatic("unique", $traceurRuntime.initGeneratorFunction(function $__55() {
       var seen,
           $__0,
           $__1,
@@ -1655,9 +1687,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__52, this);
+      }, $__55, this);
     }));
-    var _zip = $traceurRuntime.initGeneratorFunction(function $__53(iterables) {
+    var _zip = $traceurRuntime.initGeneratorFunction(function $__56(iterables) {
       var longest,
           iters,
           numIters,
@@ -1835,27 +1867,125 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__53, this);
+      }, $__56, this);
     });
-    _zip.prototype = wu.prototype;
-    staticMethod("zip", function() {
-      for (var iterables = [],
-          $__6 = 0; $__6 < arguments.length; $__6++)
-        $traceurRuntime.setProperty(iterables, $__6, arguments[$traceurRuntime.toProperty($__6)]);
-      return _zip(iterables);
-    });
-    staticMethod("zipLongest", function() {
-      for (var iterables = [],
-          $__7 = 0; $__7 < arguments.length; $__7++)
-        $traceurRuntime.setProperty(iterables, $__7, arguments[$traceurRuntime.toProperty($__7)]);
-      return _zip(iterables, true);
-    });
-    staticMethod("zipWith", function(fn) {
-      for (var iterables = [],
-          $__8 = 1; $__8 < arguments.length; $__8++)
-        $traceurRuntime.setProperty(iterables, $__8 - 1, arguments[$traceurRuntime.toProperty($__8)]);
-      return _zip(iterables).spreadMap(fn);
-    });
+    staticMethod("zip", $traceurRuntime.initGeneratorFunction(function $__57() {
+      var iterables,
+          $__6,
+          $__58,
+          $__59;
+      var $arguments = arguments;
+      return $traceurRuntime.createGeneratorInstance(function($ctx) {
+        while (true)
+          switch ($ctx.state) {
+            case 0:
+              for (iterables = [], $__6 = 0; $__6 < $arguments.length; $__6++)
+                $traceurRuntime.setProperty(iterables, $__6, $arguments[$traceurRuntime.toProperty($__6)]);
+              $ctx.state = 14;
+              break;
+            case 14:
+              $__58 = _zip(iterables)[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $ctx.sent = void 0;
+              $ctx.action = 'next';
+              $ctx.state = 12;
+              break;
+            case 12:
+              $__59 = $__58[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $ctx.state = 9;
+              break;
+            case 9:
+              $ctx.state = ($__59.done) ? 3 : 2;
+              break;
+            case 3:
+              $ctx.sent = $__59.value;
+              $ctx.state = -2;
+              break;
+            case 2:
+              $ctx.state = 12;
+              return $__59.value;
+            default:
+              return $ctx.end();
+          }
+      }, $__57, this);
+    }));
+    staticMethod("zipLongest", $traceurRuntime.initGeneratorFunction(function $__60() {
+      var iterables,
+          $__7,
+          $__61,
+          $__62;
+      var $arguments = arguments;
+      return $traceurRuntime.createGeneratorInstance(function($ctx) {
+        while (true)
+          switch ($ctx.state) {
+            case 0:
+              for (iterables = [], $__7 = 0; $__7 < $arguments.length; $__7++)
+                $traceurRuntime.setProperty(iterables, $__7, $arguments[$traceurRuntime.toProperty($__7)]);
+              $ctx.state = 14;
+              break;
+            case 14:
+              $__61 = _zip(iterables, true)[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $ctx.sent = void 0;
+              $ctx.action = 'next';
+              $ctx.state = 12;
+              break;
+            case 12:
+              $__62 = $__61[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $ctx.state = 9;
+              break;
+            case 9:
+              $ctx.state = ($__62.done) ? 3 : 2;
+              break;
+            case 3:
+              $ctx.sent = $__62.value;
+              $ctx.state = -2;
+              break;
+            case 2:
+              $ctx.state = 12;
+              return $__62.value;
+            default:
+              return $ctx.end();
+          }
+      }, $__60, this);
+    }));
+    staticMethod("zipWith", $traceurRuntime.initGeneratorFunction(function $__63(fn) {
+      var iterables,
+          $__8,
+          $__64,
+          $__65;
+      var $arguments = arguments;
+      return $traceurRuntime.createGeneratorInstance(function($ctx) {
+        while (true)
+          switch ($ctx.state) {
+            case 0:
+              for (iterables = [], $__8 = 1; $__8 < $arguments.length; $__8++)
+                $traceurRuntime.setProperty(iterables, $__8 - 1, $arguments[$traceurRuntime.toProperty($__8)]);
+              $ctx.state = 14;
+              break;
+            case 14:
+              $__64 = _zip(iterables).spreadMap(fn)[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $ctx.sent = void 0;
+              $ctx.action = 'next';
+              $ctx.state = 12;
+              break;
+            case 12:
+              $__65 = $__64[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $ctx.state = 9;
+              break;
+            case 9:
+              $ctx.state = ($__65.done) ? 3 : 2;
+              break;
+            case 3:
+              $ctx.sent = $__65.value;
+              $ctx.state = -2;
+              break;
+            case 2:
+              $ctx.state = 12;
+              return $__65.value;
+            default:
+              return $ctx.end();
+          }
+      }, $__63, this);
+    }));
     wu.MAX_BLOCK = 15;
     wu.TIMEOUT = 1;
     prototypeAndStatic("asyncEach", function(fn) {
@@ -1870,17 +2000,19 @@ var $__wu__ = (function() {
             try {
               throw undefined;
             } catch (x) {
-              x = $__1.value;
               {
-                try {
-                  fn(x);
-                } catch (e) {
-                  reject(e);
-                  return;
-                }
-                if (Date.now() - start > maxBlock) {
-                  setTimeout(loop, timeout);
-                  return;
+                x = $__1.value;
+                {
+                  try {
+                    fn(x);
+                  } catch (e) {
+                    reject(e);
+                    return;
+                  }
+                  if (Date.now() - start > maxBlock) {
+                    setTimeout(loop, timeout);
+                    return;
+                  }
                 }
               }
             }
@@ -1896,10 +2028,12 @@ var $__wu__ = (function() {
         try {
           throw undefined;
         } catch (x) {
-          x = $__1.value;
           {
-            if (!fn(x)) {
-              return false;
+            x = $__1.value;
+            {
+              if (!fn(x)) {
+                return false;
+              }
             }
           }
         }
@@ -1912,10 +2046,12 @@ var $__wu__ = (function() {
         try {
           throw undefined;
         } catch (x) {
-          x = $__1.value;
           {
-            if (fn(x)) {
-              return x;
+            x = $__1.value;
+            {
+              if (fn(x)) {
+                return x;
+              }
             }
           }
         }
@@ -1927,9 +2063,11 @@ var $__wu__ = (function() {
         try {
           throw undefined;
         } catch (x) {
-          x = $__1.value;
           {
-            fn(x);
+            x = $__1.value;
+            {
+              fn(x);
+            }
           }
         }
       }
@@ -1948,10 +2086,12 @@ var $__wu__ = (function() {
           try {
             throw undefined;
           } catch (x) {
-            x = $__1.value;
             {
-              val = x;
-              break;
+              x = $__1.value;
+              {
+                val = x;
+                break;
+              }
             }
           }
         }
@@ -1961,9 +2101,11 @@ var $__wu__ = (function() {
         try {
           throw undefined;
         } catch (x) {
-          x = $__3.value;
           {
-            val = fn(val, x);
+            x = $__3.value;
+            {
+              val = fn(val, x);
+            }
           }
         }
       }
@@ -1976,10 +2118,12 @@ var $__wu__ = (function() {
         try {
           throw undefined;
         } catch (x) {
-          x = $__1.value;
           {
-            if (fn(x)) {
-              return true;
+            x = $__1.value;
+            {
+              if (fn(x)) {
+                return true;
+              }
             }
           }
         }
@@ -1993,15 +2137,17 @@ var $__wu__ = (function() {
         try {
           throw undefined;
         } catch (x) {
-          x = $__1.value;
           {
-            array.push(x);
+            x = $__1.value;
+            {
+              array.push(x);
+            }
           }
         }
       }
       return array;
     });
-    var _tee = $traceurRuntime.initGeneratorFunction(function $__54(iterator, cache) {
+    var _tee = $traceurRuntime.initGeneratorFunction(function $__66(iterator, cache) {
       var items,
           index,
           $__9,
@@ -2155,7 +2301,7 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__54, this);
+      }, $__66, this);
     });
     _tee.prototype = wu.prototype;
     prototypeAndStatic("tee", function() {
@@ -2181,6 +2327,4 @@ var $__wu__ = (function() {
     return wu;
   }));
   return {};
-}).call(typeof global !== 'undefined' ? global : this);
-
-//# sourceMappingURL=wu.es5.map
+}).call(Reflect.global);

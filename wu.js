@@ -201,8 +201,8 @@
     yield* this;
   });
 
-  prototypeAndStatic("enumerate", function () {
-    return _zip([this, wu.count()]);
+  prototypeAndStatic("enumerate", function* () {
+    yield* _zip([this, wu.count()]);
   });
 
   prototypeAndStatic("filter", function* (fn=Boolean) {
@@ -363,18 +363,17 @@
       yield zipped;
     }
   };
-  _zip.prototype = wu.prototype;
 
-  staticMethod("zip", function (...iterables) {
-    return _zip(iterables);
+  staticMethod("zip", function* (...iterables) {
+    yield* _zip(iterables);
   });
 
-  staticMethod("zipLongest", function (...iterables) {
-    return _zip(iterables, true);
+  staticMethod("zipLongest", function* (...iterables) {
+    yield* _zip(iterables, true);
   });
 
-  staticMethod("zipWith", function (fn, ...iterables) {
-    return _zip(iterables).spreadMap(fn);
+  staticMethod("zipWith", function* (fn, ...iterables) {
+    yield* _zip(iterables).spreadMap(fn);
   });
 
 
