@@ -1,10 +1,10 @@
 "use strict";
 describe("wu.tee", (function() {
   it("should clone iterables", (function() {
-    var factorials = wu.reductions((function(a, b) {
+    var factorials = wu(wu.count(1)).reductions((function(a, b) {
       return a * b;
-    }), wu.count(1));
-    var $__0 = $traceurRuntime.assertObject(wu.tee(factorials)),
+    }));
+    var $__0 = $traceurRuntime.assertObject(wu(factorials).tee()),
         copy1 = $__0[0],
         copy2 = $__0[1];
     var i1 = iter(copy1);

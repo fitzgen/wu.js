@@ -927,7 +927,7 @@ var $__wu__ = (function() {
               return $ctx.end();
           }
       }, $__37, this);
-    }));
+    }), 1);
     rewrapPrototypeAndStatic("flatten", $traceurRuntime.initGeneratorFunction(function $__38() {
       var shallow,
           $__0,
@@ -975,7 +975,7 @@ var $__wu__ = (function() {
               $ctx.state = (typeof x !== "string" && isIterable(x)) ? 11 : 13;
               break;
             case 11:
-              $__39 = shallow ? x : wu.flatten(x)[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__39 = shallow ? x : wu(x).flatten()[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 12;
@@ -1005,7 +1005,7 @@ var $__wu__ = (function() {
               return $ctx.end();
           }
       }, $__38, this);
-    }));
+    }), 1);
     rewrapPrototypeAndStatic("invoke", $traceurRuntime.initGeneratorFunction(function $__41(name) {
       var $__10,
           args,
@@ -1158,6 +1158,7 @@ var $__wu__ = (function() {
     }));
     rewrapPrototypeAndStatic("reductions", $traceurRuntime.initGeneratorFunction(function $__44(fn) {
       var initial,
+          iter,
           val,
           $__0,
           $__1,
@@ -1170,6 +1171,7 @@ var $__wu__ = (function() {
           switch ($ctx.state) {
             case 0:
               initial = $arguments[1];
+              iter = getIterator(this);
               val = initial;
               $ctx.state = 43;
               break;
@@ -1177,7 +1179,7 @@ var $__wu__ = (function() {
               $ctx.state = (val === undefined) ? 17 : 16;
               break;
             case 17:
-              $__0 = this[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__0 = iter[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.state = 14;
               break;
             case 14:
@@ -1216,7 +1218,7 @@ var $__wu__ = (function() {
               $ctx.state = 22;
               break;
             case 22:
-              $__2 = this[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__2 = iter[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.state = 36;
               break;
             case 36:
@@ -1258,7 +1260,7 @@ var $__wu__ = (function() {
               return $ctx.end();
           }
       }, $__44, this);
-    }));
+    }), 2);
     rewrapPrototypeAndStatic("reject", $traceurRuntime.initGeneratorFunction(function $__45() {
       var fn,
           $__0,
@@ -1314,7 +1316,7 @@ var $__wu__ = (function() {
               return $ctx.end();
           }
       }, $__45, this);
-    }));
+    }), 1);
     rewrapPrototypeAndStatic("slice", $traceurRuntime.initGeneratorFunction(function $__46() {
       var start,
           stop,
@@ -1418,7 +1420,7 @@ var $__wu__ = (function() {
               return $ctx.end();
           }
       }, $__46, this);
-    }));
+    }), 2);
     rewrapPrototypeAndStatic("spreadMap", $traceurRuntime.initGeneratorFunction(function $__47(fn) {
       var $__0,
           $__1,
@@ -1582,7 +1584,7 @@ var $__wu__ = (function() {
               return $ctx.end();
           }
       }, $__49, this);
-    }));
+    }), 1);
     rewrapPrototypeAndStatic("tap", $traceurRuntime.initGeneratorFunction(function $__50() {
       var fn,
           $__0,
@@ -1639,7 +1641,7 @@ var $__wu__ = (function() {
               return $ctx.end();
           }
       }, $__50, this);
-    }));
+    }), 1);
     rewrapPrototypeAndStatic("unique", $traceurRuntime.initGeneratorFunction(function $__51() {
       var seen,
           $__0,
@@ -2005,7 +2007,7 @@ var $__wu__ = (function() {
     prototypeAndStatic("asyncEach", function(fn) {
       var maxBlock = arguments[1] !== (void 0) ? arguments[1] : wu.MAX_BLOCK;
       var timeout = arguments[2] !== (void 0) ? arguments[2] : wu.TIMEOUT;
-      var iter = this[$traceurRuntime.toProperty(wu.iteratorSymbol)]();
+      var iter = getIterator(this);
       return new Promise((function(resolve, reject) {
         (function loop() {
           var start = Date.now();
@@ -2034,7 +2036,7 @@ var $__wu__ = (function() {
           resolve();
         }());
       }));
-    });
+    }, 3);
     prototypeAndStatic("every", function() {
       var fn = arguments[0] !== (void 0) ? arguments[0] : Boolean;
       for (var $__0 = this[$traceurRuntime.toProperty(Symbol.iterator)](),
@@ -2053,7 +2055,7 @@ var $__wu__ = (function() {
         }
       }
       return true;
-    });
+    }, 1);
     prototypeAndStatic("find", function(fn) {
       for (var $__0 = this[$traceurRuntime.toProperty(Symbol.iterator)](),
           $__1; !($__1 = $__0.next()).done; ) {
@@ -2093,9 +2095,10 @@ var $__wu__ = (function() {
     });
     prototypeAndStatic("reduce", function(fn) {
       var initial = arguments[1];
+      var iter = getIterator(this);
       var val = initial;
       if (val === undefined) {
-        for (var $__0 = this[$traceurRuntime.toProperty(Symbol.iterator)](),
+        for (var $__0 = iter[$traceurRuntime.toProperty(Symbol.iterator)](),
             $__1; !($__1 = $__0.next()).done; ) {
           try {
             throw undefined;
@@ -2110,7 +2113,7 @@ var $__wu__ = (function() {
           }
         }
       }
-      for (var $__2 = this[$traceurRuntime.toProperty(Symbol.iterator)](),
+      for (var $__2 = iter[$traceurRuntime.toProperty(Symbol.iterator)](),
           $__3; !($__3 = $__2.next()).done; ) {
         try {
           throw undefined;
@@ -2124,7 +2127,7 @@ var $__wu__ = (function() {
         }
       }
       return val;
-    });
+    }, 2);
     prototypeAndStatic("some", function() {
       var fn = arguments[0] !== (void 0) ? arguments[0] : Boolean;
       for (var $__0 = this[$traceurRuntime.toProperty(Symbol.iterator)](),
@@ -2143,25 +2146,12 @@ var $__wu__ = (function() {
         }
       }
       return false;
-    });
+    }, 1);
     prototypeAndStatic("toArray", function() {
-      var array = [];
-      for (var $__0 = this[$traceurRuntime.toProperty(Symbol.iterator)](),
-          $__1; !($__1 = $__0.next()).done; ) {
-        try {
-          throw undefined;
-        } catch (x) {
-          {
-            x = $__1.value;
-            {
-              array.push(x);
-            }
-          }
-        }
-      }
-      return array;
+      return $traceurRuntime.spread(this);
     });
-    var _tee = $traceurRuntime.initGeneratorFunction(function $__62(iterator, cache) {
+    var MAX_CACHE = 500;
+    var _tee = rewrap($traceurRuntime.initGeneratorFunction(function $__62(iterator, cache) {
       var items,
           index,
           $__9,
@@ -2278,7 +2268,7 @@ var $__wu__ = (function() {
               break;
             case 43:
               value = items[$traceurRuntime.toProperty(index)];
-              if (index === 500) {
+              if (index === MAX_CACHE) {
                 items = cache.items = items.slice(index);
                 index = 0;
                 cache.tail = 0;
@@ -2316,10 +2306,11 @@ var $__wu__ = (function() {
               return $ctx.end();
           }
       }, $__62, this);
-    });
+    }));
     _tee.prototype = Wu.prototype;
     prototypeAndStatic("tee", function() {
       var n = arguments[0] !== (void 0) ? arguments[0] : 2;
+      var iterator = getIterator(this);
       var iterables = new Array(n);
       var cache = {
         tail: 0,
@@ -2327,16 +2318,16 @@ var $__wu__ = (function() {
         returned: MISSING
       };
       while (n--) {
-        $traceurRuntime.setProperty(iterables, n, _tee(this, cache));
+        $traceurRuntime.setProperty(iterables, n, _tee(iterator, cache));
       }
       return iterables;
-    });
+    }, 1);
     prototypeAndStatic("unzip", function() {
       var n = arguments[0] !== (void 0) ? arguments[0] : 2;
       return this.tee(n).map((function(iter, i) {
         return iter.pluck(i);
       }));
-    });
+    }, 1);
     wu.tang = {clan: 36};
     return wu;
   }));

@@ -1,7 +1,7 @@
 describe("wu.flatten", () => {
   it("should flatten iterables", () => {
     assert.eqArray(["I", "like", "LISP"],
-                   wu.flatten(false, ["I", ["like", ["LISP"]]]));
+                   wu(["I", ["like", ["LISP"]]]).flatten());
   });
 
   it("should shallowly flatten iterables", () => {

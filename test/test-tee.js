@@ -1,7 +1,7 @@
 describe("wu.tee", () => {
   it("should clone iterables", () => {
-    const factorials = wu.reductions((a, b) => a * b, wu.count(1));
-    const [copy1, copy2] = wu.tee(factorials);
+    const factorials = wu(wu.count(1)).reductions((a, b) => a * b);
+    const [copy1, copy2] = wu(factorials).tee();
     const i1 = iter(copy1);
     const i2 = iter(copy2);
 

@@ -6,7 +6,7 @@ describe("wu.unzip", () => {
       ["three", 3]
     ];
     const [i1, i2] = wu(pairs).unzip();
-    assert.eqArray(["one", "two", "three"], i1);
-    assert.eqArray([1, 2, 3], i2);
+    assert.eqArray(["one", "two", "three"], [...i1]);
+    assert.eqArray([1, 2, 3], [...i2]);
   });
 });

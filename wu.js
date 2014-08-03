@@ -258,17 +258,17 @@
         yield x;
       }
     }
-  });
+  }, 1);
 
   rewrapPrototypeAndStatic("flatten", function* (shallow=false) {
     for (let x of this) {
       if (typeof x !== "string" && isIterable(x)) {
-        yield* shallow ? x : wu.flatten(x);
+        yield* shallow ? x : wu(x).flatten();
       } else {
         yield x;
       }
     }
-  });
+  }, 1);
 
   rewrapPrototypeAndStatic("invoke", function* (name, ...args) {
     for (let x of this) {
@@ -289,19 +289,23 @@
   });
 
   rewrapPrototypeAndStatic("reductions", function* (fn, initial=undefined) {
+    const iter = getIterator(this);
+
     let val = initial;
     if (val === undefined) {
-      for (let x of this) {
+      for (let x of iter) {
         val = x;
         break;
       }
     }
+
     yield val;
-    for (let x of this) {
+    for (let x of iter) {
       yield val = fn(val, x);
     }
+
     return val;
-  });
+  }, 2);
 
   rewrapPrototypeAndStatic("reject", function* (fn=Boolean) {
     for (let x of this) {
@@ -309,7 +313,7 @@
         yield x;
       }
     }
-  });
+  }, 1);
 
   rewrapPrototypeAndStatic("slice", function* (start=0, stop=Infinity) {
     if (stop < start) {
@@ -326,7 +330,7 @@
       }
       yield x;
     }
-  });
+  }, 2);
 
   rewrapPrototypeAndStatic("spreadMap", function* (fn) {
     for (let x of this) {
@@ -354,14 +358,14 @@
       }
       yield x;
     }
-  });
+  }, 1);
 
   rewrapPrototypeAndStatic("tap", function* (fn=console.log.bind(console)) {
     for (let x of this) {
       fn(x);
       yield x;
     }
-  });
+  }, 1);
 
   rewrapPrototypeAndStatic("unique", function* () {
     const seen = new Set();
@@ -436,7 +440,7 @@
   wu.TIMEOUT = 1;
 
   prototypeAndStatic("asyncEach", function (fn, maxBlock=wu.MAX_BLOCK, timeout=wu.TIMEOUT) {
-    const iter = this[wu.iteratorSymbol]();
+    const iter = getIterator(this);
 
     return new Promise((resolve, reject) => {
       (function loop() {
@@ -459,7 +463,7 @@
         resolve();
       }());
     });
-  });
+  }, 3);
 
   prototypeAndStatic("every", function (fn=Boolean) {
     for (let x of this) {
@@ -468,7 +472,7 @@
       }
     }
     return true;
-  });
+  }, 1);
 
   prototypeAndStatic("find", function (fn) {
     for (let x of this) {
@@ -489,18 +493,22 @@
   });
 
   prototypeAndStatic("reduce", function (fn, initial=undefined) {
+    const iter = getIterator(this);
+
     let val = initial;
     if (val === undefined) {
-      for (let x of this) {
+      for (let x of iter) {
         val = x;
         break;
       }
     }
-    for (let x of this) {
+
+    for (let x of iter) {
       val = fn(val, x);
     }
+
     return val;
-  });
+  }, 2);
 
   prototypeAndStatic("some", function (fn=Boolean) {
     for (let x of this) {
@@ -509,25 +517,25 @@
       }
     }
     return false;
-  });
+  }, 1);
 
   prototypeAndStatic("toArray", function () {
-    let array = [];
-    for (let x of this) {
-      array.push(x);
-    }
-    return array;
+    return [...this];
   });
 
   /*
    * Methods that return an array of iterables.
    */
 
-  const _tee = function* (iterator, cache) {
+  const MAX_CACHE = 500;
+
+  const _tee = rewrap(function* (iterator, cache) {
     let { items } = cache;
     let index = 0;
 
     while (true) {
+      // We don't have a cached item for this index, we need to force its
+      // evaluation.
       if (index === items.length) {
         let {done, value} = iterator.next();
         if (done) {
@@ -537,9 +545,12 @@
           break;
         }
         yield items[index++] = value;
-      } else if (index === cache.tail) {
+      }
+
+      // TODO FITZGEN
+      else if (index === cache.tail) {
         let value = items[index];
-        if (index === 500) {
+        if (index === MAX_CACHE) {
           items = cache.items = items.slice(index);
           index = 0;
           cache.tail = 0;
@@ -548,7 +559,10 @@
           cache.tail = ++index;
         }
         yield value;
-      } else {
+      }
+
+      // TODO FITZGEN
+      else {
         yield items[index++];
       }
     }
@@ -558,23 +572,24 @@
     }
 
     return cache.returned;
-  };
+  });
   _tee.prototype = Wu.prototype;
 
   prototypeAndStatic("tee", function (n=2) {
+    const iterator = getIterator(this);
     const iterables = new Array(n);
     const cache = { tail: 0, items: [], returned: MISSING };
 
     while (n--) {
-      iterables[n] = _tee(this, cache);
+      iterables[n] = _tee(iterator, cache);
     }
 
     return iterables;
-  });
+  }, 1);
 
   prototypeAndStatic("unzip", function (n=2) {
     return this.tee(n).map((iter, i) => iter.pluck(i));
-  });
+  }, 1);
 
 
   /*
