@@ -1162,7 +1162,6 @@ var $__wu__ = (function() {
     }));
     rewrapPrototypeAndStatic("reductions", $traceurRuntime.initGeneratorFunction(function $__44(fn) {
       var initial,
-          iter,
           val,
           $__0,
           $__1,
@@ -1175,7 +1174,6 @@ var $__wu__ = (function() {
           switch ($ctx.state) {
             case 0:
               initial = $arguments[1];
-              iter = getIterator(this);
               val = initial;
               $ctx.state = 43;
               break;
@@ -1183,7 +1181,7 @@ var $__wu__ = (function() {
               $ctx.state = (val === undefined) ? 17 : 16;
               break;
             case 17:
-              $__0 = iter[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__0 = this[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.state = 14;
               break;
             case 14:
@@ -1222,7 +1220,7 @@ var $__wu__ = (function() {
               $ctx.state = 22;
               break;
             case 22:
-              $__2 = iter[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__2 = this[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.state = 36;
               break;
             case 36:
@@ -2099,10 +2097,9 @@ var $__wu__ = (function() {
     });
     prototypeAndStatic("reduce", function(fn) {
       var initial = arguments[1];
-      var iter = getIterator(this);
       var val = initial;
       if (val === undefined) {
-        for (var $__0 = iter[$traceurRuntime.toProperty(Symbol.iterator)](),
+        for (var $__0 = this[$traceurRuntime.toProperty(Symbol.iterator)](),
             $__1; !($__1 = $__0.next()).done; ) {
           try {
             throw undefined;
@@ -2117,7 +2114,7 @@ var $__wu__ = (function() {
           }
         }
       }
-      for (var $__2 = iter[$traceurRuntime.toProperty(Symbol.iterator)](),
+      for (var $__2 = this[$traceurRuntime.toProperty(Symbol.iterator)](),
           $__3; !($__3 = $__2.next()).done; ) {
         try {
           throw undefined;
@@ -2314,7 +2311,6 @@ var $__wu__ = (function() {
     _tee.prototype = Wu.prototype;
     prototypeAndStatic("tee", function() {
       var n = arguments[0] !== (void 0) ? arguments[0] : 2;
-      var iterator = getIterator(this);
       var iterables = new Array(n);
       var cache = {
         tail: 0,
@@ -2322,7 +2318,7 @@ var $__wu__ = (function() {
         returned: MISSING
       };
       while (n--) {
-        $traceurRuntime.setProperty(iterables, n, _tee(iterator, cache));
+        $traceurRuntime.setProperty(iterables, n, _tee(this, cache));
       }
       return iterables;
     }, 1);

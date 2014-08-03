@@ -292,18 +292,16 @@
   });
 
   rewrapPrototypeAndStatic("reductions", function* (fn, initial=undefined) {
-    const iter = getIterator(this);
-
     let val = initial;
     if (val === undefined) {
-      for (let x of iter) {
+      for (let x of this) {
         val = x;
         break;
       }
     }
 
     yield val;
-    for (let x of iter) {
+    for (let x of this) {
       yield (val = fn(val, x));
     }
 
@@ -496,17 +494,15 @@
   });
 
   prototypeAndStatic("reduce", function (fn, initial=undefined) {
-    const iter = getIterator(this);
-
     let val = initial;
     if (val === undefined) {
-      for (let x of iter) {
+      for (let x of this) {
         val = x;
         break;
       }
     }
 
-    for (let x of iter) {
+    for (let x of this) {
       val = fn(val, x);
     }
 
@@ -579,12 +575,11 @@
   _tee.prototype = Wu.prototype;
 
   prototypeAndStatic("tee", function (n=2) {
-    const iterator = getIterator(this);
     const iterables = new Array(n);
     const cache = { tail: 0, items: [], returned: MISSING };
 
     while (n--) {
-      iterables[n] = _tee(iterator, cache);
+      iterables[n] = _tee(this, cache);
     }
 
     return iterables;
