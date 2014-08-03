@@ -1,6 +1,6 @@
 describe("wu.count", () => {
   it("should keep incrementing", () => {
-    const count = wu.count();
+    const count = iter(wu.count());
     assert.equal(count.next().value, 0);
     assert.equal(count.next().value, 1);
     assert.equal(count.next().value, 2);
@@ -10,14 +10,14 @@ describe("wu.count", () => {
   });
 
   it("should start at the provided number", () => {
-    const count = wu.count(5);
+    const count = iter(wu.count(5));
     assert.equal(count.next().value, 5);
     assert.equal(count.next().value, 6);
     assert.equal(count.next().value, 7);
   });
 
   it("should increment by the provided step", () => {
-    const count = wu.count(0, 2);
+    const count = iter(wu.count(0, 2));
     assert.equal(count.next().value, 0);
     assert.equal(count.next().value, 2);
     assert.equal(count.next().value, 4);

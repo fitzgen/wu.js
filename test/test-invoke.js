@@ -7,8 +7,7 @@ describe("wu.invoke", () => {
       return "hello " + this.name + tail;
     };
     assert.eqArray(["hello world!", "hello test!"],
-                   wu.invoke([new Greeter("world"), new Greeter("test")],
-                             "greet",
-                             "!"));
+                   wu.invoke("greet", "!",
+                             [new Greeter("world"), new Greeter("test")]));
   });
 });

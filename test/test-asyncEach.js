@@ -4,13 +4,13 @@ describe("wu.asyncEach", () => {
     let n = 0;
 
     return wu
-      .asyncEach(arr, x => {
+      .asyncEach(x => {
         n++;
         const start = Date.now();
         while (Date.now() - start <= 3) {
           // Kill time.
         }
-      }, 3)
+      }, 3, arr)
       .then(() => {
         assert.equal(n, arr.length);
       });

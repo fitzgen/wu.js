@@ -1,6 +1,6 @@
 describe("wu.repeat", () => {
   it("should keep yielding its item", () => {
-    const repeat = wu.repeat(3);
+    const repeat = iter(wu.repeat(3));
     assert.equal(repeat.next().value, 3);
     assert.equal(repeat.next().value, 3);
     assert.equal(repeat.next().value, 3);
@@ -11,7 +11,7 @@ describe("wu.repeat", () => {
   });
 
   it("should repeat n times", () => {
-    const repeat = wu.repeat(3, 2);
+    const repeat = iter(wu.repeat(3, 2));
     assert.equal(repeat.next().value, 3);
     assert.equal(repeat.next().value, 3);
     assert.equal(repeat.next().value, undefined);

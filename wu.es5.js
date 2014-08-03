@@ -24,66 +24,60 @@ var $__wu__ = (function() {
     }
   }(this, function() {
     "use strict";
-    var $__11 = $traceurRuntime.initGeneratorFunction(wu);
-    function wu(thing) {
-      var $__12,
-          $__13;
-      return $traceurRuntime.createGeneratorInstance(function($ctx) {
-        while (true)
-          switch ($ctx.state) {
-            case 0:
-              $__12 = thing[$traceurRuntime.toProperty(Symbol.iterator)]();
-              $ctx.sent = void 0;
-              $ctx.action = 'next';
-              $ctx.state = 12;
-              break;
-            case 12:
-              $__13 = $__12[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
-              $ctx.state = 9;
-              break;
-            case 9:
-              $ctx.state = ($__13.done) ? 3 : 2;
-              break;
-            case 3:
-              $ctx.sent = $__13.value;
-              $ctx.state = -2;
-              break;
-            case 2:
-              $ctx.state = 12;
-              return $__13.value;
-            default:
-              return $ctx.end();
-          }
-      }, $__11, this);
+    function wu(iterable) {
+      if (!isIterable(iterable)) {
+        throw new Error("wu: `" + iterable + "` is not iterable!");
+      }
+      return new Wu(iterable);
     }
-    var MISSING = {};
-    Object.defineProperty(wu, "iteratorSymbol", {
-      configurable: false,
-      writable: false,
-      value: (function() {
-        if (typeof Symbol === "function" && $traceurRuntime.typeof(Symbol.iterator) === "symbol") {
-          return Symbol.iterator;
-        }
-        try {
-          for (var $__0 = new Proxy({}, {get: (function(_, name) {
-              throw name;
-            })})[$traceurRuntime.toProperty(Symbol.iterator)](),
-              $__1; !($__1 = $__0.next()).done; ) {
-            try {
-              throw undefined;
-            } catch (_) {
-              {
-                _ = $__1.value;
-                break;
+    function Wu(iterable) {
+      $traceurRuntime.setProperty(this, wu.iteratorSymbol, iterable[$traceurRuntime.toProperty(wu.iteratorSymbol)].bind(iterable));
+    }
+    wu.prototype = Wu.prototype;
+    Object.defineProperty(wu, "iteratorSymbol", {value: (function() {
+        if (typeof Proxy === "function") {
+          try {
+            throw undefined;
+          } catch (symbol) {
+            {
+              ;
+              try {
+                try {
+                  throw undefined;
+                } catch (proxy) {
+                  {
+                    proxy = new Proxy({}, {get: (function(_, name) {
+                        symbol = name;
+                        throw Error();
+                      })});
+                    for (var $__0 = proxy[$traceurRuntime.toProperty(Symbol.iterator)](),
+                        $__1; !($__1 = $__0.next()).done; ) {
+                      try {
+                        throw undefined;
+                      } catch (_) {
+                        {
+                          _ = $__1.value;
+                          {
+                            break;
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              } catch (e) {}
+              if (symbol) {
+                return symbol;
               }
             }
           }
-        } catch (name) {
-          return name;
+        }
+        if (typeof Symbol === "function" && $traceurRuntime.typeof(Symbol.iterator) === "symbol") {
+          return Symbol.iterator;
         }
         throw new Error("Cannot find iterator symbol.");
-      }())
-    });
+      }())});
+    var MISSING = {};
     var isIterable = (function(thing) {
       return thing && typeof thing[$traceurRuntime.toProperty(wu.iteratorSymbol)] === "function";
     });
@@ -93,38 +87,58 @@ var $__wu__ = (function() {
       }
       throw new TypeError("Not iterable: " + thing);
     });
-    var GeneratorFunction = $traceurRuntime.initGeneratorFunction(function $__14() {
-      return $traceurRuntime.createGeneratorInstance(function($ctx) {
-        while (true)
-          switch ($ctx.state) {
-            case 0:
-              $ctx.state = -2;
-              break;
-            default:
-              return $ctx.end();
-          }
-      }, $__14, this);
-    }).constructor;
     var staticMethod = (function(name, fn) {
-      if (fn instanceof GeneratorFunction) {
-        fn.prototype = wu.prototype;
-      }
+      fn.prototype = Wu.prototype;
       $traceurRuntime.setProperty(wu, name, fn);
     });
     var prototypeAndStatic = (function(name, fn) {
-      if (fn instanceof GeneratorFunction) {
-        fn.prototype = wu.prototype;
-      }
-      $traceurRuntime.setProperty(wu.prototype, name, fn);
-      $traceurRuntime.setProperty(wu, name, (function(iterable) {
+      var expectedArgs = arguments[2] !== (void 0) ? arguments[2] : fn.length;
+      fn.prototype = Wu.prototype;
+      $traceurRuntime.setProperty(Wu.prototype, name, fn);
+      expectedArgs += 1;
+      $traceurRuntime.setProperty(wu, name, wu.curryable((function() {
         var $__10;
         for (var args = [],
-            $__4 = 1; $__4 < arguments.length; $__4++)
-          $traceurRuntime.setProperty(args, $__4 - 1, arguments[$traceurRuntime.toProperty($__4)]);
+            $__4 = 0; $__4 < arguments.length; $__4++)
+          $traceurRuntime.setProperty(args, $__4, arguments[$traceurRuntime.toProperty($__4)]);
+        var iterable = args.pop();
         return ($__10 = wu(iterable))[$traceurRuntime.toProperty(name)].apply($__10, $traceurRuntime.spread(args));
-      }));
+      }), expectedArgs));
     });
-    staticMethod("entries", $traceurRuntime.initGeneratorFunction(function $__15(obj) {
+    var rewrap = (function(fn) {
+      return function() {
+        var $__10;
+        for (var args = [],
+            $__4 = 0; $__4 < arguments.length; $__4++)
+          $traceurRuntime.setProperty(args, $__4, arguments[$traceurRuntime.toProperty($__4)]);
+        return wu(($__10 = fn).call.apply($__10, $traceurRuntime.spread([this], args)));
+      };
+    });
+    var rewrapStaticMethod = (function(name, fn) {
+      return staticMethod(name, rewrap(fn));
+    });
+    var rewrapPrototypeAndStatic = (function(name, fn, expectedArgs) {
+      return prototypeAndStatic(name, rewrap(fn), expectedArgs);
+    });
+    function curry(fn, args) {
+      return function() {
+        var $__10;
+        for (var moreArgs = [],
+            $__4 = 0; $__4 < arguments.length; $__4++)
+          $traceurRuntime.setProperty(moreArgs, $__4, arguments[$traceurRuntime.toProperty($__4)]);
+        return ($__10 = fn).call.apply($__10, $traceurRuntime.spread([this], args, moreArgs));
+      };
+    }
+    staticMethod("curryable", (function(fn) {
+      var expected = arguments[1] !== (void 0) ? arguments[1] : fn.length;
+      return function f() {
+        for (var args = [],
+            $__4 = 0; $__4 < arguments.length; $__4++)
+          $traceurRuntime.setProperty(args, $__4, arguments[$traceurRuntime.toProperty($__4)]);
+        return args.length >= expected ? fn.apply(this, args) : curry(f, args);
+      };
+    }));
+    rewrapStaticMethod("entries", $traceurRuntime.initGeneratorFunction(function $__11(obj) {
       var $__0,
           $__1,
           k;
@@ -169,40 +183,40 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__15, this);
+      }, $__11, this);
     }));
-    staticMethod("keys", $traceurRuntime.initGeneratorFunction(function $__16(obj) {
-      var $__17,
-          $__18;
+    rewrapStaticMethod("keys", $traceurRuntime.initGeneratorFunction(function $__12(obj) {
+      var $__13,
+          $__14;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
           switch ($ctx.state) {
             case 0:
-              $__17 = Object.keys(obj)[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__13 = Object.keys(obj)[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 12;
               break;
             case 12:
-              $__18 = $__17[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $__14 = $__13[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
               $ctx.state = 9;
               break;
             case 9:
-              $ctx.state = ($__18.done) ? 3 : 2;
+              $ctx.state = ($__14.done) ? 3 : 2;
               break;
             case 3:
-              $ctx.sent = $__18.value;
+              $ctx.sent = $__14.value;
               $ctx.state = -2;
               break;
             case 2:
               $ctx.state = 12;
-              return $__18.value;
+              return $__14.value;
             default:
               return $ctx.end();
           }
-      }, $__16, this);
+      }, $__12, this);
     }));
-    staticMethod("values", $traceurRuntime.initGeneratorFunction(function $__19(obj) {
+    rewrapStaticMethod("values", $traceurRuntime.initGeneratorFunction(function $__15(obj) {
       var $__0,
           $__1,
           k;
@@ -247,15 +261,15 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__19, this);
+      }, $__15, this);
     }));
-    prototypeAndStatic("cycle", $traceurRuntime.initGeneratorFunction(function $__20() {
+    rewrapPrototypeAndStatic("cycle", $traceurRuntime.initGeneratorFunction(function $__16() {
       var saved,
           $__0,
           $__1,
           x,
-          $__21,
-          $__22;
+          $__17,
+          $__18;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
           switch ($ctx.state) {
@@ -306,31 +320,31 @@ var $__wu__ = (function() {
               $ctx.state = (saved) ? 30 : -2;
               break;
             case 30:
-              $__21 = saved[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__17 = saved[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 31;
               break;
             case 31:
-              $__22 = $__21[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $__18 = $__17[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
               $ctx.state = 28;
               break;
             case 28:
-              $ctx.state = ($__22.done) ? 22 : 21;
+              $ctx.state = ($__18.done) ? 22 : 21;
               break;
             case 22:
-              $ctx.sent = $__22.value;
+              $ctx.sent = $__18.value;
               $ctx.state = 18;
               break;
             case 21:
               $ctx.state = 31;
-              return $__22.value;
+              return $__18.value;
             default:
               return $ctx.end();
           }
-      }, $__20, this);
+      }, $__16, this);
     }));
-    staticMethod("count", $traceurRuntime.initGeneratorFunction(function $__23() {
+    rewrapStaticMethod("count", $traceurRuntime.initGeneratorFunction(function $__19() {
       var start,
           step,
           n;
@@ -361,9 +375,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__23, this);
+      }, $__19, this);
     }));
-    staticMethod("repeat", $traceurRuntime.initGeneratorFunction(function $__24(thing) {
+    rewrapStaticMethod("repeat", $traceurRuntime.initGeneratorFunction(function $__20(thing) {
       var times,
           i,
           $i;
@@ -459,15 +473,15 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__24, this);
+      }, $__20, this);
     }));
-    staticMethod("chain", $traceurRuntime.initGeneratorFunction(function $__25() {
+    rewrapStaticMethod("chain", $traceurRuntime.initGeneratorFunction(function $__21() {
       var iterables,
           $__4,
           $__0,
           $__1,
-          $__26,
-          $__27,
+          $__22,
+          $__23,
           it;
       var $arguments = arguments;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
@@ -507,31 +521,31 @@ var $__wu__ = (function() {
               $ctx.state = 14;
               break;
             case 14:
-              $__26 = it[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__22 = it[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 12;
               break;
             case 12:
-              $__27 = $__26[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $__23 = $__22[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
               $ctx.state = 9;
               break;
             case 9:
-              $ctx.state = ($__27.done) ? 3 : 2;
+              $ctx.state = ($__23.done) ? 3 : 2;
               break;
             case 3:
-              $ctx.sent = $__27.value;
+              $ctx.sent = $__23.value;
               $ctx.state = 22;
               break;
             case 2:
               $ctx.state = 12;
-              return $__27.value;
+              return $__23.value;
             default:
               return $ctx.end();
           }
-      }, $__25, this);
+      }, $__21, this);
     }));
-    prototypeAndStatic("chunk", $traceurRuntime.initGeneratorFunction(function $__28() {
+    rewrapPrototypeAndStatic("chunk", $traceurRuntime.initGeneratorFunction(function $__24() {
       var n,
           items,
           index,
@@ -608,13 +622,13 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__28, this);
-    }));
-    prototypeAndStatic("concatMap", $traceurRuntime.initGeneratorFunction(function $__29(fn) {
+      }, $__24, this);
+    }), 1);
+    rewrapPrototypeAndStatic("concatMap", $traceurRuntime.initGeneratorFunction(function $__25(fn) {
       var $__0,
           $__1,
-          $__30,
-          $__31,
+          $__26,
+          $__27,
           x;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
@@ -648,37 +662,37 @@ var $__wu__ = (function() {
               $ctx.state = 14;
               break;
             case 14:
-              $__30 = fn(x)[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__26 = fn(x)[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 12;
               break;
             case 12:
-              $__31 = $__30[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $__27 = $__26[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
               $ctx.state = 9;
               break;
             case 9:
-              $ctx.state = ($__31.done) ? 3 : 2;
+              $ctx.state = ($__27.done) ? 3 : 2;
               break;
             case 3:
-              $ctx.sent = $__31.value;
+              $ctx.sent = $__27.value;
               $ctx.state = 22;
               break;
             case 2:
               $ctx.state = 12;
-              return $__31.value;
+              return $__27.value;
             default:
               return $ctx.end();
           }
-      }, $__29, this);
+      }, $__25, this);
     }));
-    prototypeAndStatic("drop", $traceurRuntime.initGeneratorFunction(function $__32(n) {
+    rewrapPrototypeAndStatic("drop", $traceurRuntime.initGeneratorFunction(function $__28(n) {
       var i,
           $__0,
           $__1,
           x,
-          $__33,
-          $__34;
+          $__29,
+          $__30;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
           switch ($ctx.state) {
@@ -725,37 +739,37 @@ var $__wu__ = (function() {
               $ctx.state = 21;
               break;
             case 21:
-              $__33 = this[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__29 = this[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 34;
               break;
             case 34:
-              $__34 = $__33[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $__30 = $__29[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
               $ctx.state = 31;
               break;
             case 31:
-              $ctx.state = ($__34.done) ? 25 : 24;
+              $ctx.state = ($__30.done) ? 25 : 24;
               break;
             case 25:
-              $ctx.sent = $__34.value;
+              $ctx.sent = $__30.value;
               $ctx.state = -2;
               break;
             case 24:
               $ctx.state = 34;
-              return $__34.value;
+              return $__30.value;
             default:
               return $ctx.end();
           }
-      }, $__32, this);
+      }, $__28, this);
     }));
-    prototypeAndStatic("dropWhile", $traceurRuntime.initGeneratorFunction(function $__35() {
+    rewrapPrototypeAndStatic("dropWhile", $traceurRuntime.initGeneratorFunction(function $__31() {
       var fn,
           $__0,
           $__1,
           x,
-          $__36,
-          $__37;
+          $__32,
+          $__33;
       var $arguments = arguments;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
@@ -803,62 +817,62 @@ var $__wu__ = (function() {
               $ctx.state = 21;
               break;
             case 21:
-              $__36 = this[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__32 = this[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 34;
               break;
             case 34:
-              $__37 = $__36[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $__33 = $__32[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
               $ctx.state = 31;
               break;
             case 31:
-              $ctx.state = ($__37.done) ? 25 : 24;
+              $ctx.state = ($__33.done) ? 25 : 24;
               break;
             case 25:
-              $ctx.sent = $__37.value;
+              $ctx.sent = $__33.value;
               $ctx.state = -2;
               break;
             case 24:
               $ctx.state = 34;
-              return $__37.value;
+              return $__33.value;
             default:
               return $ctx.end();
           }
-      }, $__35, this);
-    }));
-    prototypeAndStatic("enumerate", $traceurRuntime.initGeneratorFunction(function $__38() {
-      var $__39,
-          $__40;
+      }, $__31, this);
+    }), 1);
+    rewrapPrototypeAndStatic("enumerate", $traceurRuntime.initGeneratorFunction(function $__34() {
+      var $__35,
+          $__36;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
           switch ($ctx.state) {
             case 0:
-              $__39 = _zip([this, wu.count()])[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__35 = _zip([this, wu.count()])[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 12;
               break;
             case 12:
-              $__40 = $__39[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $__36 = $__35[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
               $ctx.state = 9;
               break;
             case 9:
-              $ctx.state = ($__40.done) ? 3 : 2;
+              $ctx.state = ($__36.done) ? 3 : 2;
               break;
             case 3:
-              $ctx.sent = $__40.value;
+              $ctx.sent = $__36.value;
               $ctx.state = -2;
               break;
             case 2:
               $ctx.state = 12;
-              return $__40.value;
+              return $__36.value;
             default:
               return $ctx.end();
           }
-      }, $__38, this);
+      }, $__34, this);
     }));
-    prototypeAndStatic("filter", $traceurRuntime.initGeneratorFunction(function $__41() {
+    rewrapPrototypeAndStatic("filter", $traceurRuntime.initGeneratorFunction(function $__37() {
       var fn,
           $__0,
           $__1,
@@ -912,14 +926,14 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__41, this);
+      }, $__37, this);
     }));
-    prototypeAndStatic("flatten", $traceurRuntime.initGeneratorFunction(function $__42() {
+    rewrapPrototypeAndStatic("flatten", $traceurRuntime.initGeneratorFunction(function $__38() {
       var shallow,
           $__0,
           $__1,
-          $__43,
-          $__44,
+          $__39,
+          $__40,
           x;
       var $arguments = arguments;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
@@ -961,25 +975,25 @@ var $__wu__ = (function() {
               $ctx.state = (typeof x !== "string" && isIterable(x)) ? 11 : 13;
               break;
             case 11:
-              $__43 = shallow ? x : wu.flatten(x)[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__39 = shallow ? x : wu.flatten(x)[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 12;
               break;
             case 12:
-              $__44 = $__43[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $__40 = $__39[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
               $ctx.state = 9;
               break;
             case 9:
-              $ctx.state = ($__44.done) ? 3 : 2;
+              $ctx.state = ($__40.done) ? 3 : 2;
               break;
             case 3:
-              $ctx.sent = $__44.value;
+              $ctx.sent = $__40.value;
               $ctx.state = 27;
               break;
             case 2:
               $ctx.state = 12;
-              return $__44.value;
+              return $__40.value;
             case 13:
               $ctx.state = 14;
               return x;
@@ -990,9 +1004,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__42, this);
+      }, $__38, this);
     }));
-    prototypeAndStatic("invoke", $traceurRuntime.initGeneratorFunction(function $__45(name) {
+    rewrapPrototypeAndStatic("invoke", $traceurRuntime.initGeneratorFunction(function $__41(name) {
       var $__10,
           args,
           $__5,
@@ -1046,9 +1060,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__45, this);
+      }, $__41, this);
     }));
-    prototypeAndStatic("map", $traceurRuntime.initGeneratorFunction(function $__46(fn) {
+    rewrapPrototypeAndStatic("map", $traceurRuntime.initGeneratorFunction(function $__42(fn) {
       var $__0,
           $__1,
           x;
@@ -1093,9 +1107,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__46, this);
+      }, $__42, this);
     }));
-    prototypeAndStatic("pluck", $traceurRuntime.initGeneratorFunction(function $__47(name) {
+    rewrapPrototypeAndStatic("pluck", $traceurRuntime.initGeneratorFunction(function $__43(name) {
       var $__0,
           $__1,
           x;
@@ -1140,9 +1154,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__47, this);
+      }, $__43, this);
     }));
-    prototypeAndStatic("reductions", $traceurRuntime.initGeneratorFunction(function $__48(fn) {
+    rewrapPrototypeAndStatic("reductions", $traceurRuntime.initGeneratorFunction(function $__44(fn) {
       var initial,
           val,
           $__0,
@@ -1243,9 +1257,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__48, this);
+      }, $__44, this);
     }));
-    prototypeAndStatic("reject", $traceurRuntime.initGeneratorFunction(function $__49() {
+    rewrapPrototypeAndStatic("reject", $traceurRuntime.initGeneratorFunction(function $__45() {
       var fn,
           $__0,
           $__1,
@@ -1299,9 +1313,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__49, this);
+      }, $__45, this);
     }));
-    prototypeAndStatic("slice", $traceurRuntime.initGeneratorFunction(function $__50() {
+    rewrapPrototypeAndStatic("slice", $traceurRuntime.initGeneratorFunction(function $__46() {
       var start,
           stop,
           $__0,
@@ -1403,9 +1417,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__50, this);
+      }, $__46, this);
     }));
-    prototypeAndStatic("spreadMap", $traceurRuntime.initGeneratorFunction(function $__51(fn) {
+    rewrapPrototypeAndStatic("spreadMap", $traceurRuntime.initGeneratorFunction(function $__47(fn) {
       var $__0,
           $__1,
           x;
@@ -1450,9 +1464,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__51, this);
+      }, $__47, this);
     }));
-    prototypeAndStatic("take", $traceurRuntime.initGeneratorFunction(function $__52(n) {
+    rewrapPrototypeAndStatic("take", $traceurRuntime.initGeneratorFunction(function $__48(n) {
       var i,
           $__0,
           $__1,
@@ -1511,9 +1525,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__52, this);
+      }, $__48, this);
     }));
-    prototypeAndStatic("takeWhile", $traceurRuntime.initGeneratorFunction(function $__53() {
+    rewrapPrototypeAndStatic("takeWhile", $traceurRuntime.initGeneratorFunction(function $__49() {
       var fn,
           $__0,
           $__1,
@@ -1567,9 +1581,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__53, this);
+      }, $__49, this);
     }));
-    prototypeAndStatic("tap", $traceurRuntime.initGeneratorFunction(function $__54() {
+    rewrapPrototypeAndStatic("tap", $traceurRuntime.initGeneratorFunction(function $__50() {
       var fn,
           $__0,
           $__1,
@@ -1624,9 +1638,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__54, this);
+      }, $__50, this);
     }));
-    prototypeAndStatic("unique", $traceurRuntime.initGeneratorFunction(function $__55() {
+    rewrapPrototypeAndStatic("unique", $traceurRuntime.initGeneratorFunction(function $__51() {
       var seen,
           $__0,
           $__1,
@@ -1687,9 +1701,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__55, this);
+      }, $__51, this);
     }));
-    var _zip = $traceurRuntime.initGeneratorFunction(function $__56(iterables) {
+    var _zip = rewrap($traceurRuntime.initGeneratorFunction(function $__52(iterables) {
       var longest,
           iters,
           numIters,
@@ -1867,13 +1881,13 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__56, this);
-    });
-    staticMethod("zip", $traceurRuntime.initGeneratorFunction(function $__57() {
+      }, $__52, this);
+    }));
+    rewrapStaticMethod("zip", $traceurRuntime.initGeneratorFunction(function $__53() {
       var iterables,
           $__6,
-          $__58,
-          $__59;
+          $__54,
+          $__55;
       var $arguments = arguments;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
@@ -1884,35 +1898,35 @@ var $__wu__ = (function() {
               $ctx.state = 14;
               break;
             case 14:
-              $__58 = _zip(iterables)[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__54 = _zip(iterables)[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 12;
               break;
             case 12:
-              $__59 = $__58[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $__55 = $__54[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
               $ctx.state = 9;
               break;
             case 9:
-              $ctx.state = ($__59.done) ? 3 : 2;
+              $ctx.state = ($__55.done) ? 3 : 2;
               break;
             case 3:
-              $ctx.sent = $__59.value;
+              $ctx.sent = $__55.value;
               $ctx.state = -2;
               break;
             case 2:
               $ctx.state = 12;
-              return $__59.value;
+              return $__55.value;
             default:
               return $ctx.end();
           }
-      }, $__57, this);
+      }, $__53, this);
     }));
-    staticMethod("zipLongest", $traceurRuntime.initGeneratorFunction(function $__60() {
+    rewrapStaticMethod("zipLongest", $traceurRuntime.initGeneratorFunction(function $__56() {
       var iterables,
           $__7,
-          $__61,
-          $__62;
+          $__57,
+          $__58;
       var $arguments = arguments;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
@@ -1923,35 +1937,35 @@ var $__wu__ = (function() {
               $ctx.state = 14;
               break;
             case 14:
-              $__61 = _zip(iterables, true)[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__57 = _zip(iterables, true)[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 12;
               break;
             case 12:
-              $__62 = $__61[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $__58 = $__57[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
               $ctx.state = 9;
               break;
             case 9:
-              $ctx.state = ($__62.done) ? 3 : 2;
+              $ctx.state = ($__58.done) ? 3 : 2;
               break;
             case 3:
-              $ctx.sent = $__62.value;
+              $ctx.sent = $__58.value;
               $ctx.state = -2;
               break;
             case 2:
               $ctx.state = 12;
-              return $__62.value;
+              return $__58.value;
             default:
               return $ctx.end();
           }
-      }, $__60, this);
+      }, $__56, this);
     }));
-    staticMethod("zipWith", $traceurRuntime.initGeneratorFunction(function $__63(fn) {
+    rewrapStaticMethod("zipWith", $traceurRuntime.initGeneratorFunction(function $__59(fn) {
       var iterables,
           $__8,
-          $__64,
-          $__65;
+          $__60,
+          $__61;
       var $arguments = arguments;
       return $traceurRuntime.createGeneratorInstance(function($ctx) {
         while (true)
@@ -1962,29 +1976,29 @@ var $__wu__ = (function() {
               $ctx.state = 14;
               break;
             case 14:
-              $__64 = _zip(iterables).spreadMap(fn)[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__60 = _zip(iterables).spreadMap(fn)[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 12;
               break;
             case 12:
-              $__65 = $__64[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
+              $__61 = $__60[$traceurRuntime.toProperty($ctx.action)]($ctx.sentIgnoreThrow);
               $ctx.state = 9;
               break;
             case 9:
-              $ctx.state = ($__65.done) ? 3 : 2;
+              $ctx.state = ($__61.done) ? 3 : 2;
               break;
             case 3:
-              $ctx.sent = $__65.value;
+              $ctx.sent = $__61.value;
               $ctx.state = -2;
               break;
             case 2:
               $ctx.state = 12;
-              return $__65.value;
+              return $__61.value;
             default:
               return $ctx.end();
           }
-      }, $__63, this);
+      }, $__59, this);
     }));
     wu.MAX_BLOCK = 15;
     wu.TIMEOUT = 1;
@@ -2147,7 +2161,7 @@ var $__wu__ = (function() {
       }
       return array;
     });
-    var _tee = $traceurRuntime.initGeneratorFunction(function $__66(iterator, cache) {
+    var _tee = $traceurRuntime.initGeneratorFunction(function $__62(iterator, cache) {
       var items,
           index,
           $__9,
@@ -2301,9 +2315,9 @@ var $__wu__ = (function() {
             default:
               return $ctx.end();
           }
-      }, $__66, this);
+      }, $__62, this);
     });
-    _tee.prototype = wu.prototype;
+    _tee.prototype = Wu.prototype;
     prototypeAndStatic("tee", function() {
       var n = arguments[0] !== (void 0) ? arguments[0] : 2;
       var iterables = new Array(n);

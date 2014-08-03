@@ -1,9 +1,9 @@
 describe("wu.tee", () => {
   it("should clone iterables", () => {
-    const factorials = wu.reductions(wu.count(1), (a, b) => {
-      return a * b;
-    });
-    const [i1, i2] = wu.tee(factorials);
+    const factorials = wu.reductions((a, b) => a * b, wu.count(1));
+    const [copy1, copy2] = wu.tee(factorials);
+    const i1 = iter(copy1);
+    const i2 = iter(copy2);
 
     assert.equal(i1.next().value, 1);
     assert.equal(i1.next().value, 2);
