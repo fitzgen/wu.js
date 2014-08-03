@@ -18,8 +18,4 @@ assert.eqArray = (function(expected, actual) {
   assert.iterable(actual);
   assert.deepEqual(expected, $traceurRuntime.spread(actual));
 });
-window.iter = (function(thing) {
-  assert.iterable(thing);
-  return thing[$traceurRuntime.toProperty(wu.iteratorSymbol)]();
-});
 mocha.setup('bdd');

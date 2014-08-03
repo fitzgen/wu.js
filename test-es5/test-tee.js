@@ -5,10 +5,8 @@ describe("wu.tee", (function() {
       return a * b;
     }));
     var $__0 = $traceurRuntime.assertObject(wu(factorials).tee()),
-        copy1 = $__0[0],
-        copy2 = $__0[1];
-    var i1 = iter(copy1);
-    var i2 = iter(copy2);
+        i1 = $__0[0],
+        i2 = $__0[1];
     assert.equal(i1.next().value, 1);
     assert.equal(i1.next().value, 2);
     assert.equal(i1.next().value, 6);

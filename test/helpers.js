@@ -23,10 +23,4 @@ assert.eqArray = (expected, actual) => {
   assert.deepEqual(expected, [...actual]);
 };
 
-// Get an iterator for the given thing.
-window.iter = thing => {
-  assert.iterable(thing);
-  return thing[wu.iteratorSymbol]();
-}
-
 mocha.setup('bdd');
