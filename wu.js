@@ -25,7 +25,8 @@
   }
 
   function Wu(iterable) {
-    this[wu.iteratorSymbol] = iterable[wu.iteratorSymbol].bind(iterable);
+    const iterator = getIterator(iterable);
+    this.next = iterator.next.bind(iterator);
   }
   wu.prototype = Wu.prototype;
 
@@ -63,6 +64,8 @@
       throw new Error("Cannot find iterator symbol.");
     }())
   });
+
+  wu.prototype[wu.iteratorSymbol] = function () { return this; };
 
 
   /*
@@ -263,7 +266,7 @@
   rewrapPrototypeAndStatic("flatten", function* (shallow=false) {
     for (let x of this) {
       if (typeof x !== "string" && isIterable(x)) {
-        yield* shallow ? x : wu(x).flatten();
+        yield* (shallow ? x : wu(x).flatten());
       } else {
         yield x;
       }
@@ -301,7 +304,7 @@
 
     yield val;
     for (let x of iter) {
-      yield val = fn(val, x);
+      yield (val = fn(val, x));
     }
 
     return val;

@@ -31,7 +31,8 @@ var $__wu__ = (function() {
       return new Wu(iterable);
     }
     function Wu(iterable) {
-      $traceurRuntime.setProperty(this, wu.iteratorSymbol, iterable[$traceurRuntime.toProperty(wu.iteratorSymbol)].bind(iterable));
+      var iterator = getIterator(iterable);
+      this.next = iterator.next.bind(iterator);
     }
     wu.prototype = Wu.prototype;
     Object.defineProperty(wu, "iteratorSymbol", {value: (function() {
@@ -77,6 +78,9 @@ var $__wu__ = (function() {
         }
         throw new Error("Cannot find iterator symbol.");
       }())});
+    $traceurRuntime.setProperty(wu.prototype, wu.iteratorSymbol, function() {
+      return this;
+    });
     var MISSING = {};
     var isIterable = (function(thing) {
       return thing && typeof thing[$traceurRuntime.toProperty(wu.iteratorSymbol)] === "function";
@@ -975,7 +979,7 @@ var $__wu__ = (function() {
               $ctx.state = (typeof x !== "string" && isIterable(x)) ? 11 : 13;
               break;
             case 11:
-              $__39 = shallow ? x : wu(x).flatten()[$traceurRuntime.toProperty(Symbol.iterator)]();
+              $__39 = (shallow ? x : wu(x).flatten())[$traceurRuntime.toProperty(Symbol.iterator)]();
               $ctx.sent = void 0;
               $ctx.action = 'next';
               $ctx.state = 12;
@@ -1247,7 +1251,7 @@ var $__wu__ = (function() {
               break;
             case 28:
               $ctx.state = 24;
-              return val = fn(val, x);
+              return (val = fn(val, x));
             case 24:
               $ctx.maybeThrow();
               $ctx.state = 36;
