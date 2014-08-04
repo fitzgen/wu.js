@@ -2,8 +2,8 @@
 title: spreadMap
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
-##### `wu.spreadMap(iterable, fn)`
 ##### `wu(iterable).spreadMap(fn)`
+##### `wu.spreadMap(fn, iterable)` *[curryable](#curryable)*
 
 For each item in the iterable, yield `fn(...item)`.
 

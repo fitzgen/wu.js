@@ -2,17 +2,20 @@
 title: every
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
-##### `wu.every(iterable, fn=Boolean)`
 ##### `wu(iterable).every(fn=Boolean)`
+##### `wu.every(fn, iterable)` *[curryable](#curryable)*
 
 Return `true` if `fn(item)` is truthy for every item in the iterable, otherwise
 return `false`.
 
 {% highlight js %}
-wu.every([true, 36, "chambers"]);
+wu([true, 36, "chambers"]).every();
 // true
-wu.every([true, false, true]);
+
+wu([true, false, true]).every();
 // false
-wu.every([1,2,3,4,5], x => x < 100);
+
+const allLessThan100 = wu.every(x => x < 100);
+allLessThan100([1, 2, 3, 4, 5]);
 // true
 {% endhighlight %}

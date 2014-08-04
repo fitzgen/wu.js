@@ -2,8 +2,8 @@
 title: dropWhile
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
-##### `wu.dropWhile(iterable, fn=Boolean)`
 ##### `wu(iterable).dropWhile(fn=Boolean)`
+##### `wu.dropWhile(fn, iterable)` *[curryable](#curryable)*
 
 Drop items from the iterable while the predicate is truthy.
 

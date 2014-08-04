@@ -2,8 +2,8 @@
 title: invoke
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
-##### `wu.invoke(iterable, methodName, ...args)`
 ##### `wu(iterable).invoke(methodName, ...args)`
+##### `wu.invoke(methodName, ...args, iterable)` *[curryable](#curryable)*
 
 For each item in the iterable, yield `item[methodName](...args)`.
 

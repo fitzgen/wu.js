@@ -2,8 +2,8 @@
 title: filter
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
-##### `wu.filter(iterable, fn=Boolean)`
 ##### `wu(iterable).filter(fn=Boolean)`
+##### `wu.filter(fn, iterable)` *[curryable](#curryable)*
 
 Yield only the items from the iterable for which `fn(item)` is truthy.
 

@@ -2,8 +2,8 @@
 title: unique
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
-##### `wu.unique(iterable)`
 ##### `wu(iterable).unique()`
+##### `wu.unique(iterable)` *[curryable](#curryable)*
 
 For each item in the iterable, yield only the first occurence of the item.
 

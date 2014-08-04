@@ -2,8 +2,8 @@
 title: reject
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
-##### `wu.reject(iterable, fn=Boolean)`
 ##### `wu(iterable).reject(fn=Boolean)`
+##### `wu.reject(fn, iterable)` *[curryable](#curryable)*
 
 For each item in the iterable, yield the item if `!fn(item)` is truthy.
 

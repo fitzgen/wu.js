@@ -2,8 +2,8 @@
 title: drop
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
-##### `wu.drop(iterable, n)`
 ##### `wu(iterable).drop(n)`
+##### `wu.drop(n, iterable)` *[curryable](#curryable)*
 
 Drop the first `n` items from the iterable.
 

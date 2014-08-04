@@ -2,8 +2,8 @@
 title: asyncEach
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
-##### `wu.asyncEach(iterable, fn, maxBlock=wu.MAX_BLOCK, timeout=wu.TIMEOUT)`
 ##### `wu(iterable).asyncEach(fn, maxBlock=wu.MAX_BLOCK, timeout=wu.TIMEOUT)`
+##### `wu.asyncEach(fn, maxBlock, timeout, iterable)` *[curryable](#curryable)*
 
 Call `fn(item)` for each item in the (possibly infinite) iterable. Every
 `maxBlock` milliseconds, do a `setTimeout` for `timeout` milliseconds so that we

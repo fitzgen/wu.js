@@ -35,9 +35,6 @@
               <li>
                 <a href="#examples">Examples</a>
               </li>
-              <li>
-                <a href="#basics">Engine and Browser Support</a>
-              </li>
             </ul>
           </li>
           <li>
@@ -79,7 +76,7 @@
           <h5>In Modern Browsers Supporting ES6</h5>
 
           {% highlight html %}
-<script src="path/to/wu.js" type="application/javascript;version=1.8"></script>
+<script src="path/to/wu.js"></script>
 {% endhighlight %}
 
           <h5>In Legacy ES5 Browsers</h5>
@@ -102,6 +99,10 @@ $ npm install wu
           {% highlight js %}
 var wu = require("wu");
 {% endhighlight %}
+
+          <p>
+            <em>Note that this is the compiled-to-ES5 version.</em>
+          </p>
 
           <section id="basics">
             <h4><a href="#basics">Basics</a></h4>
@@ -164,6 +165,12 @@ wu(fibs())
   .takeWhile(lessThanTen)
   .forEach(console.log.bind(console));
 {% endhighlight %}
+
+            <p>
+              <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/The_Iterator_protocol">
+                Learn more about the ES6 iterator protocol at MDN.
+              </a>
+            </p>
           </section>
 
           <section id="examples">
@@ -251,14 +258,6 @@ wu(s).takeWhile(n => n < .25).length();
               {% highlight js %}
 wu(s).filter(n => n * n > .5).find(n => n > .5);
 {% endhighlight %}
-          </section>
-
-          <section id="support">
-            <h4><a href="#support">Engine and Browser Support</a></h4>
-            <p>
-              TODO: works in all browsers when compiled to ES5. Works in Firefox
-              in the ES6 source it is written in.
-            </p>
           </section>
         </section>
 

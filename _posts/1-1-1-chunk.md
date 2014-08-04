@@ -2,8 +2,8 @@
 title: chunk
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
-##### `wu.chunk(iterable, n=2)`
 ##### `wu(iterable).chunk(n=2)`
+##### `wu.chunk(n, iterable)` *[curryable](#curryable)*
 
 Accumulate items from the iterable into arrays of size `n` and yield each
 array.

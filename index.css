@@ -49,6 +49,10 @@ p {
     margin: 10px 0;
 }
 
+h5 > em > a {
+    font-weight: normal;
+}
+
 /* Pygments */
 .hll { background-color: #ffffcc }
 .c { color: #408080; font-style: italic } /* Comment */
