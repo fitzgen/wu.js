@@ -25,6 +25,6 @@
     "build": "./compile-to-es5.sh"
   },
   "dependencies": {
-    "traceur": "0.0.41"
+    "traceur": "0.0.55"
   }
 }

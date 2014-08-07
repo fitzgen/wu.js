@@ -546,7 +546,8 @@
         yield items[index++] = value;
       }
 
-      // TODO FITZGEN
+      // If we are the last iterator to use a cached value, clean up after
+      // ourselves.
       else if (index === cache.tail) {
         let value = items[index];
         if (index === MAX_CACHE) {
@@ -560,7 +561,7 @@
         yield value;
       }
 
-      // TODO FITZGEN
+      // We have an item in the cache for this index, so yield it.
       else {
         yield items[index++];
       }

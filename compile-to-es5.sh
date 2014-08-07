@@ -7,11 +7,8 @@ cd `dirname $0`
 # Make sure all dependencies are installed.
 npm install
 
-# TRACEUR="./node_modules/traceur/traceur"
-# TRACEUR_RUNTIME="./node_modules/traceur/bin/traceur-runtime.js"
-TRACEUR="/Users/fitzgen/src/traceur-compiler/traceur"
-TRACEUR_RUNTIME="/Users/fitzgen/src/traceur-compiler/bin/traceur-runtime.js"
-
+TRACEUR="./node_modules/traceur/traceur"
+TRACEUR_RUNTIME="./node_modules/traceur/bin/traceur-runtime.js"
 
 # Compile wu.js itself to ES5.
 $TRACEUR                            \
