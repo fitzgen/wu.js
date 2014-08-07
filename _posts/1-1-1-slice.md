@@ -2,7 +2,9 @@
 title: slice
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu(iterable).slice(start=0, stop=Infinity)`
+
 ##### `wu.slice(start, stop, iterable)` *[curryable](#curryable)*
 
 Like `Array.prototype.slice`, but for any iterable.

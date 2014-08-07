@@ -2,7 +2,9 @@
 title: concatMap
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu(iterable).concatMap(fn)`
+
 ##### `wu.concatMap(fn, iterable)` *[curryable](#curryable)*
 
 Applies the given function to each item in the iterable and yields each item

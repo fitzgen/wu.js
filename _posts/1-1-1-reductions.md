@@ -2,7 +2,9 @@
 title: reductions
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu(iterable).reductions(fn[, initial])`
+
 ##### `wu.reductions(fn, initial, iterable)` *[curryable](#curryable)*
 
 Similar to [`wu.reduce`](#reduce) but yields each intermediate reduction as the

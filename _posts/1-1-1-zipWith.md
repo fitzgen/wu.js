@@ -2,6 +2,7 @@
 title: zipWith
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu.zipWith(fn, ...iterables)`
 
 Given `n` iterables, yield `fn(itemFromIter1, itemFromIter2, ...,

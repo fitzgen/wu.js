@@ -2,7 +2,9 @@
 title: flatten
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu(iterable).flatten(shallow=false)`
+
 ##### `wu.flatten(shallow, iterable)` *[curryable](#curryable)*
 
 Flatten the given iterable. If `shallow` is truthy, only flatten by one level.

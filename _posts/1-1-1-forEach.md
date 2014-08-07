@@ -2,7 +2,9 @@
 title: forEach
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu(iterable).forEach(fn)`
+
 ##### `wu.forEach(fn, iterable)` *[curryable](#curryable)*
 
 Call `fn(item)` for each item in the iterable.

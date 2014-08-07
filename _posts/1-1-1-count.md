@@ -2,6 +2,7 @@
 title: count
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu.count(start=0, step=1)`
 
 Yield an infinite set of numbers starting with `start` and incrementing by

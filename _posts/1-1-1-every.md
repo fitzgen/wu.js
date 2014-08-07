@@ -2,7 +2,9 @@
 title: every
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu(iterable).every(fn=Boolean)`
+
 ##### `wu.every(fn, iterable)` *[curryable](#curryable)*
 
 Return `true` if `fn(item)` is truthy for every item in the iterable, otherwise

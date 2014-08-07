@@ -2,6 +2,7 @@
 title: curryable
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu.curryable(fn, expected=fn.length)`
 
 Returns a new function that keeps currying until it receives `expected`

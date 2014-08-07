@@ -2,6 +2,7 @@
 title: entries
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu.entries(object)`
 
 Yield `[key, value]` pairs from the given object. Ordering of the pairs is

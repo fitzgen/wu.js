@@ -2,7 +2,9 @@
 title: reduce
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu(iterable).reduce(fn[, initial])`
+
 ##### `wu.reduce(fn, initial, iterable)` *[curryable](#curryable)*
 
 Reduce the iterable from left to right with the binary function `fn`. If

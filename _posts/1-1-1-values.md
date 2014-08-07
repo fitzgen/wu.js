@@ -2,6 +2,7 @@
 title: values
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu.values(object)`
 
 Yield the property value of each enumerable property on the object.

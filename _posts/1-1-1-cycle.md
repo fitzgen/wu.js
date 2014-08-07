@@ -2,7 +2,9 @@
 title: cycle
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu(iterable).cycle()`
+
 ##### `wu.cycle(iterable)` *[curryable](#curryable)*
 
 Yield each item from the iterable and when the iterable is exhausted, start

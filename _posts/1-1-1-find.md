@@ -2,7 +2,9 @@
 title: find
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu(iterable).find(fn)`
+
 ##### `wu.find(fn, iterable)` *[curryable](#curryable)*
 
 Return the first item from the iterable for which `fn(item)` is truthy. If no

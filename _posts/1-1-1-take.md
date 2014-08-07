@@ -2,7 +2,9 @@
 title: take
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu(iterable).take(n)`
+
 ##### `wu.take(n, iterable)` *[curryable](#curryable)*
 
 Yield the first `n` items from the iterable.

@@ -2,7 +2,9 @@
 title: takeWhile
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu(iterable).takeWhile(fn=Boolean)`
+
 ##### `wu.takeWhile(fn, iterable)` *[curryable](#curryable)*
 
 Yield items from the iterable while `fn(item)` is truthy.

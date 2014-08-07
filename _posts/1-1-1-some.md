@@ -2,7 +2,9 @@
 title: some
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu(iterable).some(fn=Boolean)`
+
 ##### `wu.some(fn, iterable)` *[curryable](#curryable)*
 
 Return `true` if `fn(item)` is truthy for any of the items in the iterable,

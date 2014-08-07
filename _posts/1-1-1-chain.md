@@ -2,6 +2,7 @@
 title: chain
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu.chain(...iterables)`
 
 Form a single iterator from consequtive iterables. Yields items from the first

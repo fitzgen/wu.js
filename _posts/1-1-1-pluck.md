@@ -2,7 +2,9 @@
 title: pluck
 ---
 #### [{{ page.title }}](#{{ page.title | slugify }})
+
 ##### `wu(iterable).pluck(propertyName)`
+
 ##### `wu.pluck(propertyName, iterable)` *[curryable](#curryable)*
 
 For each item in the iterable, yield `item[propertyName]`.
