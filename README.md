@@ -1,7 +1,7 @@
 # `wu.js`
 
-`wu.js` is a JavaScript library providing combinators (such as `map`, `filter`,
-and `reduce`) for ECMAScript 6 iterators.
+`wu.js` is a JavaScript library providing higher order functions (such as `map`,
+`filter`, and `reduce`) for ECMAScript 6 iterators.
 
 ## [Documentation](http://fitzgen.github.com/wu.js/)
 
