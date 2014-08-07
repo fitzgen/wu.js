@@ -1,0 +1,290 @@
+---
+---
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="index.css" rel="stylesheet" />
+    <title>
+      wu.js &mdash; Higher order functions for ECMAScript 6 iterators
+    </title>
+  </head>
+  <body>
+    <div class="container-fluid">
+
+      <header class="row col-xs-12 col-sm-9 col-md-9 col-lg-9">
+        <h1><a href="#"><code>wu.js</code></a></h1>
+        <hr/>
+        <p>
+          <code>wu.js</code> is a JavaScript library providing higher order
+          functions (such as <code>map</code>, <code>filter</code>,
+          and <code>reduce</code>) for ECMAScript 6 iterators.
+        </p>
+        <hr/>
+      </header>
+
+      <div class="row col-xs-12 col-sm-3 col-md-3 col-lg-3">
+        <ul id="sidebar" class="nav nav-sidebar affix">
+          <li>
+            <a href="#getting-started">Getting Started</a>
+            <ul class="nav">
+              <li>
+                <a href="#basics">Basics</a>
+              </li>
+              <li>
+                <a href="#examples">Examples</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#API">API</a>
+            <ul class="nav">
+              {% for p in site.posts %}
+              <li>
+                <a href="#{{ p.title | slugify }}">{{ p.title }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </li>
+          <li>
+            <a href="#contributing">Contributing</a>
+            <ul class="nav">
+              <li>
+                <a href="#building">Building</a>
+              </li>
+              <li>
+                <a href="#tests">Tests</a>
+              </li>
+              <li>
+                <a href="#documentation">Documentation</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="row col-xs-12 col-sm-9 col-md-9 col-lg-9">
+
+        <section id="getting-started">
+          <h3><a href="#getting-started">Getting Started</h3></a>
+
+          <h4>In Modern Browsers Supporting ES6</h4>
+
+          <h5>
+            <a href="./wu.js">Download the ES6 version</a>
+          </h5>
+
+          {% highlight html %}
+<script src="path/to/wu.js"></script>
+{% endhighlight %}
+
+          <h4>In Legacy ES5 Browsers</h4>
+
+          <h5>
+            <a href="./wu.es5.js">Download the ES6 version</a>
+          </h5>
+
+          {% highlight html %}
+<script src="path/to/traceur-runtime.js"></script>
+<script src="path/to/wu.es5.js"></script>
+{% endhighlight %}
+
+          <h4>Node and npm</h4>
+
+          {% highlight bash %}
+$ npm install wu
+{% endhighlight %}
+
+          <p>
+            and
+          </p>
+
+          {% highlight js %}
+var wu = require("wu");
+{% endhighlight %}
+
+          <p>
+            <em>Note that this is the compiled-to-ES5 version.</em>
+          </p>
+
+          <section id="basics">
+            <h4><a href="#basics">Basics</a></h4>
+
+            <p>
+              Iterators represent a stream of data. To get the next value in the
+              stream, you call the iterator's <code>next</code> method. This
+              enables both <em>lazy</em> and <em>infinite</em> sequences. Most
+              of the time you don't need to call <code>next</code>
+              yourself: when you use a for-of loop, you're using iterators
+              behind the scenes.
+            </p>
+
+            <p>
+              Anything can create iterators &mdash; they just need to make an
+              object with the proper <code>next</code> interface &mdash; but
+              generator functions and the <code>yield</code> expression provide
+              convenient syntactic sugar.
+            </p>
+
+            {% highlight js %}
+// Generate an infinite sequence of the fibonacci numbers.
+function* fibs() {
+  let a = 0;
+  let b = 1;
+  while (true) {
+    yield a;
+    [a, b] = [b, a + b];
+  }
+}
+
+// Log each even fibonacci number that is less than ten.
+
+const isEven      = n => n % 2 == 0;
+const lessThanTen = n => n < 10;
+
+for (let n of fibs()) {
+  if (!lessThanTen(n)) {
+    break;
+  }
+  if (isEven(n)) {
+    console.log(n);
+  }
+}
+{% endhighlight %}
+
+            <p>
+              <code>wu.js</code> provides the higher order functions you've come
+              to love from working with arrays (such
+              as <a href="#map"><code>map</code></a>
+              and <a href="#filter"><code>filter</code></a>) as well as ones
+              that may be new to JavaScript developers (such
+              as <a href="#takeWhile"><code>takeWhile</code></a>). With <code>wu.js</code>,
+              we can rewrite the above example like this:
+            </p>
+
+            {% highlight js %}
+wu(fibs())
+  .filter(isEven)
+  .takeWhile(lessThanTen)
+  .forEach(console.log.bind(console));
+{% endhighlight %}
+
+            <p>
+              <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/The_Iterator_protocol">
+                Learn more about the ES6 iterator protocol at MDN.
+              </a>
+            </p>
+          </section>
+
+          <section id="examples">
+            <h4><a href="#examples">Examples</a></h4>
+
+            <h5>Binary trees</h5>
+
+            <p>
+              The following is a simple immutable sorted set implementation that
+              doesn't do tree balancing for simplicity. It has an iterator
+              method which yields items in sorted order.
+            </p>
+
+            {% highlight js %}
+const theEmptySet = null;
+
+function SortedSet(value, left=theEmptySet, right=theEmptySet) {
+  this.value = value;
+  this.left  = left;
+  this.right = right;
+}
+
+SortedSet.prototype[wu.iteratorSymbol] = function* () {
+  if (this.left !== theEmptySet) {
+    yield* this.left;
+  }
+
+  yield this.value;
+
+  if (this.right !== theEmptySet) {
+    yield* this.right;
+  }
+};
+
+const insert = (set, x) => {
+  if (set === theEmptySet) {
+    return new SortedSet(x);
+  }
+
+  const { value, left, right } = set;
+
+  if (x < value) {
+    return new SortedSet(value, insert(left, x), right);
+  } else if (x > value) {
+    return new SortedSet(value, left, insert(right, x));
+  } else {
+    return set;
+  }
+};
+{% endhighlight %}
+
+              <p>
+                We can initialize a set of 100 random floats to work with:
+              </p>
+
+              {% highlight js %}
+let s = theEmptySet;
+
+let n = 100;
+while (n--) {
+  s = insert(s, Math.random());
+}
+{% endhighlight %}
+
+              <p>
+                To get the sum of all elements greater than .8 in the set:
+              </p>
+
+              {% highlight js %}
+wu(s).dropWhile(n => n <= .8).reduce((x, y) => x + y);
+{% endhighlight %}
+
+              <p>
+                To find the number of elements that are less than .25:
+              </p>
+
+              {% highlight js %}
+wu(s).takeWhile(n => n < .25).length();
+{% endhighlight %}
+
+              <p>
+                To find the first element whose square is greater than .5:
+              </p>
+
+              {% highlight js %}
+wu(s).filter(n => n * n > .5).find(n => n > .5);
+{% endhighlight %}
+          </section>
+        </section>
+
+        <section id="API">
+          <h3><a href="#API">API</a></h3>
+          {% for p in site.posts %}
+          <hr />
+          <section id="{{ p.title | slugify }}">
+            {{ p.content }}
+          </section>
+          {% endfor %}
+          <hr/>
+        </section>
+
+
+        <section id="contributing">
+          {% include contributing.html %}
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="wu.js" type="application/javascript;version=1.8"></script>
+  </body>
+</html>

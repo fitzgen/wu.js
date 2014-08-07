@@ -1,10 +1,11 @@
-`wu.js`
-=======
+# `wu.js`
 
-A lazy, functional JavaScript library that ain't nuthin' ta f*ck wit.
+`wu.js` is a JavaScript library providing higher order functions (such as `map`,
+`filter`, and `reduce`) for ECMAScript 6 iterators.
 
-[Complete Documentation](http://fitzgen.github.com/wu.js/)
-----------------------------------------------------------
+## [Documentation](http://fitzgen.github.com/wu.js/)
+
+--------------------------------------------------------------------------------------------
 
            NNNNNNNNN==..                                               .=NNNNN=
          NNNNNNNNNNNNNNNNNNN==..                               .=NNNNNNNNNNNNNNI

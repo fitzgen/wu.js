@@ -1,2 +1,3 @@
-test/wu.tests.min.html
-wu.min.js
+_site
+Gemfile.lock
+traceur-runtime.js

@@ -1,0 +1,136 @@
+<h3><a href="#contributing">Contributing</a></h3>
+
+<p>
+  Development happens
+  on <a href="https://github.com/fitzgen/wu.js">GitHub</a>. Include
+  test(s) and documentation updates in your pull requests.
+</p>
+
+<p>
+  File bugs and feature requests in
+  the <a href="https://github.com/fitzgen/wu.js/issues">GitHub issue
+  tracker</a>. When filing bugs, include:
+</p>
+
+<ul>
+  <li>
+    Whether the bug occurs in the normal ES6 version, the compiled ES5
+    version, or both and what environment (eg specific browser or node
+    version).
+  </li>
+  <li>
+    A testcase and steps to reproduce the bug with the testcase.
+  </li>
+  <li>
+    The expected results of executing the above steps.
+  </li>
+  <li>
+    The actual results of executing the above steps.
+  </li>
+</ul>
+
+<section id="building">
+  <h4><a href="#building">Building</a></h4>
+
+  <p>
+    To compile <code>wu.js</code> and its tests to ES5 using Traceur
+    Compiler, run:
+  </p>
+
+  <pre><code>$ npm run build</code></pre>
+
+  <p>
+    This command regenerates:
+  </p>
+
+  <ul>
+    <li>
+      <code>wu.es5.js</code> &mdash; The ES5 compatible version
+      of <code>wu.js</code> with the Traceur runtime library included.
+    </li>
+    <li>
+      <code>wu.es5.map</code> &mdash; The source map for the ES5 compatible
+      version of <code>wu.js</code>.
+    </li>
+    <li>
+      <code>test-es5/</code> &mdash; A copy of the test directory with
+      all tests compiled down to ES5 and uses the ES5 version
+      of <code>wu.js</code>.
+    </li>
+  </ul>
+</section>
+
+<section id="tests">
+  <h4><a href="#tests">Tests</a></h4>
+
+  <h5>Running the Test Suite</h5>
+
+  <p>
+    There are two testing modes, and you should ensure that both modes pass when
+    submitting pull requests.
+  </p>
+
+  <ul>
+    <li>
+      <a href="test/test.html">Run the ES6 tests in your browser.</a> (At the
+    time of writing, this only works in Firefox 33+, but provides the best
+    debugging.)</li>
+
+    <li>
+      <a href="test-es5/test.html">Run the transpiled ES5 version of the tests
+        and <code>wu.js</code> in your browser.</a>
+    </li>
+  </ul>
+
+  <h5>Creating New Tests</h5>
+
+  <p>
+    To add a new test, find or create the appropriate file
+    in <code>test/test-X.js</code>. If creating a new test file, make
+    sure to add a script tag
+    to <code>test/test.html</code>. <a href="http://visionmedia.github.io/mocha/">Mocha</a>
+    is the test
+    runner. <a href="http://chaijs.com/api/assert/">Chai's <code>assert</code>
+    module</a> is used for assertions.
+  </p>
+
+  <p>
+    Note that new tests will be copied into the <code>test-es5/</code>
+    directory and compiled down to ES5 automatically when
+    you <a href="#building">rebuild the project</a>.
+  </p>
+</section>
+
+<section id="documentation">
+  <h4><a href="#documentation">Documentation</a></h4>
+
+  <p>
+    This documentation is created with the static site generator
+    <a href="http://jekyllrb.com/">Jekyll</a>. To set up jekyll, run:
+  </p>
+
+  <pre><code>$ gem install jekyll bundler
+$ cd path/to/wu.js
+$ bundle install</code></pre>
+
+  <p>
+    Once Jekyll is set up, to serve the docs locally and automatically
+    recompile them on change, run:
+  </p>
+
+  <pre><code>$ npm run docs</code></pre>
+
+  <p>
+    The documentation will be served
+    at <a href="http://0.0.0.0:4000">http://0.0.0.0:4000</a>.
+  </p>
+
+  <p>
+    The sources for this documentation live in <code>index.html</code>
+    and markdown files in the <code>_posts</code>
+    directory. Each <code>wu</code> method has its own markdown file
+    in the <code>_posts</code> directory, and the table of contents
+    for the<code>wu</code> methods is generated automatically. The CSS
+    styles live in <code>index.css</code>.
+  </p>
+</section>
