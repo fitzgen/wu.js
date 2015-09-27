@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.zipLongest", () => {
   it("should stop with the longer iterable", () => {
     const arr1 = [];

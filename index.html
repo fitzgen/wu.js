@@ -72,22 +72,31 @@
           <h4>In Modern Browsers Supporting ES6</h4>
 
           <h5>
-            <a href="./wu.js">Download the ES6 version</a>
+            <a href="https://raw.githubusercontent.com/mozilla/source-map/master/wu.js">Download the ES6 version</a>
           </h5>
 
           {% highlight html %}
-<script src="path/to/wu.js"></script>
+<script src="path/to/wu.js" defer></script>
 {% endhighlight %}
 
           <h4>In Legacy ES5 Browsers</h4>
 
           <h5>
-            <a href="./wu.es5.js">Download the compiled-to-ES5 version</a>
+            <a href="./dist/wu.debug.js">Download the ES5 debug build (non-minified, source-maps)</a>
           </h5>
 
           {% highlight html %}
-<script src="path/to/traceur-runtime.js"></script>
-<script src="path/to/wu.es5.js"></script>
+<script src="https://raw.githubusercontent.com/mozilla/source-map/master/dist/wu.debug.js" defer></script>
+{% endhighlight %}
+
+          <p>or</p>
+
+          <h5>
+            <a href="./dist/wu.min.js">Download the ES5 production build (minified)</a>
+          </h5>
+
+          {% highlight html %}
+<script src="https://raw.githubusercontent.com/mozilla/source-map/master/dist/wu.min.js" defer></script>
 {% endhighlight %}
 
           <h4>Node and npm</h4>

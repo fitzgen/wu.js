@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.cycle", () => {
   it("should keep yielding items from the original iterable", () => {
     let i = 0;

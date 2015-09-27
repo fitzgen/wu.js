@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.count", () => {
   it("should keep incrementing", () => {
     const count = wu.count();

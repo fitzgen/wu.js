@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.zip", () => {
   it("should zip two iterables together", () => {
     assert.eqArray([["a", 1], ["b", 2], ["c", 3]],

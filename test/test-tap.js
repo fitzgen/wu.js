@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.tap", () => {
   it("should perform side effects and yield the original item", () => {
     let i = 0;

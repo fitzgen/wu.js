@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.forEach", () => {
   it("should iterate over every item", () => {
     const items = [];

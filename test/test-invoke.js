@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.invoke", () => {
   it("should yield the method invokation on each item", () => {
     function Greeter(name) {

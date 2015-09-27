@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.unzip", () => {
   it("should create iterables from zipped items", () => {
     const pairs = [

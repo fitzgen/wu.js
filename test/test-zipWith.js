@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.zipWith", () => {
   it("should spread map over the zipped iterables", () => {
     const add3 = (a, b, c) => a + b + c;

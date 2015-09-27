@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.tee", () => {
   it("should clone iterables", () => {
     const factorials = wu(wu.count(1)).reductions((a, b) => a * b);

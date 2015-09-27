@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.curryable", () => {
   it("should wait until its given enough arguments", () => {
     var f = wu.curryable((a, b) => a + b);

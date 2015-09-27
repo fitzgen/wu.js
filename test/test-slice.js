@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.slice", () => {
   it("should slice the front of iterables", () => {
     assert.eqArray([3, 4, 5],

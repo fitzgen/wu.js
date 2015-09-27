@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.flatten", () => {
   it("should flatten iterables", () => {
     assert.eqArray(["I", "like", "LISP"],

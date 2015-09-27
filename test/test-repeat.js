@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.repeat", () => {
   it("should keep yielding its item", () => {
     const repeat = wu.repeat(3);

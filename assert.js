@@ -1,4 +1,8 @@
-window.assert = chai.assert;
+const wu = require("./wu");
+const chai = require("chai");
+const mocha = require("mocha");
+
+const assert = module.exports = chai.assert;
 
 // Helper for asserting that the given thing is iterable.
 assert.iterable = thing => {
@@ -23,4 +27,4 @@ assert.eqArray = (expected, actual) => {
   assert.deepEqual(expected, [...actual]);
 };
 
-mocha.setup('bdd');
+// mocha.setup('bdd');

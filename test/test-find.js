@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.find", () => {
   it("should return the first item that matches the predicate", () => {
     assert.deepEqual({ name: "rza" },

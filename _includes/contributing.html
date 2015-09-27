@@ -33,8 +33,8 @@
   <h4><a href="#building">Building</a></h4>
 
   <p>
-    To compile <code>wu.js</code> and its tests to ES5 using Traceur
-    Compiler, run:
+    To compile <code>wu.js</code> and its tests to ES5 using the Babel compiler,
+    run:
   </p>
 
   <pre><code>$ npm run build</code></pre>
@@ -45,17 +45,14 @@
 
   <ul>
     <li>
-      <code>wu.es5.js</code> &mdash; The ES5 compatible version
-      of <code>wu.js</code> with the Traceur runtime library included.
+      <code>dist/wu.js</code> &mdash; The ES5 compatible version of <code>wu.js</code>.
     </li>
     <li>
-      <code>wu.es5.map</code> &mdash; The source map for the ES5 compatible
-      version of <code>wu.js</code>.
+      <code>dist/wu.debug.js</code> &mdash; The ES5 compatible version of <code>wu.js</code> with
+      an inline source map included.
     </li>
     <li>
-      <code>test-es5/</code> &mdash; A copy of the test directory with
-      all tests compiled down to ES5 and uses the ES5 version
-      of <code>wu.js</code>.
+      <code>dist/wu.min.js</code> &mdash; The minified ES5 compartible version of <code>wu.js</code>.
     </li>
   </ul>
 </section>
@@ -65,39 +62,16 @@
 
   <h5>Running the Test Suite</h5>
 
-  <p>
-    There are two testing modes, and you should ensure that both modes pass when
-    submitting pull requests.
-  </p>
-
-  <ul>
-    <li>
-      <a href="test/test.html">Run the ES6 tests in your browser.</a> (At the
-    time of writing, this only works in Firefox 33+, but provides the best
-    debugging.)</li>
-
-    <li>
-      <a href="test-es5/test.html">Run the transpiled ES5 version of the tests
-        and <code>wu.js</code> in your browser.</a>
-    </li>
-  </ul>
+  <pre><code>$ npm test</code></pre>
 
   <h5>Creating New Tests</h5>
 
   <p>
     To add a new test, find or create the appropriate file
-    in <code>test/test-X.js</code>. If creating a new test file, make
-    sure to add a script tag
-    to <code>test/test.html</code>. <a href="http://visionmedia.github.io/mocha/">Mocha</a>
+    in <code>test/test-X.js</code>. <a href="http://visionmedia.github.io/mocha/">Mocha</a>
     is the test
     runner. <a href="http://chaijs.com/api/assert/">Chai's <code>assert</code>
     module</a> is used for assertions.
-  </p>
-
-  <p>
-    Note that new tests will be copied into the <code>test-es5/</code>
-    directory and compiled down to ES5 automatically when
-    you <a href="#building">rebuild the project</a>.
   </p>
 </section>
 

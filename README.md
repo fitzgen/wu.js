@@ -1,5 +1,9 @@
 # `wu.js`
 
+[![Build Status](https://travis-ci.org/fitzgen/wu.js.png?branch=master)](https://travis-ci.org/fitzgen/wu.js)
+
+[![NPM](https://nodei.co/npm/source-map.png)](https://www.npmjs.com/package/wu)
+
 `wu.js` is a JavaScript library providing higher order functions (such as `map`,
 `filter`, and `reduce`) for ECMAScript 6 iterators.
 

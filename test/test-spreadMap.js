@@ -1,3 +1,5 @@
+const wu = require("../wu");
+const assert = require("../assert");
 describe("wu.spreadMap", () => {
   it("should map the function over the iterable with spread arguments", () => {
     assert.eqArray([32, 9, 1000],
