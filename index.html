@@ -40,7 +40,8 @@
           <li>
             <a href="#API">API</a>
             <ul class="nav">
-              {% for p in site.posts %}
+              {% assign sorted_posts = site.posts | sort: 'title' %}
+              {% for p in sorted_posts %}
               <li>
                 <a href="#{{ p.title | slugify }}">{{ p.title }}</a>
               </li>
@@ -276,7 +277,7 @@ wu(s).filter(n => n * n > .5).find(n => n > .5);
 
         <section id="API">
           <h3><a href="#API">API</a></h3>
-          {% for p in site.posts %}
+          {% for p in sorted_posts %}
           <hr />
           <section id="{{ p.title | slugify }}">
             {{ p.content }}
