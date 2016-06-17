@@ -466,6 +466,17 @@ prototypeAndStatic("some", function (fn=Boolean) {
   return false;
 }, 1);
 
+prototypeAndStatic("nth", function (n) {
+  if (n < 0) {
+    return;
+  }
+  for (let x of this) {
+    if (!n--) {
+      return x;
+    }
+  }
+});
+
 prototypeAndStatic("toArray", function () {
   return [...this];
 });
