@@ -174,7 +174,7 @@ rewrapPrototypeAndStatic("concatMap", function *(fn) {
   for (let x of this) {
     yield* fn(x);
   }
-});
+}, 1);
 
 rewrapPrototypeAndStatic("drop", function* (n) {
   let i = 0;
@@ -186,7 +186,7 @@ rewrapPrototypeAndStatic("drop", function* (n) {
     break;
   }
   yield* this;
-});
+}, 1);
 
 rewrapPrototypeAndStatic("dropWhile", function* (fn=Boolean) {
   for (let x of this) {
@@ -231,13 +231,13 @@ rewrapPrototypeAndStatic("map", function* (fn) {
   for (let x of this) {
     yield fn(x);
   }
-});
+}, 1);
 
 rewrapPrototypeAndStatic("pluck", function* (name) {
   for (let x of this) {
     yield x[name];
   }
-});
+}, 1);
 
 rewrapPrototypeAndStatic("reductions", function* (fn, initial=undefined) {
   let val = initial;
@@ -285,7 +285,7 @@ rewrapPrototypeAndStatic("spreadMap", function* (fn) {
   for (let x of this) {
     yield fn(...x);
   }
-});
+}, 1);
 
 rewrapPrototypeAndStatic("take", function* (n) {
   if (n < 1) {
@@ -298,7 +298,7 @@ rewrapPrototypeAndStatic("take", function* (n) {
       break;
     }
   }
-});
+}, 1);
 
 rewrapPrototypeAndStatic("takeWhile", function* (fn=Boolean) {
   for (let x of this) {
@@ -429,17 +429,17 @@ prototypeAndStatic("find", function (fn) {
       return x;
     }
   }
-});
+}, 1);
 
 prototypeAndStatic("forEach", function (fn) {
   for (let x of this) {
     fn(x);
   }
-});
+}, 1);
 
 prototypeAndStatic("has", function (thing) {
   return this.some(x => x === thing);
-});
+}, 1);
 
 prototypeAndStatic("reduce", function (fn, initial=undefined) {
   let val = initial;
@@ -475,7 +475,7 @@ prototypeAndStatic("nth", function (n) {
       return x;
     }
   }
-});
+}, 1);
 
 prototypeAndStatic("toArray", function () {
   return [...this];
