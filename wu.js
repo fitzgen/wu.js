@@ -335,11 +335,10 @@ const _zip = rewrap(function* (iterables, longest=false) {
 
   const iters = iterables.map(getIterator);
   const numIters = iterables.length;
-  let numFinished = 0;
-  let finished = false;
 
-  while (!finished) {
+  while (true) {
     let zipped = [];
+    let numFinished = 0;
 
     for (let it of iters) {
       let { value, done } = it.next();
@@ -348,7 +347,7 @@ const _zip = rewrap(function* (iterables, longest=false) {
           return;
         }
         if (++numFinished == numIters) {
-          finished = true;
+          return;
         }
       }
       if (value === undefined) {
