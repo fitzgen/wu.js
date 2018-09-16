@@ -549,6 +549,17 @@ prototypeAndStatic("unzip", function (n=2) {
   return this.tee(n).map((iter, i) => iter.pluck(i));
 }, 1);
 
+prototypeAndStatic("join", function(separator=",") {
+  const sep = String(separator);
+
+  const reduced = this.reduce((acc, cur) => {
+    const val = cur == null ? "" : String(cur);
+    return acc + val + sep;
+  }, "");
+
+  return reduced.substring(0, reduced.length - sep.length);
+}, 1);
+
 
 /*
  * Number of chambers.
