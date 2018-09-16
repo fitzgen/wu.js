@@ -207,7 +207,7 @@ function SortedSet(value, left=theEmptySet, right=theEmptySet) {
   this.right = right;
 }
 
-SortedSet.prototype[wu.iteratorSymbol] = function* () {
+SortedSet.prototype[Symbol.iterator] = function* () {
   if (this.left !== theEmptySet) {
     yield* this.left;
   }
@@ -262,7 +262,7 @@ wu(s).dropWhile(n => n <= .8).reduce((x, y) => x + y);
               </p>
 
               {% highlight js %}
-wu(s).takeWhile(n => n < .25).length();
+wu(s).takeWhile(n => n < .25).reduce((acc, _) => acc + 1, 0);
 {% endhighlight %}
 
               <p>
