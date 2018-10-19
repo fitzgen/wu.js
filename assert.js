@@ -2,7 +2,7 @@ const wu = require("./wu");
 const chai = require("chai");
 const mocha = require("mocha");
 
-const assert = module.exports = chai.assert;
+const assert = (module.exports = chai.assert);
 
 // Helper for asserting that the given thing is iterable.
 assert.iterable = thing => {

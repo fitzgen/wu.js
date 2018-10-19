@@ -23,7 +23,8 @@
   "scripts": {
     "docs": "bundle exec jekyll serve --watch",
     "build": "webpack --color",
-    "test": "npm run build && mocha --full-trace --no-colors --compilers js:babel/register"
+    "test": "npm run build && mocha --full-trace --no-colors --compilers js:babel/register",
+    "format": "prettier --write wu.js assert.js test/*.js"
   },
   "devDependencies": {
     "babel": "^5.8.23",
@@ -32,6 +33,7 @@
     "babel-runtime": "^5.8.25",
     "chai": "^3.3.0",
     "mocha": "^2.3.3",
+    "prettier": "^1.14.3",
     "webpack": "^1.12.2"
   }
 }

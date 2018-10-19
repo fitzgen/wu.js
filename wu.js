@@ -1,11 +1,11 @@
 "use strict";
 
-const wu = module.exports = function wu(iterable) {
+const wu = (module.exports = function wu(iterable) {
   if (!isIterable(iterable)) {
     throw new Error("wu: `" + iterable + "` is not iterable!");
   }
   return new Wu(iterable);
-}
+});
 
 function Wu(iterable) {
   const iterator = getIterator(iterable);
@@ -13,8 +13,9 @@ function Wu(iterable) {
 }
 wu.prototype = Wu.prototype;
 
-wu.prototype[Symbol.iterator] = function () { return this; };
-
+wu.prototype[Symbol.iterator] = function() {
+  return this;
+};
 
 /*
  * Internal utilities
@@ -46,7 +47,7 @@ const staticMethod = (name, fn) => {
 // Define a function that is attached as both a `Wu.prototype` method and a
 // curryable static method on `wu` directly that takes an iterable as its last
 // parameter.
-const prototypeAndStatic = (name, fn, expectedArgs=fn.length) => {
+const prototypeAndStatic = (name, fn, expectedArgs = fn.length) => {
   fn.prototype = Wu.prototype;
   Wu.prototype[name] = fn;
 
@@ -62,66 +63,67 @@ const prototypeAndStatic = (name, fn, expectedArgs=fn.length) => {
 
 // A decorator for rewrapping a method's returned iterable in wu to maintain
 // chainability.
-const rewrap = fn => function (...args) {
-  return wu(fn.call(this, ...args));
-};
+const rewrap = fn =>
+  function(...args) {
+    return wu(fn.call(this, ...args));
+  };
 
 const rewrapStaticMethod = (name, fn) => staticMethod(name, rewrap(fn));
 const rewrapPrototypeAndStatic = (name, fn, expectedArgs) =>
-      prototypeAndStatic(name, rewrap(fn), expectedArgs);
+  prototypeAndStatic(name, rewrap(fn), expectedArgs);
 
 // Return a wrapped version of `fn` bound with the initial arguments
 // `...args`.
 function curry(fn, args) {
-  return function (...moreArgs) {
+  return function(...moreArgs) {
     return fn.call(this, ...args, ...moreArgs);
   };
 }
-
 
 /*
  * Public utilities
  */
 
-staticMethod("curryable", (fn, expected=fn.length) => function f(...args) {
-  return args.length >= expected
-    ? fn.apply(this, args)
-    : curry(f, args);
-});
+staticMethod(
+  "curryable",
+  (fn, expected = fn.length) =>
+    function f(...args) {
+      return args.length >= expected ? fn.apply(this, args) : curry(f, args);
+    }
+);
 
-rewrapStaticMethod("entries", function* (obj) {
+rewrapStaticMethod("entries", function*(obj) {
   for (let k of Object.keys(obj)) {
     yield [k, obj[k]];
   }
 });
 
-rewrapStaticMethod("keys", function* (obj) {
+rewrapStaticMethod("keys", function*(obj) {
   yield* Object.keys(obj);
 });
 
-rewrapStaticMethod("values", function* (obj) {
+rewrapStaticMethod("values", function*(obj) {
   for (let k of Object.keys(obj)) {
     yield obj[k];
   }
 });
 
-
 /*
  * Infinite iterators
  */
 
-rewrapPrototypeAndStatic("cycle", function* () {
+rewrapPrototypeAndStatic("cycle", function*() {
   const saved = [];
   for (let x of this) {
     yield x;
     saved.push(x);
   }
   while (saved) {
-    yield *saved;
+    yield* saved;
   }
 });
 
-rewrapStaticMethod("count", function* (start=0, step=1) {
+rewrapStaticMethod("count", function*(start = 0, step = 1) {
   let n = start;
   while (true) {
     yield n;
@@ -129,7 +131,7 @@ rewrapStaticMethod("count", function* (start=0, step=1) {
   }
 });
 
-rewrapStaticMethod("repeat", function* (thing, times=Infinity) {
+rewrapStaticMethod("repeat", function*(thing, times = Infinity) {
   if (times === Infinity) {
     while (true) {
       yield thing;
@@ -141,182 +143,242 @@ rewrapStaticMethod("repeat", function* (thing, times=Infinity) {
   }
 });
 
-
 /*
  * Iterators that terminate once the input sequence has been exhausted
  */
 
-rewrapStaticMethod("chain", function* (...iterables) {
+rewrapStaticMethod("chain", function*(...iterables) {
   for (let it of iterables) {
     yield* it;
   }
 });
 
-rewrapPrototypeAndStatic("chunk", function* (n=2) {
-  let items = [];
-  let index = 0;
+rewrapPrototypeAndStatic(
+  "chunk",
+  function*(n = 2) {
+    let items = [];
+    let index = 0;
 
-  for (let item of this) {
-    items[index++] = item;
-    if (index === n) {
+    for (let item of this) {
+      items[index++] = item;
+      if (index === n) {
+        yield items;
+        items = [];
+        index = 0;
+      }
+    }
+
+    if (index) {
       yield items;
-      items = [];
-      index = 0;
     }
-  }
+  },
+  1
+);
 
-  if (index) {
-    yield items;
-  }
-}, 1);
-
-rewrapPrototypeAndStatic("concatMap", function *(fn) {
-  for (let x of this) {
-    yield* fn(x);
-  }
-}, 1);
-
-rewrapPrototypeAndStatic("drop", function* (n) {
-  let i = 0;
-  for (let x of this) {
-    if (i++ < n) {
-      continue;
+rewrapPrototypeAndStatic(
+  "concatMap",
+  function*(fn) {
+    for (let x of this) {
+      yield* fn(x);
     }
-    yield x;
-    break;
-  }
-  yield* this;
-}, 1);
+  },
+  1
+);
 
-rewrapPrototypeAndStatic("dropWhile", function* (fn=Boolean) {
-  for (let x of this) {
-    if (fn(x)) {
-      continue;
+rewrapPrototypeAndStatic(
+  "drop",
+  function*(n) {
+    let i = 0;
+    for (let x of this) {
+      if (i++ < n) {
+        continue;
+      }
+      yield x;
+      break;
     }
-    yield x;
-    break;
-  }
-  yield* this;
-}, 1);
+    yield* this;
+  },
+  1
+);
 
-rewrapPrototypeAndStatic("enumerate", function* () {
+rewrapPrototypeAndStatic(
+  "dropWhile",
+  function*(fn = Boolean) {
+    for (let x of this) {
+      if (fn(x)) {
+        continue;
+      }
+      yield x;
+      break;
+    }
+    yield* this;
+  },
+  1
+);
+
+rewrapPrototypeAndStatic("enumerate", function*() {
   yield* _zip([this, wu.count()]);
 });
 
-rewrapPrototypeAndStatic("filter", function* (fn=Boolean) {
-  for (let x of this) {
-    if (fn(x)) {
-      yield x;
+rewrapPrototypeAndStatic(
+  "filter",
+  function*(fn = Boolean) {
+    for (let x of this) {
+      if (fn(x)) {
+        yield x;
+      }
     }
-  }
-}, 1);
+  },
+  1
+);
 
-rewrapPrototypeAndStatic("flatten", function* (shallow=false) {
-  for (let x of this) {
-    if (typeof x !== "string" && isIterable(x)) {
-      yield* (shallow ? x : wu(x).flatten());
-    } else {
-      yield x;
+rewrapPrototypeAndStatic(
+  "flatten",
+  function*(shallow = false) {
+    for (let x of this) {
+      if (typeof x !== "string" && isIterable(x)) {
+        yield* shallow ? x : wu(x).flatten();
+      } else {
+        yield x;
+      }
     }
-  }
-}, 1);
+  },
+  1
+);
 
-rewrapPrototypeAndStatic("invoke", function* (name, ...args) {
+rewrapPrototypeAndStatic("invoke", function*(name, ...args) {
   for (let x of this) {
     yield x[name](...args);
   }
 });
 
-rewrapPrototypeAndStatic("map", function* (fn) {
-  for (let x of this) {
-    yield fn(x);
-  }
-}, 1);
-
-rewrapPrototypeAndStatic("pluck", function* (name) {
-  for (let x of this) {
-    yield x[name];
-  }
-}, 1);
-
-rewrapPrototypeAndStatic("reductions", function* (fn, initial=undefined) {
-  let val = initial;
-  if (val === undefined) {
+rewrapPrototypeAndStatic(
+  "map",
+  function*(fn) {
     for (let x of this) {
-      val = x;
-      break;
+      yield fn(x);
     }
-  }
+  },
+  1
+);
 
-  yield val;
-  for (let x of this) {
-    yield (val = fn(val, x));
-  }
+rewrapPrototypeAndStatic(
+  "pluck",
+  function*(name) {
+    for (let x of this) {
+      yield x[name];
+    }
+  },
+  1
+);
 
-  return val;
-}, 2);
+rewrapPrototypeAndStatic(
+  "reductions",
+  function*(fn, initial = undefined) {
+    let val = initial;
+    if (val === undefined) {
+      for (let x of this) {
+        val = x;
+        break;
+      }
+    }
 
-rewrapPrototypeAndStatic("reject", function* (fn=Boolean) {
-  for (let x of this) {
-    if (!fn(x)) {
+    yield val;
+    for (let x of this) {
+      yield (val = fn(val, x));
+    }
+
+    return val;
+  },
+  2
+);
+
+rewrapPrototypeAndStatic(
+  "reject",
+  function*(fn = Boolean) {
+    for (let x of this) {
+      if (!fn(x)) {
+        yield x;
+      }
+    }
+  },
+  1
+);
+
+rewrapPrototypeAndStatic(
+  "slice",
+  function*(start = 0, stop = Infinity) {
+    if (stop < start) {
+      throw new RangeError(
+        "parameter `stop` (= " + stop + ") must be >= `start` (= " + start + ")"
+      );
+    }
+
+    for (let [x, i] of this.enumerate()) {
+      if (i < start) {
+        continue;
+      }
+      if (i >= stop) {
+        break;
+      }
       yield x;
     }
-  }
-}, 1);
+  },
+  2
+);
 
-rewrapPrototypeAndStatic("slice", function* (start=0, stop=Infinity) {
-  if (stop < start) {
-    throw new RangeError("parameter `stop` (= " + stop
-                         + ") must be >= `start` (= " + start + ")");
-  }
-
-  for (let [x, i] of this.enumerate()) {
-    if (i < start) {
-      continue;
+rewrapPrototypeAndStatic(
+  "spreadMap",
+  function*(fn) {
+    for (let x of this) {
+      yield fn(...x);
     }
-    if (i >= stop) {
-      break;
+  },
+  1
+);
+
+rewrapPrototypeAndStatic(
+  "take",
+  function*(n) {
+    if (n < 1) {
+      return;
     }
-    yield x;
-  }
-}, 2);
-
-rewrapPrototypeAndStatic("spreadMap", function* (fn) {
-  for (let x of this) {
-    yield fn(...x);
-  }
-}, 1);
-
-rewrapPrototypeAndStatic("take", function* (n) {
-  if (n < 1) {
-    return;
-  }
-  let i = 0;
-  for (let x of this) {
-    yield x;
-    if (++i >= n) {
-      break;
+    let i = 0;
+    for (let x of this) {
+      yield x;
+      if (++i >= n) {
+        break;
+      }
     }
-  }
-}, 1);
+  },
+  1
+);
 
-rewrapPrototypeAndStatic("takeWhile", function* (fn=Boolean) {
-  for (let x of this) {
-    if (!fn(x)) {
-      break;
+rewrapPrototypeAndStatic(
+  "takeWhile",
+  function*(fn = Boolean) {
+    for (let x of this) {
+      if (!fn(x)) {
+        break;
+      }
+      yield x;
     }
-    yield x;
-  }
-}, 1);
+  },
+  1
+);
 
-rewrapPrototypeAndStatic("tap", function* (fn=console.log.bind(console)) {
-  for (let x of this) {
-    fn(x);
-    yield x;
-  }
-}, 1);
+rewrapPrototypeAndStatic(
+  "tap",
+  function*(fn = console.log.bind(console)) {
+    for (let x of this) {
+      fn(x);
+      yield x;
+    }
+  },
+  1
+);
 
-rewrapPrototypeAndStatic("unique", function* () {
+rewrapPrototypeAndStatic("unique", function*() {
   const seen = new Set();
   for (let x of this) {
     if (!seen.has(x)) {
@@ -327,8 +389,7 @@ rewrapPrototypeAndStatic("unique", function* () {
   seen.clear();
 });
 
-
-const _zip = rewrap(function* (iterables, longest=false) {
+const _zip = rewrap(function*(iterables, longest = false) {
   if (!iterables.length) {
     return;
   }
@@ -364,18 +425,17 @@ const _zip = rewrap(function* (iterables, longest=false) {
   }
 });
 
-rewrapStaticMethod("zip", function* (...iterables) {
+rewrapStaticMethod("zip", function*(...iterables) {
   yield* _zip(iterables);
 });
 
-rewrapStaticMethod("zipLongest", function* (...iterables) {
+rewrapStaticMethod("zipLongest", function*(...iterables) {
   yield* _zip(iterables, true);
 });
 
-rewrapStaticMethod("zipWith", function* (fn, ...iterables) {
+rewrapStaticMethod("zipWith", function*(fn, ...iterables) {
   yield* _zip(iterables).spreadMap(fn);
 });
-
 
 /*
  * Functions that force iteration to completion and return a value.
@@ -388,96 +448,128 @@ wu.MAX_BLOCK = 15;
 // work.
 wu.TIMEOUT = 1;
 
-prototypeAndStatic("asyncEach", function (fn, maxBlock=wu.MAX_BLOCK, timeout=wu.TIMEOUT) {
-  const iter = getIterator(this);
+prototypeAndStatic(
+  "asyncEach",
+  function(fn, maxBlock = wu.MAX_BLOCK, timeout = wu.TIMEOUT) {
+    const iter = getIterator(this);
 
-  return new Promise((resolve, reject) => {
-    (function loop() {
-      const start = Date.now();
+    return new Promise((resolve, reject) => {
+      (function loop() {
+        const start = Date.now();
 
-      for (let x of iter) {
-        try {
-          fn(x);
-        } catch (e) {
-          reject(e);
-          return;
+        for (let x of iter) {
+          try {
+            fn(x);
+          } catch (e) {
+            reject(e);
+            return;
+          }
+
+          if (Date.now() - start > maxBlock) {
+            setTimeout(loop, timeout);
+            return;
+          }
         }
 
-        if (Date.now() - start > maxBlock) {
-          setTimeout(loop, timeout);
-          return;
-        }
-      }
+        resolve();
+      })();
+    });
+  },
+  3
+);
 
-      resolve();
-    }());
-  });
-}, 3);
-
-prototypeAndStatic("every", function (fn=Boolean) {
-  for (let x of this) {
-    if (!fn(x)) {
-      return false;
-    }
-  }
-  return true;
-}, 1);
-
-prototypeAndStatic("find", function (fn) {
-  for (let x of this) {
-    if (fn(x)) {
-      return x;
-    }
-  }
-}, 1);
-
-prototypeAndStatic("forEach", function (fn) {
-  for (let x of this) {
-    fn(x);
-  }
-}, 1);
-
-prototypeAndStatic("has", function (thing) {
-  return this.some(x => x === thing);
-}, 1);
-
-prototypeAndStatic("reduce", function (fn, initial=undefined) {
-  let val = initial;
-  if (val === undefined) {
+prototypeAndStatic(
+  "every",
+  function(fn = Boolean) {
     for (let x of this) {
-      val = x;
-      break;
+      if (!fn(x)) {
+        return false;
+      }
     }
-  }
+    return true;
+  },
+  1
+);
 
-  for (let x of this) {
-    val = fn(val, x);
-  }
-
-  return val;
-}, 2);
-
-prototypeAndStatic("some", function (fn=Boolean) {
-  for (let x of this) {
-    if (fn(x)) {
-      return true;
+prototypeAndStatic(
+  "find",
+  function(fn) {
+    for (let x of this) {
+      if (fn(x)) {
+        return x;
+      }
     }
-  }
-  return false;
-}, 1);
+  },
+  1
+);
 
-prototypeAndStatic("nth", function (n) {
-  if (n < 0) {
-    return;
-  }
-  for (let x of this) {
-    if (!n--) {
-      return x;
+prototypeAndStatic(
+  "forEach",
+  function(fn) {
+    for (let x of this) {
+      fn(x);
     }
-  }
-}, 1);
+  },
+  1
+);
 
-prototypeAndStatic("toArray", function () {
+prototypeAndStatic(
+  "has",
+  function(thing) {
+    return this.some(x => x === thing);
+  },
+  1
+);
+
+prototypeAndStatic(
+  "reduce",
+  function(fn, initial = undefined) {
+    let val = initial;
+    if (val === undefined) {
+      for (let x of this) {
+        val = x;
+        break;
+      }
+    }
+
+    for (let x of this) {
+      val = fn(val, x);
+    }
+
+    return val;
+  },
+  2
+);
+
+prototypeAndStatic(
+  "some",
+  function(fn = Boolean) {
+    for (let x of this) {
+      if (fn(x)) {
+        return true;
+      }
+    }
+    return false;
+  },
+  1
+);
+
+prototypeAndStatic(
+  "nth",
+  function(n) {
+    if (n < 0) {
+      return;
+    }
+    for (let x of this) {
+      if (!n--) {
+        return x;
+      }
+    }
+  },
+  1
+);
+
+prototypeAndStatic("toArray", function() {
   return [...this];
 });
 
@@ -487,7 +579,7 @@ prototypeAndStatic("toArray", function () {
 
 const MAX_CACHE = 500;
 
-const _tee = rewrap(function* (iterator, cache) {
+const _tee = rewrap(function*(iterator, cache) {
   let { items } = cache;
   let index = 0;
 
@@ -495,14 +587,14 @@ const _tee = rewrap(function* (iterator, cache) {
     // We don't have a cached item for this index, we need to force its
     // evaluation.
     if (index === items.length) {
-      let {done, value} = iterator.next();
+      let { done, value } = iterator.next();
       if (done) {
         if (cache.returned === MISSING) {
           cache.returned = value;
         }
         break;
       }
-      yield items[index++] = value;
+      yield (items[index++] = value);
     }
 
     // If we are the last iterator to use a cached value, clean up after
@@ -534,21 +626,28 @@ const _tee = rewrap(function* (iterator, cache) {
 });
 _tee.prototype = Wu.prototype;
 
-prototypeAndStatic("tee", function (n=2) {
-  const iterables = new Array(n);
-  const cache = { tail: 0, items: [], returned: MISSING };
+prototypeAndStatic(
+  "tee",
+  function(n = 2) {
+    const iterables = new Array(n);
+    const cache = { tail: 0, items: [], returned: MISSING };
 
-  while (n--) {
-    iterables[n] = _tee(this, cache);
-  }
+    while (n--) {
+      iterables[n] = _tee(this, cache);
+    }
 
-  return iterables;
-}, 1);
+    return iterables;
+  },
+  1
+);
 
-prototypeAndStatic("unzip", function (n=2) {
-  return this.tee(n).map((iter, i) => iter.pluck(i));
-}, 1);
-
+prototypeAndStatic(
+  "unzip",
+  function(n = 2) {
+    return this.tee(n).map((iter, i) => iter.pluck(i));
+  },
+  1
+);
 
 /*
  * Number of chambers.
